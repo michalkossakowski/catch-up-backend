@@ -1,3 +1,6 @@
+using catch_up_backend.Database;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace catch_up_backend
 {
@@ -14,6 +17,25 @@ namespace catch_up_backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //----------- Custom Section Start -----------
+            //Database
+            var connectionString = builder.Configuration.GetConnectionString("catchUpConnectionString") ?? throw new InvalidOperationException("Connection string 'catchUpConnectionString' not found.");
+            builder.Services.AddDbContext<CatchUpDbContext>(options => options.UseSqlServer(connectionString));
+
+            //CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+            // ----------- Custom Section End -----------
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,6 +46,10 @@ namespace catch_up_backend
             }
 
             app.UseHttpsRedirection();
+
+            //----------- Custom Section Start -----------
+            app.UseCors("AllowAllOrigins");
+            // ----------- Custom Section End -----------
 
             app.UseAuthorization();
 
