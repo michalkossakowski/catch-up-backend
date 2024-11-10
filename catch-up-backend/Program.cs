@@ -1,4 +1,6 @@
 using catch_up_backend.Database;
+using catch_up_backend.Interfaces;
+using catch_up_backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -21,6 +23,9 @@ namespace catch_up_backend
             //Database
             var connectionString = builder.Configuration.GetConnectionString("catchUpConnectionString") ?? throw new InvalidOperationException("Connection string 'catchUpConnectionString' not found.");
             builder.Services.AddDbContext<CatchUpDbContext>(options => options.UseSqlServer(connectionString));
+
+            //Services
+            builder.Services.AddScoped<IFaqService, FaqService>();
 
             //CORS
             builder.Services.AddCors(options =>
