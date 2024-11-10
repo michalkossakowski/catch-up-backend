@@ -1,0 +1,6 @@
+@catch_up_backend_HostAddress = http://localhost:5141
+
+GET {{catch_up_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
