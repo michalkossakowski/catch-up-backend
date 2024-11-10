@@ -1,6 +1,9 @@
 using catch_up_backend.Database;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
+using catch_up_backend.FileManagers;
+using catch_up_backend.Interfaces;
+using catch_up_backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -26,7 +29,9 @@ namespace catch_up_backend
 
             //Services
             builder.Services.AddScoped<IFaqService, FaqService>();
-
+            builder.Services.AddSingleton<FileStorageFactory>();
+            builder.Services.AddScoped<IFileService, FileService>();
+            builder.Services.AddScoped<IMaterialService, MaterialService>();
             //CORS
             builder.Services.AddCors(options =>
             {
