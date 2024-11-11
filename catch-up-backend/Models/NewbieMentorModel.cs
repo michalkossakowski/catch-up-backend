@@ -10,13 +10,11 @@ namespace catch_up_backend.Models
         public Guid NewbieId { get; set; }
         [ForeignKey("MentorId")]
         public Guid MentorId { get; set; }
-        public bool IsActive { get; set; }
         public StateEnum State { get; set; }
         public NewbieMentorModel(Guid newbieId, Guid mentorId)
         {
             this.NewbieId = newbieId;
             this.MentorId = mentorId;
-            this.IsActive = true;
             State = StateEnum.Active;
         }
     }

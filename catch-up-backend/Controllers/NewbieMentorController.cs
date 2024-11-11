@@ -19,60 +19,34 @@ namespace catch_up_backend.Controllers
 
         // Przypisanie nowego pracownika do mentora
         [HttpPost]
-        [Route("Assign")]
-        public async Task<IActionResult> Assign([FromBody] NewbieMentorModel newAssignment)
+        [Route("Assign/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> Assign(Guid newbieId, Guid mentorId)
         {
-            await _newbieMentorService.AssignNewbieToMentor(newAssignment);
-            return Ok(new { message = "Newbie assigned to mentor", assignment = newAssignment });
+            await _newbieMentorService.AssignNewbieToMentor(newbieId, mentorId);
+            return Ok(new { message = "Newbie assigned to mentor", newbieId, mentorId });
         }
 
-        // Edycja przypisania pracownika do mentora (bardzo uniwersalny. Dosłownie zastępuje stare połączenie nowym)
+        // Archiwizuje przypisania nowego pracownika do mentora
         [HttpPut]
-        [Route("Edit/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> Edit(Guid newbieId, Guid mentorId, [FromBody] NewbieMentorModel updatedAssignment)
+        [Route("Archive/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> Archive(Guid newbieId, Guid mentorId)
         {
-            bool result = await _newbieMentorService.EditAssignment(newbieId, mentorId, updatedAssignment);
+            bool result = await _newbieMentorService.Archive(newbieId, mentorId);
             if (!result)
                 return NotFound(new { message = "Assignment not found" });
 
-            return Ok(new { message = "Assignment updated", assignment = updatedAssignment });
-        }
-        //zmienia status isActive
-        [HttpPut]
-        [Route("ChangeIsActive/{newbieId:guid}/{mentorId:guid}/{status:bool}")]
-        public async Task<IActionResult> ChangeIsActive(Guid newbieId, Guid mentorId,  bool isActive )
-        {
-            bool result = await _newbieMentorService.ChangeIsActive(newbieId, mentorId, isActive);
-            if (!result)
-            {
-                return NotFound(new { message = "Assignment not found" });
-            }
-
-            return Ok(new { message = "Status updated", isActive });
-        }
-
-        //zmienia state (to czy jest aktywny, usunięty etc
-        [HttpPut]
-        [Route("ChangeState/{newbieId}/{mentorId}/{newState}")]
-        public async Task<IActionResult> ChangeState(Guid newbieId, Guid mentorId, StateEnum newState)
-        {
-            var result = await _newbieMentorService.ChangeState(newbieId, mentorId, newState);
-
-            if (!result)
-            {
-                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
-            }
-
-            return Ok("State updated successfully.");
+            return Ok(new { message = "Connection has been archived", newbieId, mentorId });
         }
         // Usuwanie przypisania nowego pracownika do mentora
         [HttpDelete]
-        [Route("Unassign/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> Unassign(Guid newbieId, Guid mentorId)
+        [Route("Delete/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> Delete(Guid newbieId, Guid mentorId)
         {
-            bool result = await _newbieMentorService.UnassignNewbieFromMentor(newbieId, mentorId);
+            bool result = await _newbieMentorService.Delete(newbieId, mentorId);
             if (!result)
+            {
                 return NotFound(new { message = "Assignment not found" });
+            }
 
             return Ok(new { message = "Newbie unassigned from mentor", newbieId, mentorId });
         }
@@ -102,35 +76,6 @@ namespace catch_up_backend.Controllers
             }
 
             return Ok(assignments);
-        }
-
-        // Sprawdzanie czy konkretny nowy pracownik ma połączenie z konkretnym mentorem
-        [HttpGet]
-        [Route("GetStatus/{newbieId}/{mentorId}")]
-        public async Task<ActionResult<bool>> GetIsActive(Guid newbieId, Guid mentorId)
-        {
-            bool isActive = await _newbieMentorService.GetIsActive(newbieId, mentorId);
-
-            if (isActive == null)
-            {
-                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
-            }
-            return Ok(isActive);
-        }
-
-        //zwraca isActive połączenia między mentorem, a nowym pracownikiem
-        [HttpGet]
-        [Route("GetState/{newbieId}/{mentorId}")]
-        public async Task<ActionResult<StateEnum>> GetState(Guid newbieId, Guid mentorId)
-        {
-            StateEnum? state = await _newbieMentorService.GetState(newbieId, mentorId);
-
-            if (state == null)
-            {
-                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
-            }
-
-            return Ok(state);
         }
     }
 }
