@@ -12,6 +12,7 @@ namespace catch_up_backend.Models
         public CategoryModel(string name)
         {
             Name = name;
+            State = StateEnum.Active;
         }
     }
 }

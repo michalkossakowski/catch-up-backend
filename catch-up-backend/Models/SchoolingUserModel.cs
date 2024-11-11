@@ -17,6 +17,7 @@ namespace catch_up_backend.Models
         {
             NewbieId = newbieId;
             SchoolingId = schoolingId;
+            State = StateEnum.Active;
         }
     }
 }

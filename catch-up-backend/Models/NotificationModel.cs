@@ -22,6 +22,7 @@ namespace catch_up_backend.Models
             this.Message = message;
             this.SendDate = DateTime.Now;
             this.LinkedContent = linkedContent;
+            State = StateEnum.Active;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace catch_up_backend.Models
         {
             PresetId = presetId;
             TaskContentId = taskContentId;
+            State = StateEnum.Active;
         }
     }
 }

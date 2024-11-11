@@ -15,6 +15,7 @@ namespace catch_up_backend.Models
         {
             MaterialsId = materialsId;
             SchoolingPartId = schoolingPartId;
+            State = StateEnum.Active;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace catch_up_backend.Models
             TelephoneNumber = telephoneNumber;
             AdditionalInformation = additionalInformation;
             AvatarSource = avatarSource;
+            State = StateEnum.Active;
         }
     }
 }

@@ -24,6 +24,7 @@ namespace catch_up_backend.Models
             Title = title;
             Description = description;
             Origin = origin;
+            State = StateEnum.Active;
         }
     }
 }
