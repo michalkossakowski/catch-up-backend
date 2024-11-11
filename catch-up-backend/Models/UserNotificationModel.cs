@@ -15,6 +15,7 @@ namespace catch_up_backend.Models
         {
             NotificationId = notificationId;
             ReceiverId = receiverId;
+            State = StateEnum.Active;
         }
     }
 }

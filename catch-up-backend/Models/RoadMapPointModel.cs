@@ -24,6 +24,7 @@ namespace catch_up_backend.Models
             AssignmentDate = DateTime.Now;
             Deadline = deadline;
             Status = status;
+            State = StateEnum.Active;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace catch_up_backend.Models
         public MaterialsModel(string name)
         {
             this.Name = name;
+            State = StateEnum.Active;
         }
     }
 }

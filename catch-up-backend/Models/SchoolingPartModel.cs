@@ -18,6 +18,7 @@ namespace catch_up_backend.Models
             SchoolingId = schoolingId;
             Name = name;
             Content = content;
+            State = StateEnum.Active;
         }
     }
 }

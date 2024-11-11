@@ -16,6 +16,7 @@ namespace catch_up_backend.Models
         {
             this.MentorId = mentorId;
             this.Value = 0;
+            State = StateEnum.Active;
         }
     }
 }

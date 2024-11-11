@@ -24,6 +24,7 @@ namespace catch_up_backend.Models
             MaterialsId = materialsId;
             Title = title;
             Description = description;
+            State = StateEnum.Active;
         }
     }
 }
