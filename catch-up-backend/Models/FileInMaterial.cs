@@ -8,7 +8,7 @@ namespace catch_up_backend.Models
     {
         [ForeignKey("MaterialId")]
         public int MaterialId { get; set; }
-        [ForeignKey("SchoolingPartId")]
+        [ForeignKey("FileId")]
         public int FileId { get; set; }
         public StateEnum State { get; set; }
         public FileInMaterial(int materialId, int fileId)
