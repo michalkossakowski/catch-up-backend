@@ -72,10 +72,11 @@ public class NewbieMentorService : INewbieMentorService
             .ToListAsync();
     }
 
-    public async Task<NewbieMentorModel> GetAssignmentByNewbie(Guid newbieId)
+    public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId)
     {
         return await _context.NewbiesMentors
-            .FirstOrDefaultAsync(a => a.NewbieId == newbieId && a.IsActive);
+            .Where(a => a.NewbieId == newbieId && a.IsActive)
+            .ToListAsync();
     }
     public async Task<bool> GetStatus(Guid newbieId, Guid mentorId)
     {

@@ -68,7 +68,9 @@ namespace catch_up_backend.Controllers
         {
             IEnumerable<NewbieMentorModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
             if (!assignments.Any())
+            {
                 return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
+            }
 
             return Ok(assignments);
         }
@@ -78,16 +80,20 @@ namespace catch_up_backend.Controllers
         [Route("GetAssignmentsByNewbie/{newbieId:guid}")]
         public async Task<IActionResult> GetAssignmentsByNewbie(Guid newbieId)
         {
-            NewbieMentorModel assignment = await _newbieMentorService.GetAssignmentByNewbie(newbieId);
-            if (assignment == null)
-                return NotFound(new { message = $"No assignments found for newbie with ID {newbieId}" });
+            IEnumerable<NewbieMentorModel> assignments = await _newbieMentorService.GetAssignmentsByNewbie(newbieId);
+            if (!assignments.Any())
+            {
+                return NotFound(new { message = $"No assignments found for mentor with ID {newbieId}" });
+            }
 
-            return Ok(assignment);
+            return Ok(assignments);
         }
+
+        // Sprawdzanie czy konkretny nowy pracownik ma połączenie z konkretnym mentorem
         [HttpGet("GetStatus/{newbieId}/{mentorId}")]
         public async Task<ActionResult<bool>> GetBool(Guid newbieId, Guid mentorId)
         {
-            var isActive = await _newbieMentorService.GetStatus(newbieId, mentorId);
+            bool isActive = await _newbieMentorService.GetStatus(newbieId, mentorId);
 
             if (isActive == null)
             {
