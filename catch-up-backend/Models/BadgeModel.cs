@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace catch_up_backend.Models
 {
