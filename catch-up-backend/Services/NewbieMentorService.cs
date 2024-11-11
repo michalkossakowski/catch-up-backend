@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
+using catch_up_backend.Enums;
 
 public class NewbieMentorService : INewbieMentorService
 {
@@ -35,7 +36,7 @@ public class NewbieMentorService : INewbieMentorService
         await _context.SaveChangesAsync();
         return true;
     }
-    public async Task<bool> EditStatus(Guid newbieId, Guid mentorId, bool status)
+    public async Task<bool> ChangeIsActive(Guid newbieId, Guid mentorId, bool status)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
             .FindAsync(newbieId, mentorId);
@@ -64,18 +65,32 @@ public class NewbieMentorService : INewbieMentorService
         await _context.SaveChangesAsync();
         return true;
     }
+    public async Task<bool> ChangeState(Guid newbieId, Guid mentorId, StateEnum newState)
+    {
+        NewbieMentorModel? connection = await _context.NewbiesMentors
+                                       .FirstOrDefaultAsync(nm => nm.NewbieId == newbieId && nm.MentorId == mentorId);
 
+        if (connection == null)
+        {
+            return false;
+        }
+
+        connection.State = newState;
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId)
     {
         return await _context.NewbiesMentors
-            .Where(a => a.MentorId == mentorId && a.IsActive)
+            .Where(a =>a.State==StateEnum.Active && a.MentorId == mentorId && a.IsActive)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId)
     {
         return await _context.NewbiesMentors
-            .Where(a => a.NewbieId == newbieId && a.IsActive)
+            .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId && a.IsActive)
             .ToListAsync();
     }
     public async Task<bool> GetIsActive(Guid newbieId, Guid mentorId)
@@ -87,5 +102,11 @@ public class NewbieMentorService : INewbieMentorService
             return false;
         }
         return assignment.IsActive;
+    }
+    public async Task<StateEnum?> GetState(Guid newbieId, Guid mentorId)
+    {
+        NewbieMentorModel? assignment = await _context.NewbiesMentors
+                                      .FirstOrDefaultAsync(nm => nm.NewbieId == newbieId && nm.MentorId == mentorId);
+        return assignment?.State;
     }
 }

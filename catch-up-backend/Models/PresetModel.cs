@@ -16,6 +16,7 @@ namespace catch_up_backend.Models
         {
             this.CreatorId = creatorId;
             this.Name = name;
+            State = StateEnum.Active;
         }
     }
 }

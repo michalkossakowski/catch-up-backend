@@ -17,6 +17,7 @@ namespace catch_up_backend.Models
             MentorId = mentorId;
             BadgeId = badgeId;
             AchievedDate = DateTime.Now;
+            State = StateEnum.Active;
         }
     }
 }

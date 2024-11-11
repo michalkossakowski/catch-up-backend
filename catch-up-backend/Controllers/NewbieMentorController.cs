@@ -2,6 +2,7 @@
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using catch_up_backend.Enums;
 
 namespace catch_up_backend.Controllers
 {
@@ -36,18 +37,33 @@ namespace catch_up_backend.Controllers
 
             return Ok(new { message = "Assignment updated", assignment = updatedAssignment });
         }
-
+        //zmienia status isActive
         [HttpPut]
-        [Route("EditStatus/{newbieId:guid}/{mentorId:guid}/{status:bool}")]
-        public async Task<IActionResult> EditStatus(Guid newbieId, Guid mentorId,  bool status )
+        [Route("ChangeIsActive/{newbieId:guid}/{mentorId:guid}/{status:bool}")]
+        public async Task<IActionResult> ChangeIsActive(Guid newbieId, Guid mentorId,  bool isActive )
         {
-            bool result = await _newbieMentorService.EditStatus(newbieId, mentorId, status);
+            bool result = await _newbieMentorService.ChangeIsActive(newbieId, mentorId, isActive);
             if (!result)
             {
                 return NotFound(new { message = "Assignment not found" });
             }
 
-            return Ok(new { message = "Status updated", assignment = status });
+            return Ok(new { message = "Status updated", isActive });
+        }
+
+        //zmienia state (to czy jest aktywny, usunięty etc
+        [HttpPut]
+        [Route("ChangeState/{newbieId}/{mentorId}/{newState}")]
+        public async Task<IActionResult> ChangeState(Guid newbieId, Guid mentorId, StateEnum newState)
+        {
+            var result = await _newbieMentorService.ChangeState(newbieId, mentorId, newState);
+
+            if (!result)
+            {
+                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
+            }
+
+            return Ok("State updated successfully.");
         }
         // Usuwanie przypisania nowego pracownika do mentora
         [HttpDelete]
@@ -60,7 +76,6 @@ namespace catch_up_backend.Controllers
 
             return Ok(new { message = "Newbie unassigned from mentor", newbieId, mentorId });
         }
-
         // Pobieranie wszystkich przypisań dla danego mentora
         [HttpGet]
         [Route("GetAssignmentsByMentor/{mentorId:guid}")]
@@ -90,7 +105,8 @@ namespace catch_up_backend.Controllers
         }
 
         // Sprawdzanie czy konkretny nowy pracownik ma połączenie z konkretnym mentorem
-        [HttpGet("GetStatus/{newbieId}/{mentorId}")]
+        [HttpGet]
+        [Route("GetStatus/{newbieId}/{mentorId}")]
         public async Task<ActionResult<bool>> GetIsActive(Guid newbieId, Guid mentorId)
         {
             bool isActive = await _newbieMentorService.GetIsActive(newbieId, mentorId);
@@ -99,8 +115,22 @@ namespace catch_up_backend.Controllers
             {
                 return NotFound("No connection found for the provided Newbie and Mentor IDs.");
             }
-
             return Ok(isActive);
+        }
+
+        //zwraca isActive połączenia między mentorem, a nowym pracownikiem
+        [HttpGet]
+        [Route("GetState/{newbieId}/{mentorId}")]
+        public async Task<ActionResult<StateEnum>> GetState(Guid newbieId, Guid mentorId)
+        {
+            StateEnum? state = await _newbieMentorService.GetState(newbieId, mentorId);
+
+            if (state == null)
+            {
+                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
+            }
+
+            return Ok(state);
         }
     }
 }

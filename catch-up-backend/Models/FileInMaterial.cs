@@ -15,6 +15,7 @@ namespace catch_up_backend.Models
         {
             MaterialId = materialId;
             FileId = fileId;
+            State = StateEnum.Active;
         }
     }
 }

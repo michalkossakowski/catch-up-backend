@@ -22,6 +22,7 @@ namespace catch_up_backend.Models
             this.Password = password; 
             this.Type = type;
             this.Position = position;
+            State = StateEnum.Active;
         }
     }
 }

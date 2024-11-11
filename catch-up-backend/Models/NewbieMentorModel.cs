@@ -17,6 +17,7 @@ namespace catch_up_backend.Models
             this.NewbieId = newbieId;
             this.MentorId = mentorId;
             this.IsActive = true;
+            State = StateEnum.Active;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace catch_up_backend.Models
             Name = name;
             Description = description;
             IconSource = iconSource;
+            State = StateEnum.Active;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace catch_up_backend.Models
             this.EvaluatorId = evaluatorId;
             this.Value = value;
             this.Description = description;
+            State = StateEnum.Active;
         }
     }
 }

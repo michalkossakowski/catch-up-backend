@@ -32,6 +32,7 @@ namespace catch_up_backend.Models
             Deadline = deadline;
             SpendTime = 0;
             Priority = priority;
+            State = StateEnum.Active;
         }
     }
 }

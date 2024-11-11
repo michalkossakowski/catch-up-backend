@@ -17,6 +17,7 @@ namespace catch_up_backend.Models
             Name = name;
             Type = type;
             Source = source;
+            State = StateEnum.Active;
         }
     }
 }

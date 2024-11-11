@@ -23,6 +23,7 @@ namespace catch_up_backend.Models
             Title = title;
             Description = description;
             Priority = priority;
+            State = StateEnum.Active;
         }
     }
 }
