@@ -1,6 +1,6 @@
 ﻿namespace catch_up_backend.Enums
 {
-    public enum Status
+    public enum State
     {
         Active = 0,
         Archived = 5,
