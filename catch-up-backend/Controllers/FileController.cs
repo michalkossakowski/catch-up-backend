@@ -16,10 +16,10 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, int? materialsId)
+        public async Task<IActionResult> Upload(IFormFile file, int? materialId)
         {
-            var fileDto = await _fileService.UploadFileAsync(file, materialsId);
-            return Ok(new { message = "File uploaded", fileDto });
+            var fileDto = await _fileService.UploadFileAsync(file, materialId);
+            return Ok(new { message = "File uploaded ", fileDto, materialId });
         }
 
         [HttpDelete]
