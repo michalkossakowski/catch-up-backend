@@ -59,7 +59,7 @@ namespace catch_up_backend
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------
-            app.UseCors("AllowAll");
+            app.UseCors("AllowAllOrigins");
             // ----------- Custom Section End -----------
 
             app.UseAuthorization();
