@@ -78,7 +78,7 @@ public class NewbieMentorService : INewbieMentorService
             .Where(a => a.NewbieId == newbieId && a.IsActive)
             .ToListAsync();
     }
-    public async Task<bool> GetStatus(Guid newbieId, Guid mentorId)
+    public async Task<bool> GetIsActive(Guid newbieId, Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
              .FindAsync(newbieId, mentorId);
