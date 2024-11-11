@@ -91,9 +91,9 @@ namespace catch_up_backend.Controllers
 
         // Sprawdzanie czy konkretny nowy pracownik ma połączenie z konkretnym mentorem
         [HttpGet("GetStatus/{newbieId}/{mentorId}")]
-        public async Task<ActionResult<bool>> GetBool(Guid newbieId, Guid mentorId)
+        public async Task<ActionResult<bool>> GetIsActive(Guid newbieId, Guid mentorId)
         {
-            bool isActive = await _newbieMentorService.GetStatus(newbieId, mentorId);
+            bool isActive = await _newbieMentorService.GetIsActive(newbieId, mentorId);
 
             if (isActive == null)
             {

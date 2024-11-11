@@ -11,6 +11,7 @@ namespace catch_up_backend.Models
         public string Description { get; set; }
         public string IconSource { get; set; }
 
+        public StateEnum State { get; set; }
         public BadgeModel(string name, string description, string iconSource)
         {
             Name = name;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace catch_up_backend.Models
 {
@@ -7,7 +8,7 @@ namespace catch_up_backend.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-
+        public StateEnum State { get; set; }
         public CategoryModel(string name)
         {
             Name = name;
