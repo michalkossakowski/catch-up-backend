@@ -25,7 +25,7 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Newbie assigned to mentor", assignment = newAssignment });
         }
 
-        // Edycja przypisania pracownika do mentora (np. aktualizacja statusu)
+        // Edycja przypisania pracownika do mentora (bardzo uniwersalny. Dosłownie zastępuje stare połączenie nowym)
         [HttpPut]
         [Route("Edit/{newbieId:guid}/{mentorId:guid}")]
         public async Task<IActionResult> Edit(Guid newbieId, Guid mentorId, [FromBody] NewbieMentorModel updatedAssignment)
