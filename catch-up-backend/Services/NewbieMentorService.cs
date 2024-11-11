@@ -50,21 +50,6 @@ public class NewbieMentorService : INewbieMentorService
         await _context.SaveChangesAsync();
         return true;
     }
-
-    public async Task<bool> UnassignNewbieFromMentor(Guid newbieId,Guid mentorId)
-    {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId); //sprawdza czy jest połączenie między mentorem, a newbie
-
-        if (assignment == null)
-        {
-            return false;
-        }
-
-        _context.NewbiesMentors.Remove(assignment);
-        await _context.SaveChangesAsync();
-        return true;
-    }
     public async Task<bool> ChangeState(Guid newbieId, Guid mentorId, StateEnum newState)
     {
         NewbieMentorModel? connection = await _context.NewbiesMentors
@@ -80,17 +65,31 @@ public class NewbieMentorService : INewbieMentorService
 
         return true;
     }
+    public async Task<bool> UnassignNewbieFromMentor(Guid newbieId,Guid mentorId)
+    {
+        NewbieMentorModel? assignment = await _context.NewbiesMentors
+            .FindAsync(newbieId, mentorId); //sprawdza czy jest połączenie między mentorem, a newbie
+
+        if (assignment == null)
+        {
+            return false;
+        }
+
+        _context.NewbiesMentors.Remove(assignment);
+        await _context.SaveChangesAsync();
+        return true;
+    }
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId)
     {
         return await _context.NewbiesMentors
-            .Where(a =>a.State==StateEnum.Active && a.MentorId == mentorId && a.IsActive)
+            .Where(a =>a.State==StateEnum.Active && a.IsActive==true && a.MentorId == mentorId && a.IsActive)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId)
     {
         return await _context.NewbiesMentors
-            .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId && a.IsActive)
+            .Where(a => a.State == StateEnum.Active && a.IsActive == true && a.NewbieId == newbieId && a.IsActive)
             .ToListAsync();
     }
     public async Task<bool> GetIsActive(Guid newbieId, Guid mentorId)
