@@ -32,6 +32,7 @@ namespace catch_up_backend
             builder.Services.AddSingleton<FileStorageFactory>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
+            builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
             //CORS
             builder.Services.AddCors(options =>
             {
@@ -58,7 +59,7 @@ namespace catch_up_backend
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------
-            app.UseCors("AllowAllOrigins");
+            app.UseCors("AllowAll");
             // ----------- Custom Section End -----------
 
             app.UseAuthorization();
