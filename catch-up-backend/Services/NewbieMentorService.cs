@@ -16,91 +16,63 @@ public class NewbieMentorService : INewbieMentorService
         _context = context;
     }
 
-    public async Task AssignNewbieToMentor(NewbieMentorModel assignment)
-    {
-        _context.NewbiesMentors.Add(assignment);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<bool> EditAssignment(Guid newbieId, Guid mentorId, NewbieMentorModel updatedAssignment)
+    public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
             .FindAsync(newbieId, mentorId);
 
         if (assignment == null)
         {
+            NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
+            _context.NewbiesMentors.Add(newAssignment);
+            await _context.SaveChangesAsync();
             return false;
         }
 
-        assignment.IsActive = updatedAssignment.IsActive;
+        assignment.State = StateEnum.Active;
         await _context.SaveChangesAsync();
         return true;
     }
-    public async Task<bool> ChangeIsActive(Guid newbieId, Guid mentorId, bool status)
+    public async Task<bool> Archive(Guid newbieId, Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId);
+            .FindAsync(newbieId, mentorId); 
 
         if (assignment == null)
         {
             return false;
         }
 
-        assignment.IsActive = status;
+        assignment.State = StateEnum.Archived;
         await _context.SaveChangesAsync();
         return true;
     }
-    public async Task<bool> ChangeState(Guid newbieId, Guid mentorId, StateEnum newState)
-    {
-        NewbieMentorModel? connection = await _context.NewbiesMentors
-                                       .FirstOrDefaultAsync(nm => nm.NewbieId == newbieId && nm.MentorId == mentorId);
-
-        if (connection == null)
-        {
-            return false;
-        }
-
-        connection.State = newState;
-        await _context.SaveChangesAsync();
-
-        return true;
-    }
-    public async Task<bool> UnassignNewbieFromMentor(Guid newbieId,Guid mentorId)
+    public async Task<bool> Delete(Guid newbieId,Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId); //sprawdza czy jest połączenie między mentorem, a newbie
+            .FindAsync(newbieId, mentorId); 
 
         if (assignment == null)
         {
             return false;
         }
 
-        _context.NewbiesMentors.Remove(assignment);
+        assignment.State= StateEnum.Deleted;
         await _context.SaveChangesAsync();
         return true;
     }
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId)
     {
         return await _context.NewbiesMentors
-            .Where(a =>a.State==StateEnum.Active && a.IsActive==true && a.MentorId == mentorId && a.IsActive)
+            .Where(a =>a.State==StateEnum.Active && a.MentorId == mentorId)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId)
     {
         return await _context.NewbiesMentors
-            .Where(a => a.State == StateEnum.Active && a.IsActive == true && a.NewbieId == newbieId && a.IsActive)
+            .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
             .ToListAsync();
-    }
-    public async Task<bool> GetIsActive(Guid newbieId, Guid mentorId)
-    {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-             .FindAsync(newbieId, mentorId);
-        if (assignment == null)
-        {
-            return false;
-        }
-        return assignment.IsActive;
     }
     public async Task<StateEnum?> GetState(Guid newbieId, Guid mentorId)
     {
