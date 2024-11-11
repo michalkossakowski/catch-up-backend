@@ -34,11 +34,11 @@ public class NewbieMentorService : INewbieMentorService
                 {
                     NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
                     _context.NewbiesMentors.Add(newAssignment);
-                    await _context.SaveChangesAsync();
-                    return true;
                 }
-
-                assignment.State = StateEnum.Active;
+                else
+                {
+                    assignment.State = StateEnum.Active;
+                }
                 await _context.SaveChangesAsync();
                 return true;
             }
