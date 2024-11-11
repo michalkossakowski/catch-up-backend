@@ -18,20 +18,32 @@ public class NewbieMentorService : INewbieMentorService
 
     public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
     {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId);
-
-        if (assignment == null)
+        UserModel? newbie = _context.Users.FindAsync(newbieId).Result;
+        UserModel? mentor = _context.Users.FindAsync(mentorId).Result;
+        if (newbie != null && mentor != null)
         {
-            NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
-            _context.NewbiesMentors.Add(newAssignment);
-            await _context.SaveChangesAsync();
-            return false;
-        }
+            string? newbieType = newbie?.Type;
+            string? mentorType = mentor?.Type;
 
-        assignment.State = StateEnum.Active;
-        await _context.SaveChangesAsync();
-        return true;
+            if (newbieType == "Newbie" && mentorType == "Mentor")
+            {
+                NewbieMentorModel? assignment = await _context.NewbiesMentors
+                    .FindAsync(newbieId, mentorId);
+
+                if (assignment == null)
+                {
+                    NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
+                    _context.NewbiesMentors.Add(newAssignment);
+                }
+                else
+                {
+                    assignment.State = StateEnum.Active;
+                }
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
+        return false;
     }
     public async Task<bool> Archive(Guid newbieId, Guid mentorId)
     {

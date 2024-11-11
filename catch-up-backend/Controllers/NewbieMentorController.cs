@@ -22,7 +22,11 @@ namespace catch_up_backend.Controllers
         [Route("Assign/{newbieId:guid}/{mentorId:guid}")]
         public async Task<IActionResult> Assign(Guid newbieId, Guid mentorId)
         {
-            await _newbieMentorService.AssignNewbieToMentor(newbieId, mentorId);
+            bool result = await _newbieMentorService.AssignNewbieToMentor(newbieId, mentorId);
+            if (!result)
+            {
+                return NotFound(new { message = "Mentor or User not found or their Type is wrong" });
+            }
             return Ok(new { message = "Newbie assigned to mentor", newbieId, mentorId });
         }
 
@@ -33,7 +37,9 @@ namespace catch_up_backend.Controllers
         {
             bool result = await _newbieMentorService.Archive(newbieId, mentorId);
             if (!result)
+            {
                 return NotFound(new { message = "Assignment not found" });
+            }
 
             return Ok(new { message = "Connection has been archived", newbieId, mentorId });
         }
