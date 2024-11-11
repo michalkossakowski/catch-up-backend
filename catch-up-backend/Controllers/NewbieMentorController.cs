@@ -84,5 +84,17 @@ namespace catch_up_backend.Controllers
 
             return Ok(assignment);
         }
+        [HttpGet("GetStatus/{newbieId}/{mentorId}")]
+        public async Task<ActionResult<bool>> GetBool(Guid newbieId, Guid mentorId)
+        {
+            var isActive = await _newbieMentorService.GetStatus(newbieId, mentorId);
+
+            if (isActive == null)
+            {
+                return NotFound("No connection found for the provided Newbie and Mentor IDs.");
+            }
+
+            return Ok(isActive);
+        }
     }
 }
