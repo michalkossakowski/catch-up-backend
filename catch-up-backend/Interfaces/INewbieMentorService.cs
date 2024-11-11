@@ -13,5 +13,6 @@ namespace catch_up_backend.Interfaces
         Task<bool> UnassignNewbieFromMentor(Guid newbieId, Guid mentorId);
         Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId);
         Task<NewbieMentorModel> GetAssignmentByNewbie(Guid newbieId);
+        Task<bool> GetStatus(Guid newbieId, Guid mentorId);
     }
 }

@@ -77,4 +77,14 @@ public class NewbieMentorService : INewbieMentorService
         return await _context.NewbiesMentors
             .FirstOrDefaultAsync(a => a.NewbieId == newbieId && a.IsActive);
     }
+    public async Task<bool> GetStatus(Guid newbieId, Guid mentorId)
+    {
+        NewbieMentorModel? assignment = await _context.NewbiesMentors
+             .FindAsync(newbieId, mentorId);
+        if (assignment == null)
+        {
+            return false;
+        }
+        return assignment.IsActive;
+    }
 }
