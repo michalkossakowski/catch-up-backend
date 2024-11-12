@@ -1,6 +1,5 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
@@ -19,24 +18,27 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] FaqDto newQuestion)
         {
-            await _faqService.Add(newQuestion);
-            return Ok(new { message = "FAQ added", faq = newQuestion });
+            return await _faqService.Add(newQuestion) 
+                ? Ok(new { message = "FAQ added", faq = newQuestion })
+                : StatusCode(500, new { message = $"FAQ adding error"});
         }
 
         [HttpPut]
         [Route("Edit/{questionId:int}")]
         public async Task<IActionResult> Edit(int questionId, [FromBody] FaqDto newQuestion)
         {
-            await _faqService.Edit(questionId,newQuestion);
-            return Ok(new { message = $"FAQ edited", faq = newQuestion });
+            return await _faqService.Edit(questionId, newQuestion)
+                ? Ok(new { message = $"FAQ edited", faq = newQuestion })
+                : StatusCode(500, new { message = $"FAQ editing error", faqId = questionId });
         }
 
         [HttpDelete]
         [Route("Delete/{questionId:int}")]
         public async Task<IActionResult> Delete(int questionId)
         {
-            await _faqService.Delete(questionId);
-            return Ok(new { message = $"FAQ deleted", faqId = questionId });
+            return await _faqService.Delete(questionId) 
+                ? Ok(new { message = $"FAQ deleted", faqId = questionId })
+                : NotFound(new { message = $"FAQ not found", faqId = questionId });
         }
 
         [HttpGet]
