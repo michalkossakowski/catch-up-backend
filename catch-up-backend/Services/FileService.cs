@@ -64,7 +64,7 @@ namespace catch_up_backend.Services
             var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
             if(file.State != StateEnum.Active)
                 throw new FileNotFoundException("File is not active.");
-            return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type };
+            return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type, Source = file.Source };
         }
 
         public async Task<Stream> DownloadFileAsync(int fileId)
@@ -98,6 +98,8 @@ namespace catch_up_backend.Services
                     {
                         Id = file.Id,
                         Name = file.Name,
+                        Type = file.Type,
+                        Source = file.Source,
                     })
                 .ToListAsync();
         }

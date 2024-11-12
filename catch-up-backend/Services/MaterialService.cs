@@ -27,6 +27,7 @@ namespace catch_up_backend.Services
             var material = new MaterialsModel(materialDto.Name);
             await _context.Materials.AddAsync(material);
             await _context.SaveChangesAsync();
+            materialDto.Id = material.Id;
             return materialDto;
         }
 

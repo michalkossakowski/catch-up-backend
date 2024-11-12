@@ -20,8 +20,8 @@ namespace catch_up_backend.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create(MaterialDto materialDto)
         {
-            await _materialService.CreateMaterialAsync(materialDto);
-            return CreatedAtAction(nameof(Get), new { materialId = materialDto.Id }, new { message = "Material  created", materialDto });
+            var material = await _materialService.CreateMaterialAsync(materialDto);
+            return CreatedAtAction(nameof(Get), new { materialId = material.Id }, new { message = "Material  created", material });
         }
 
         /// <summary>
