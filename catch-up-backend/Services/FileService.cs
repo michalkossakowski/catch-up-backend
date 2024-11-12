@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Database;
 using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.FileManagers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
@@ -41,7 +42,6 @@ namespace catch_up_backend.Services
                 Type = fileModel.Type,
                 Source = fileModel.Source
             };
-
             return fileDto;
         }
 
@@ -49,24 +49,36 @@ namespace catch_up_backend.Services
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
             await _fileStorage.DeleteFileAsync(file.Source);
-            _context.Files.Remove(file);
+            file.State = StateEnum.Deleted;
+            await _context.SaveChangesAsync();
+        }
+        public async Task ArchiveFileAsync(int fileId)
+        {
+            var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
+            file.State = StateEnum.Archived;
             await _context.SaveChangesAsync();
         }
 
         public async Task<FileDto> GetByIdAsync(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
+            if(file.State != StateEnum.Active)
+                throw new FileNotFoundException("File is not active.");
             return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type };
         }
 
         public async Task<Stream> DownloadFileAsync(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
+            if (file.State != StateEnum.Active)
+                throw new FileNotFoundException("File is not active.");
             return await _fileStorage.DownloadFileAsync(file.Source);
         }
         public async Task AddToMaterialAsync(int fileId, int materialId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new FileNotFoundException("File not found in database.");
+            if (file.State != StateEnum.Active)
+                throw new FileNotFoundException("File is not active.");
             if (await _context.Materials.FindAsync(materialId) == null)
                 throw new Exception("Material not found");
             var connectFileMaterial = new FileInMaterial(materialId, fileId);
@@ -77,7 +89,7 @@ namespace catch_up_backend.Services
         public async Task<List<FileDto>> GetFilesAsync(int materialId)
         {
             return await _context.FileInMaterials
-                .Where(fim => fim.MaterialId == materialId)
+                .Where(fim => fim.MaterialId == materialId && fim.State == StateEnum.Active)
                 .Join(
                     _context.Files,
                     fim => fim.FileId,

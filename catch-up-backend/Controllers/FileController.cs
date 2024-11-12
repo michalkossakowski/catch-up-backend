@@ -30,6 +30,14 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "File deleted"});
         }
 
+        [HttpPatch]
+        [Route("Archive/{fileId:int}")]
+        public async Task<IActionResult> Archive(int fileId)
+        {
+            await _fileService.ArchiveFileAsync(fileId);
+            return Ok(new { message = "File archived" });
+        }
+
         [HttpGet]
         [Route("Get/{fileId:int}")]
         public async Task<IActionResult> Get(int fileId)
