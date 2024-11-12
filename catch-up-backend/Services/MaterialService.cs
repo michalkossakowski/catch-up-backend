@@ -49,7 +49,9 @@ namespace catch_up_backend.Services
         }
         public async Task ArchiveAsync(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId) ?? throw new Exception("Material not found");
+            var material = await _context.Materials.FindAsync(materialId) 
+                ?? throw new Exception("Material not found");
+
             material.State = StateEnum.Archived;
 
 
@@ -67,8 +69,11 @@ namespace catch_up_backend.Services
 
         public async Task EditAsync(int materialId, string name)
         {
-            var material = await _context.Materials.FindAsync(materialId) ?? throw new Exception("Material not found");
+            var material = await _context.Materials.FindAsync(materialId) 
+                ?? throw new Exception("Material not found");
+
             material.Name = name;
+
             _context.Update(material);
             await _context.SaveChangesAsync();
         }
@@ -84,15 +89,19 @@ namespace catch_up_backend.Services
                 Name = material.Name,
                 Files = files
             };
+
             return FilesInMaterial;
         }
 
         public async Task<MaterialDto> GetMaterialAsync(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId);
+
             if (material.State != StateEnum.Active)
                 throw new FileNotFoundException("Material is not active.");
+
             var materialDto = new MaterialDto { Id = material.Id, Name = material.Name };
+
             return materialDto;
         }
 
