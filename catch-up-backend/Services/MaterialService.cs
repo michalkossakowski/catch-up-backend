@@ -33,7 +33,8 @@ namespace catch_up_backend.Services
 
         public async Task DeleteAsync(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId) ?? throw new Exception("Material not found");
+            var material = await _context.Materials.FindAsync(materialId) 
+                ?? throw new NotFoundException("Material not found");
             material.State = StateEnum.Deleted;
 
             var fileInMaterial =  _context.FileInMaterials
@@ -50,7 +51,7 @@ namespace catch_up_backend.Services
         public async Task ArchiveAsync(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId) 
-                ?? throw new Exception("Material not found");
+                ?? throw new NotFoundException("Material not found");
 
             material.State = StateEnum.Archived;
 
@@ -70,7 +71,7 @@ namespace catch_up_backend.Services
         public async Task EditAsync(int materialId, string name)
         {
             var material = await _context.Materials.FindAsync(materialId) 
-                ?? throw new Exception("Material not found");
+                ?? throw new NotFoundException("Material not found");
 
             material.Name = name;
 
@@ -98,7 +99,7 @@ namespace catch_up_backend.Services
             var material = await _context.Materials.FindAsync(materialId);
 
             if (material.State != StateEnum.Active)
-                throw new FileNotFoundException("Material is not active.");
+                throw new NotFoundException("Material is not active.");
 
             var materialDto = new MaterialDto { Id = material.Id, Name = material.Name };
 
