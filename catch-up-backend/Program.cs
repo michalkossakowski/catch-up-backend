@@ -2,9 +2,10 @@ using catch_up_backend.Database;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using catch_up_backend.FileManagers;
-using catch_up_backend.Interfaces;
-using catch_up_backend.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 namespace catch_up_backend
@@ -27,11 +28,29 @@ namespace catch_up_backend
             var connectionString = builder.Configuration.GetConnectionString("catchUpConnectionString") ?? throw new InvalidOperationException("Connection string 'catchUpConnectionString' not found.");
             builder.Services.AddDbContext<CatchUpDbContext>(options => options.UseSqlServer(connectionString));
 
+            //Authentication
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.ASCII.GetBytes(builder.Configuration["Jwt:AccessTokenSecret"])
+                        ),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
             //Services
             builder.Services.AddScoped<IFaqService, FaqService>();
             builder.Services.AddSingleton<FileStorageFactory>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             //CORS
             builder.Services.AddCors(options =>
             {
