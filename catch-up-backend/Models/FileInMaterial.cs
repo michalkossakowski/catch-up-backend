@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using catch_up_backend.Enums;
 
 namespace catch_up_backend.Models
 {
@@ -7,13 +8,14 @@ namespace catch_up_backend.Models
     {
         [ForeignKey("MaterialId")]
         public int MaterialId { get; set; }
-        [ForeignKey("SchoolingPartId")]
+        [ForeignKey("FileId")]
         public int FileId { get; set; }
-
+        public StateEnum State { get; set; }
         public FileInMaterial(int materialId, int fileId)
         {
             MaterialId = materialId;
             FileId = fileId;
+            State = StateEnum.Active;
         }
     }
 }

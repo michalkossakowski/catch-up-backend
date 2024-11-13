@@ -51,6 +51,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
             //CORS
             builder.Services.AddCors(options =>
             {

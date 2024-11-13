@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace catch_up_backend.Models
 {
@@ -12,7 +13,7 @@ namespace catch_up_backend.Models
         public string Password { get; set; }
         public string Type { get; set; }
         public string Position { get; set; }
-
+        public StateEnum State { get; set; }
         public UserModel(string name, string surname, string email, string password, string type, string position)
         {
             this.Name = name;
@@ -21,6 +22,7 @@ namespace catch_up_backend.Models
             this.Password = password; 
             this.Type = type;
             this.Position = position;
+            State = StateEnum.Active;
         }
     }
 }

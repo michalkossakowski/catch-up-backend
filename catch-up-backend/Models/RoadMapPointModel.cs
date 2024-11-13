@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace catch_up_backend.Models
@@ -14,7 +15,7 @@ namespace catch_up_backend.Models
         public DateTime? FinalizationDate { get; set; }
         public int Deadline { get; set; }
         public string Status { get; set; }
-
+        public StateEnum State { get; set; }
         public RoadMapPointModel(string id, int roadmapId, string name, int deadline, string status)
         {
             Id = id;
@@ -23,6 +24,7 @@ namespace catch_up_backend.Models
             AssignmentDate = DateTime.Now;
             Deadline = deadline;
             Status = status;
+            State = StateEnum.Active;
         }
     }
 }

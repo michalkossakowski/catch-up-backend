@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace catch_up_backend.Models
@@ -13,7 +14,7 @@ namespace catch_up_backend.Models
         public string Message { get; set; }
         public DateTime SendDate { get; set; }
         public string? LinkedContent { get; set; }
-
+        public StateEnum State { get; set; }
         public NotificationModel(Guid senderId, string title, string message, string? linkedContent)
         {
             this.SenderId = senderId;
@@ -21,6 +22,7 @@ namespace catch_up_backend.Models
             this.Message = message;
             this.SendDate = DateTime.Now;
             this.LinkedContent = linkedContent;
+            State = StateEnum.Active;
         }
     }
 }

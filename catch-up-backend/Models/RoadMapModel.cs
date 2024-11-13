@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace catch_up_backend.Models
@@ -10,11 +11,12 @@ namespace catch_up_backend.Models
         [ForeignKey("NewbieId")]
         public Guid NewbieId { get; set; }
         public bool IsFinished { get; set; }
-
+        public StateEnum State { get; set; }
         public RoadMapModel(Guid newbieId)
         {
             this.NewbieId = newbieId;
             this.IsFinished = false;
+            State = StateEnum.Active;
         }
     }
 }

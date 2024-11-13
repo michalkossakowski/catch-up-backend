@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using catch_up_backend.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace catch_up_backend.Models
@@ -15,7 +16,7 @@ namespace catch_up_backend.Models
         public string Description { get; set; }
         public string Origin { get; set; }
 
-
+        public StateEnum State { get; set; }
         public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, string origin)
         {
             SenderId = senderId;
@@ -23,6 +24,7 @@ namespace catch_up_backend.Models
             Title = title;
             Description = description;
             Origin = origin;
+            State = StateEnum.Active;
         }
     }
 }
