@@ -22,7 +22,7 @@ namespace catch_up_backend.Controllers
         {
             return await _badgeService.Add(newBadge)
                 ? Ok(new { message = "Badge added", badge = newBadge })
-                : StatusCode(500, new { message = $"Error: Badge add"});
+                : StatusCode(500, new { message = "Error: Badge add"});
         }
 
         [HttpPut]
@@ -30,8 +30,8 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Edit(int badgeId, [FromBody] BadgeDto newBadge)
         {
             return await _badgeService.Edit(badgeId, newBadge)
-                ? Ok(new { message = $"Badge edited", badge = newBadge })
-                : StatusCode(500, new { message = $"Error: Badge edit" });
+                ? Ok(new { message = "Badge edited", badge = newBadge })
+                : StatusCode(500, new { message = "Error: Badge edit" });
         }
 
         [HttpDelete]
@@ -39,8 +39,8 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Delete(int badgeId)
         {
             return await _badgeService.Delete(badgeId)
-                ? Ok(new { message = $"Badge deleted", badge = badgeId })
-                : NotFound(new { message = $"Error: Badge delete", badge =  badgeId});
+                ? Ok(new { message = "Badge deleted", badge = badgeId })
+                : NotFound(new { message = "Error: Badge delete", badge =  badgeId});
         }
 
         [HttpGet]
@@ -49,7 +49,7 @@ namespace catch_up_backend.Controllers
         {
             var badge = await _badgeService.GetById(badgeId);
             if (badge == null)
-                return NotFound(new { message = $"Badge with id: [{badgeId}] not found" });
+                return NotFound(new { message = $"Badge with id: {badgeId} not found" });
             return Ok(badge);
         }
 

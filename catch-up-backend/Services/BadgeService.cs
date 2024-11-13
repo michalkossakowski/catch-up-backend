@@ -11,9 +11,9 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
 
-        public BadgeService(CatchUpDbContext contex)
+        public BadgeService(CatchUpDbContext context)
         {
-            _context = contex;
+            _context = context;
         }
         public async Task<bool> Add(BadgeDto newBadge)
         {
