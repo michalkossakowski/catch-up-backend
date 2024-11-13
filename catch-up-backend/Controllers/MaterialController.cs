@@ -16,20 +16,28 @@ namespace catch_up_backend.Controllers
             _materialService = materialService;
         }
 
+
+        /// <summary>
+        /// It create new material
+        /// </summary>
+        /// <param name="materialDto">It takes materialDto, 
+        /// material name is required to create new material
+        /// </param>
+        /// <returns>message and materialDto</returns>
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create(MaterialDto materialDto)
         {
-            await _materialService.CreateMaterialAsync(materialDto);
-            return CreatedAtAction(nameof(Get), new { materialId = materialDto.Id }, new { message = "Material  created", materialDto });
+            var material = await _materialService.CreateMaterialAsync(materialDto);
+            return CreatedAtAction(nameof(Get), new { materialId = material.Id }, new { message = "Material  created", material });
         }
 
         /// <summary>
         /// Only use to change material Name. 
         /// To add/remove files use AddFile/RemoveFile
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <param name="name"></param>
+        /// <param name="materialId">To find material</param>
+        /// <param name="name"> name - value that is changed</param>
         /// <returns>On success, returns the message</returns>
         [HttpPut]
         [Route("Edit/{materialId:int}/{name}")]
@@ -40,8 +48,8 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
-        /// It will delete material Id and remove its relation with files.
-        /// Files will be not delete.
+        /// It will change state of material to Deleted and 
+        /// all of relations (in table fileInMaterial) to the state deleted
         /// </summary>
         /// <param name="materialId"></param>
         /// <returns>On success, returns the message</returns>
@@ -53,6 +61,12 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Material  deleted" });
         }
 
+        /// <summary>
+        /// It add relation between material and file in table "FileInMaterial"
+        /// </summary>
+        /// <param name="materialId"></param>
+        /// <param name="fileId"></param>
+        /// <returns>On success, returns the message</returns>
         [HttpPost]
         [Route("AddFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> AddFile(int materialId, int fileId)
@@ -61,6 +75,12 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Added File to material",});
         }
 
+        /// <summary>
+        /// It "remove file" in material by changing state of their relation to Archived 
+        /// </summary>
+        /// <param name="materialId"></param>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("RemoveFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> RemoveFile(int materialId, int fileId)
@@ -70,12 +90,12 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
-        /// Give material Id to get material.
-        /// To get not empty  List<FileDto> use GetMaterialWithFiles()
+        /// Give material Id to get material (only With Active state).
+        /// To get not empty List<FileDto> use GetMaterialWithFiles()
         /// </summary>
         /// <param name="materialId"></param>
         /// <returns>
-        /// MaterialDto {Id, Name, List<FileDto>{Id, Name, Type: Empty, Source: Empty}}
+        /// MaterialDto {Id, Name, (is empty)List<FileDto>}
         /// /// </returns>
         [HttpGet]
         [Route("Get/{materialId:int}")]
@@ -86,8 +106,9 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
-        /// Use to get material with list of files which have their Id and Name (without source and type)
-        /// To download this files use Download from FileController.
+        /// Use to get material with list of files which have their Id, Name, Type, Source 
+        /// (only where relation state is Active)
+        /// To download one of this files use Download from FileController.
         /// </summary>
         /// <param name="materialId"></param>
         /// <returns>
@@ -102,7 +123,7 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
-        /// Use to get all materials 
+        /// Use to get all materials (only Active materials)
         /// </summary>
         /// <returns>
         /// List of materials whit empty List<FileDto> inside

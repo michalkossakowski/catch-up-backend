@@ -12,6 +12,7 @@ namespace catch_up_backend.Interfaces
         public Task<MaterialDto> GetFilesInMaterialAsync(int materialId);
         public Task DeleteAsync(int materialId);
         public Task EditAsync(int materialId, string name);
+        public Task ArchiveAsync(int materialId);
 
     }
 }
