@@ -83,5 +83,30 @@ namespace catch_up_backend.Controllers
 
             return Ok(assignments);
         }
+        // Pobieranie wszystkich zaarchiwizowanych przypisań
+        [HttpGet]
+        [Route("GetAllArchived")]
+        public async Task<IActionResult> GetAllArchived()
+        {
+            IEnumerable<NewbieMentorModel> archived = await _newbieMentorService.GetAllArchived();
+            if (!archived.Any())
+            {
+                return NotFound(new { message = "There aren't archived connections." });
+            }
+            return Ok(archived);
+        }
+        // Pobieranie wszystkich usuniętych przypisań
+        [HttpGet]
+        [Route("GetAllDeleted")]
+        public async Task<IActionResult> GetAllDeleted()
+        {
+            IEnumerable<NewbieMentorModel> deleted = await _newbieMentorService.GetAllDeleted();
+            if (!deleted.Any())
+            {
+                return NotFound(new { message = "There aren't deleted connections." });
+            }
+
+            return Ok(deleted);
+        }
     }
 }
