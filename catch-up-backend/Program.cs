@@ -5,6 +5,7 @@ using catch_up_backend.FileManagers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using Microsoft.EntityFrameworkCore;
+using catch_up_backend.Exceptions;
 
 
 namespace catch_up_backend
@@ -33,6 +34,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
+
             //CORS
             builder.Services.AddCors(options =>
             {
@@ -55,7 +57,7 @@ namespace catch_up_backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------
