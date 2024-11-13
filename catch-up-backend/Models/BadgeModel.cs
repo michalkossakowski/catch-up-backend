@@ -10,13 +10,16 @@ namespace catch_up_backend.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string IconSource { get; set; }
-
+        public int? Count { get; set; }
+        public string? CountType { get; set; }
         public StateEnum State { get; set; }
-        public BadgeModel(string name, string description, string iconSource)
+        public BadgeModel(string name, string description, string iconSource, int? count, string? countType)
         {
             Name = name;
             Description = description;
             IconSource = iconSource;
+            Count = count;
+            CountType = countType;
             State = StateEnum.Active;
         }
     }

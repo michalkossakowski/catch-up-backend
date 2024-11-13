@@ -29,6 +29,7 @@ namespace catch_up_backend
 
             //Services
             builder.Services.AddScoped<IFaqService, FaqService>();
+            builder.Services.AddScoped<IBadgeService, BadgeService>();
             builder.Services.AddSingleton<FileStorageFactory>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
