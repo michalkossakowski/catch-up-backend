@@ -80,8 +80,10 @@ namespace catch_up_backend.Services
 
         public async Task<MaterialDto> GetFilesInMaterialAsync(int materialId)
         {
-            var files = await _fileService.GetFilesAsync(materialId);
             var material = await _context.Materials.FindAsync(materialId);
+            if (material.State != StateEnum.Active)
+                throw new NotFoundException("Material not found");
+            var files = await _fileService.GetFilesAsync(materialId);
 
             var FilesInMaterial = new MaterialDto
             {
