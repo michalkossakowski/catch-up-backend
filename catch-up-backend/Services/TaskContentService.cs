@@ -79,6 +79,22 @@ namespace catch_up_backend.Services
             return true;
         }
 
+        public async Task<List<TaskContentDto>> GetAll()
+        {
+            var taskContents = await _context.TaskContents
+                .Where(tc => tc.State != StateEnum.Deleted)
+                .Select(tc => new TaskContentDto
+                {
+                    Id = tc.Id,
+                    CreatorId = tc.CreatorId,
+                    CategoryId = tc.CategoryId,
+                    MaterialsId = tc.MaterialsId,
+                    Title = tc.Title,
+                    Description = tc.Description
+                }).ToListAsync();
+
+            return taskContents;
+        }
         public async Task<TaskContentDto> GetById(int taskContentId)
         {
             var taskContent = await _context.TaskContents
@@ -102,23 +118,6 @@ namespace catch_up_backend.Services
             return taskContent;
         }
 
-        public async Task<List<TaskContentDto>> GetAll()
-        {
-            var taskContents = await _context.TaskContents
-                .Where(tc => tc.State != StateEnum.Deleted)
-                .Select(tc => new TaskContentDto
-                {
-                    Id = tc.Id,
-                    CreatorId = tc.CreatorId,
-                    CategoryId = tc.CategoryId,
-                    MaterialsId = tc.MaterialsId,
-                    Title = tc.Title,
-                    Description = tc.Description
-                }).ToListAsync();
-
-            return taskContents;
-        }
-
         public async Task<List<TaskContentDto>> GetByCreatorId(Guid creatorId)
         {
             var taskContents = await _context.TaskContents
@@ -140,23 +139,6 @@ namespace catch_up_backend.Services
         {
             var taskContents = await _context.TaskContents
                 .Where(tc => tc.CategoryId == categoryId && tc.State != StateEnum.Deleted)
-                .Select(tc => new TaskContentDto
-                {
-                    Id = tc.Id,
-                    CreatorId = tc.CreatorId,
-                    CategoryId = tc.CategoryId,
-                    MaterialsId = tc.MaterialsId,
-                    Title = tc.Title,
-                    Description = tc.Description
-                }).ToListAsync();
-
-            return taskContents;
-        }
-
-        public async Task<List<TaskContentDto>> GetByMaterialsId(int materialsId)
-        {
-            var taskContents = await _context.TaskContents
-                .Where(tc => tc.MaterialsId == materialsId && tc.State != StateEnum.Deleted)
                 .Select(tc => new TaskContentDto
                 {
                     Id = tc.Id,
