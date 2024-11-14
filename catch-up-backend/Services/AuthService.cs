@@ -2,7 +2,6 @@
 using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

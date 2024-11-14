@@ -1,10 +1,7 @@
-﻿using catch_up_backend.Database;
-using catch_up_backend.Dtos;
+﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
-using catch_up_backend.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace catch_up_backend.Services
 {
