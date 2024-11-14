@@ -86,10 +86,17 @@ public class NewbieMentorService : INewbieMentorService
             .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
             .ToListAsync();
     }
-    public async Task<StateEnum?> GetState(Guid newbieId, Guid mentorId)
+    public async Task<IEnumerable<NewbieMentorModel>> GetAllArchived()
     {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-                                      .FirstOrDefaultAsync(nm => nm.NewbieId == newbieId && nm.MentorId == mentorId);
-        return assignment?.State;
+        return await _context.NewbiesMentors
+           .Where(a => a.State == StateEnum.Archived)
+           .ToListAsync();
     }
+    public async Task<IEnumerable<NewbieMentorModel>> GetAllDeleted()
+    {
+        return await _context.NewbiesMentors
+           .Where(a => a.State == StateEnum.Deleted)
+           .ToListAsync();
+    }
+
 }

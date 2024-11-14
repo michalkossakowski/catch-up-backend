@@ -13,5 +13,7 @@ namespace catch_up_backend.Interfaces
         Task<bool> Delete(Guid newbieId, Guid mentorId);
         Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId);
         Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId);
+        Task<IEnumerable<NewbieMentorModel>> GetAllArchived();
+        Task<IEnumerable<NewbieMentorModel>> GetAllDeleted();
     }
 }
