@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
+        [Route("Login")]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var response = await _authService.Login(request);
@@ -24,13 +24,22 @@ namespace catch_up_backend.Controllers
             return Ok(response);
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterRequestDto request)
         {
             var response = await _authService.Register(request);
             SetTokenCookies(response.AccessToken);
             return Ok(response);
         }
+
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        {
+            var response = await _authService.RefreshToken(refreshToken);
+            SetTokenCookies(response.AccessToken);
+            return Ok(response);
+        }
+
 
         private void SetTokenCookies(string accessToken)
         {

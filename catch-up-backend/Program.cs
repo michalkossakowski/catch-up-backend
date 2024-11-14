@@ -29,18 +29,27 @@ namespace catch_up_backend
             builder.Services.AddDbContext<CatchUpDbContext>(options => options.UseSqlServer(connectionString));
 
             //Authentication
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)   // this tells .NET to use JWT  bearer authentication as the default one
+                .AddJwtBearer(options => {                                               // settings fot the JWT bearer authentication
+                    options.TokenValidationParameters = new TokenValidationParameters    // this object contains all of the rules for validating
                     {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
+                        ValidateIssuerSigningKey = true,                                 // this tells .NET to validate the issuer signing key
+                        IssuerSigningKey = new SymmetricSecurityKey(                     // this gets the secret key from the secret user config and converts it to a byte array
                             Encoding.ASCII.GetBytes(builder.Configuration["Jwt:AccessTokenSecret"])
                         ),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ClockSkew = TimeSpan.Zero
+                        ValidateIssuer = true,                                           // tells .NET to validate who created the token 
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],               // sets the issuer to the one from the user secrets (Issuer)
+                        ValidateAudience = true,                                         // tells .NET to check who the token is intended for
+                        ValidAudience = builder.Configuration["Jwt:Audience"],           // sets the audience to the one from the user secrets (Audience)
+                        ClockSkew = TimeSpan.Zero                                        // sets a time window for the token to be valid (In production change to ~10sec), because there might be a situation when token is still valid on the client but not on the server.
+                    };
+
+                    options.Events = new JwtBearerEvents                                 // reading the token from the cookie
+                    {
+                        OnMessageReceived = context => {                                 // when a request comes in, this function will run
+                            context.Token = context.Request.Cookies["accessToken"];      // get the token from the "accessToken" cookie insteaf of the Authorization header
+                            return Task.CompletedTask;
+                        }
                     };
                 });
 
@@ -61,6 +70,7 @@ namespace catch_up_backend
                         builder.AllowAnyOrigin()
                                .AllowAnyMethod()
                                .AllowAnyHeader();
+                                
                     });
             });
             // ----------- Custom Section End -----------
@@ -81,8 +91,8 @@ namespace catch_up_backend
             app.UseCors("AllowAllOrigins");
             // ----------- Custom Section End -----------
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

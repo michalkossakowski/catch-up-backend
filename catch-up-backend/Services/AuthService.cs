@@ -65,7 +65,7 @@ namespace catch_up_backend.Services
             var accessToken = GenerateJwtToken(
                 user.Id,
                 _config["Jwt:AccessTokenSecret"],
-                TimeSpan.FromMinutes(15)
+                TimeSpan.FromMinutes(2)
             );
 
             var refreshToken = GenerateJwtToken(
@@ -83,6 +83,9 @@ namespace catch_up_backend.Services
             // crazy stuff down there
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
+
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
 
                 Expires = DateTime.UtcNow.Add(whenExpire),
 
@@ -109,8 +112,10 @@ namespace catch_up_backend.Services
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,                           // Change to true
+                ValidIssuer = _config["Jwt:Issuer"],            // Add this
+                ValidateAudience = true,                         // Change to true
+                ValidAudience = _config["Jwt:Audience"],         // Add this
                 ClockSkew = TimeSpan.Zero
             }, out var validatedToken);
 
@@ -124,8 +129,16 @@ namespace catch_up_backend.Services
 
             // Get user and generate new tokens
             var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                throw new Exception("User not found");
             var (accessToken, newRefreshToken) = GenerateTokens(user);
-            return null;
+
+            // Replace old refresh token
+            _context.RefreshTokens.Remove(storedToken);
+            await StoreRefreshToken(userId, newRefreshToken);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponseDto(accessToken, newRefreshToken);
         }
     }
 }
