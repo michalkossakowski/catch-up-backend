@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using catch_up_backend.Exceptions;
+using catch_up_backend.Interfaces.RepositoryInterfaces;
+using catch_up_backend.Repositories;
 
 
 namespace catch_up_backend
@@ -54,7 +56,7 @@ namespace catch_up_backend
                     };
                 });
 
-            //Services
+            // Services
             builder.Services.AddScoped<IFaqService, FaqService>();
             builder.Services.AddScoped<IBadgeService, BadgeService>();
             builder.Services.AddSingleton<FileStorageFactory>();
@@ -63,6 +65,10 @@ namespace catch_up_backend
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
+
+            // Repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             //CORS
             builder.Services.AddCors(options =>
@@ -82,8 +88,7 @@ namespace catch_up_backend
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            if (app.Environment.IsDevelopment()){
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
