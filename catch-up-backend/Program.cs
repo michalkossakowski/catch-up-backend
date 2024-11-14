@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using catch_up_backend.Exceptions;
 
 
 namespace catch_up_backend
@@ -55,12 +56,14 @@ namespace catch_up_backend
 
             //Services
             builder.Services.AddScoped<IFaqService, FaqService>();
+            builder.Services.AddScoped<IBadgeService, BadgeService>();
             builder.Services.AddSingleton<FileStorageFactory>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
+
             //CORS
             builder.Services.AddCors(options =>
             {
@@ -84,7 +87,7 @@ namespace catch_up_backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------
