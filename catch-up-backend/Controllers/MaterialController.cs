@@ -62,6 +62,20 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
+        /// It will change state of material to Archived and 
+        /// all of relations (in table fileInMaterial) to the state deleted
+        /// </summary>
+        /// <param name="materialId"></param>
+        /// <returns>On success, returns the message</returns>
+        [HttpDelete]
+        [Route("Archive/{materialId:int}")]
+        public async Task<IActionResult> Archive(int materialId)
+        {
+            await _materialService.ArchiveAsync(materialId);
+            return Ok(new { message = "Material  deleted" });
+        }
+
+        /// <summary>
         /// It add relation between material and file in table "FileInMaterial"
         /// </summary>
         /// <param name="materialId"></param>
