@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112143242_AddRefreshTokens")]
+    partial class AddRefreshTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +33,6 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CountType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -47,9 +44,6 @@ namespace catch_up_backend.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -67,9 +61,6 @@ namespace catch_up_backend.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -100,9 +91,6 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -129,9 +117,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("MaterialsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -167,9 +152,6 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -189,9 +171,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.HasKey("FileId", "MaterialId");
@@ -216,9 +195,6 @@ namespace catch_up_backend.Migrations
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -247,9 +223,6 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("RatedId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<int>("Value")
                         .HasColumnType("int");
 
@@ -274,9 +247,6 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Materials");
@@ -288,9 +258,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("SchoolingPartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.HasKey("MaterialsId", "SchoolingPartId");
@@ -311,9 +278,6 @@ namespace catch_up_backend.Migrations
                     b.Property<DateTime>("AchievedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.HasKey("MentorId", "BadgeId");
 
                     b.HasIndex("BadgeId");
@@ -329,8 +293,8 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("MentorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("NewbieId", "MentorId");
 
@@ -360,9 +324,6 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -384,9 +345,6 @@ namespace catch_up_backend.Migrations
 
                     b.Property<Guid>("MentorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.Property<int>("Value")
                         .HasColumnType("int");
@@ -412,9 +370,6 @@ namespace catch_up_backend.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -458,9 +413,6 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NewbieId");
@@ -487,9 +439,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoadmapId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -524,9 +473,6 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -559,9 +505,6 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("SchoolingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolingId");
@@ -577,7 +520,7 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("SchoolingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("State")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("NewbieId", "SchoolingId");
@@ -606,9 +549,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaterialsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -643,7 +583,7 @@ namespace catch_up_backend.Migrations
                     b.Property<DateTime?>("FinalizationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("NewbieId")
+                    b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Priority")
@@ -653,12 +593,10 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RoadMapPointId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpendTime")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -685,9 +623,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("TaskContentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.HasKey("PresetId", "TaskContentId");
@@ -719,9 +654,6 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -742,9 +674,6 @@ namespace catch_up_backend.Migrations
 
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.HasKey("NotificationId", "ReceiverId");
 
@@ -960,12 +889,14 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("NewbieId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("catch_up_backend.Models.RoadMapPointModel", null)
                         .WithMany()
                         .HasForeignKey("RoadMapPointId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("catch_up_backend.Models.TaskContentModel", null)
                         .WithMany()
