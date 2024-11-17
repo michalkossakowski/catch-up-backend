@@ -109,7 +109,7 @@ public class NewbieMentorService : INewbieMentorService
         return await _context.Users
             .Where(user => user.State == StateEnum.Active &&
                            user.Type == "Newbie" &&
-                           !_context.NewbiesMentors.Any(nm => nm.NewbieId == user.Id))
+                           !_context.NewbiesMentors.Any(nm=> nm.State == StateEnum.Active))
             .ToListAsync();
     }
 }
