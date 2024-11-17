@@ -15,5 +15,7 @@ namespace catch_up_backend.Interfaces
         Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId);
         Task<IEnumerable<NewbieMentorModel>> GetAllArchived();
         Task<IEnumerable<NewbieMentorModel>> GetAllDeleted();
+        Task<IEnumerable<UserModel>> GetAllMentors();
+        Task<IEnumerable<UserModel>> GetAllUnassignedNewbies();
     }
 }
