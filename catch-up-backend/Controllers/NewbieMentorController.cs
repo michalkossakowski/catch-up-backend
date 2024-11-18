@@ -108,5 +108,31 @@ namespace catch_up_backend.Controllers
 
             return Ok(deleted);
         }
+        // Pobieranie wszystkich mentorów
+        [HttpGet]
+        [Route("GetAllMentors")]
+        public async Task<IActionResult> GetAllMentors()
+        {
+            IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllMentors();
+            if (!mentors.Any())
+            {
+                return NotFound(new { message = $"No mentors found. " });
+            }
+
+            return Ok(mentors);
+        }
+        // Pobieranie wszystkich nieprzypisanych nowych pracowników 
+        [HttpGet]
+        [Route("GetAllUnassigned")]
+        public async Task<IActionResult> GetAllUnassignedNewbies()
+        {
+            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
+            if (!unassigned.Any())
+            {
+                return NotFound(new { message = $"No unassigned newbies found. " });
+            }
+
+            return Ok(unassigned);
+        }
     }
 }

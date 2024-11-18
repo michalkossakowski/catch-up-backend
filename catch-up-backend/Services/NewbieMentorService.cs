@@ -98,5 +98,18 @@ public class NewbieMentorService : INewbieMentorService
            .Where(a => a.State == StateEnum.Deleted)
            .ToListAsync();
     }
-
+    public async Task<IEnumerable<UserModel>> GetAllMentors()
+    {
+        return await _context.Users
+            .Where(a => a.State == StateEnum.Active && a.Type == "Mentor")
+            .ToListAsync();
+    }
+    public async Task<IEnumerable<UserModel>> GetAllUnassignedNewbies()
+    {
+        return await _context.Users
+            .Where(user => user.State == StateEnum.Active &&
+                           user.Type == "Newbie" &&
+                           !_context.NewbiesMentors.Any(nm=> nm.State == StateEnum.Active))
+            .ToListAsync();
+    }
 }
