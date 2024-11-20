@@ -11,10 +11,6 @@ namespace catch_up_backend.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Id",
-                table: "SchoolingsUsers");
-
             migrationBuilder.AlterColumn<Guid>(
                 name: "NewbieId",
                 table: "Tasks",
