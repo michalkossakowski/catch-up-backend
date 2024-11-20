@@ -70,6 +70,18 @@ namespace catch_up_backend.Controllers
         }
 
         /// <summary>
+        /// Use to get fileDto by fileId (only in Active state)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAllFiles")]
+        public async Task<IActionResult> GetAllFiles()
+        {
+            var filesDto = await _fileService.GetAllFiles();
+            return Ok(new { message = "File founds", filesDto });
+        }
+
+        /// <summary>
         /// Download file by returning stream
         /// </summary>
         /// <param name="fileId"></param>

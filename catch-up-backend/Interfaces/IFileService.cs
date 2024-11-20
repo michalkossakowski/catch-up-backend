@@ -11,5 +11,6 @@ namespace catch_up_backend.Interfaces
         public Task AddToMaterialAsync(int fileId, int materialId);
         public Task<List<FileDto>> GetFilesAsync(int materialId);
         public Task ArchiveFileAsync(int fileId);
+        public Task<List<FileDto>> GetAllFiles();
     }
 }
