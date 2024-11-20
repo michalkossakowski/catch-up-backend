@@ -73,17 +73,33 @@ public class NewbieMentorService : INewbieMentorService
         await _context.SaveChangesAsync();
         return true;
     }
-    public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByMentor(Guid mentorId)
+    public async Task<IEnumerable<UserModel>> GetAssignmentsByMentor(Guid mentorId)
     {
-        return await _context.NewbiesMentors
-            .Where(a =>a.State==StateEnum.Active && a.MentorId == mentorId)
+        List<Guid> newbieIds = await _context.NewbiesMentors
+            .Where(a => a.State == StateEnum.Active && a.MentorId == mentorId)
+            .Select(a => a.NewbieId) 
+            .ToListAsync();
+
+        return await _context.Users
+            .Where(u => newbieIds.Contains(u.Id)) 
             .ToListAsync();
     }
-
-    public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentsByNewbie(Guid newbieId)
+    public async Task<int> GetNewbieCountByMentor(Guid mentorId)
     {
         return await _context.NewbiesMentors
-            .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
+            .Where(a => a.State == StateEnum.Active && a.MentorId == mentorId)
+            .CountAsync();
+    }
+
+    public async Task<IEnumerable<UserModel>> GetAssignmentsByNewbie(Guid newbieId)
+    {
+        List<Guid> mentorIds = await _context.NewbiesMentors
+           .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
+           .Select(a => a.MentorId)
+           .ToListAsync();
+
+        return await _context.Users
+            .Where(u => mentorIds.Contains(u.Id))
             .ToListAsync();
     }
     public async Task<IEnumerable<NewbieMentorModel>> GetAllArchived()
@@ -109,7 +125,7 @@ public class NewbieMentorService : INewbieMentorService
         return await _context.Users
             .Where(user => user.State == StateEnum.Active &&
                            user.Type == "Newbie" &&
-                           !_context.NewbiesMentors.Any(nm=> nm.State == StateEnum.Active))
+                           !_context.NewbiesMentors.Any(nm=> nm.State == StateEnum.Active && nm.NewbieId==user.Id))
             .ToListAsync();
     }
 }

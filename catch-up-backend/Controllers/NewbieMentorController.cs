@@ -61,7 +61,7 @@ namespace catch_up_backend.Controllers
         [Route("GetAssignmentsByMentor/{mentorId:guid}")]
         public async Task<IActionResult> GetAssignmentsByMentor(Guid mentorId)
         {
-            IEnumerable<NewbieMentorModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
+            IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
             if (!assignments.Any())
             {
                 return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
@@ -69,13 +69,24 @@ namespace catch_up_backend.Controllers
 
             return Ok(assignments);
         }
-
+        //  Zwraca liczbę powiązanych do mentora nowych pracowników
+        [HttpGet]
+        [Route("GetNewbieCountByMentor/{mentorId:guid}")]
+        public async Task<IActionResult> GetNewbieCountByMentor(Guid mentorId)
+        {
+            int count = await _newbieMentorService.GetNewbieCountByMentor(mentorId);
+            if (count==null)
+            {
+                return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
+            }
+            return Ok(count);
+        }
         // Pobieranie przypisań dla danego nowego pracownika
         [HttpGet]
         [Route("GetAssignmentsByNewbie/{newbieId:guid}")]
         public async Task<IActionResult> GetAssignmentsByNewbie(Guid newbieId)
         {
-            IEnumerable<NewbieMentorModel> assignments = await _newbieMentorService.GetAssignmentsByNewbie(newbieId);
+            IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByNewbie(newbieId);
             if (!assignments.Any())
             {
                 return NotFound(new { message = $"No assignments found for mentor with ID {newbieId}" });
@@ -123,7 +134,7 @@ namespace catch_up_backend.Controllers
         }
         // Pobieranie wszystkich nieprzypisanych nowych pracowników 
         [HttpGet]
-        [Route("GetAllUnassigned")]
+        [Route("GetAllUnassignedNewbies")]
         public async Task<IActionResult> GetAllUnassignedNewbies()
         {
             IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
