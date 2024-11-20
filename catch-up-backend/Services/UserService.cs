@@ -1,0 +1,35 @@
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Interfaces;
+using catch_up_backend.Interfaces.RepositoryInterfaces;
+using catch_up_backend.Models;
+
+namespace catch_up_backend.Services
+{
+    public class UserService : IUserService{
+        private readonly IUserRepository userRepository;
+
+        public UserService(IUserRepository userRepository){
+            this.userRepository = userRepository;
+        }
+
+        public async Task Add(UserDto newUser){
+           await userRepository.Add(newUser);
+        }
+
+        public async Task Edit(Guid userId, UserDto updatedUser){
+            await userRepository.Edit(userId, updatedUser);
+        }
+        
+        public async Task Delete(Guid userId){
+            await userRepository.Delete(userId);
+        }
+
+        public async Task<UserModel> GetById(Guid userId){
+            return await userRepository.GetById(userId);
+        }
+
+        public async Task<List<UserModel>> GetAll(){
+            return await userRepository.GetAll();
+        }
+    }
+}

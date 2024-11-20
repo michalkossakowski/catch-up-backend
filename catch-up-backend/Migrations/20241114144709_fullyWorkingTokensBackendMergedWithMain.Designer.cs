@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114144709_fullyWorkingTokensBackendMergedWithMain")]
+    partial class fullyWorkingTokensBackendMergedWithMain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -643,7 +646,7 @@ namespace catch_up_backend.Migrations
                     b.Property<DateTime?>("FinalizationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("NewbieId")
+                    b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Priority")
@@ -653,6 +656,7 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RoadMapPointId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpendTime")
@@ -960,12 +964,14 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("NewbieId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("catch_up_backend.Models.RoadMapPointModel", null)
                         .WithMany()
                         .HasForeignKey("RoadMapPointId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("catch_up_backend.Models.TaskContentModel", null)
                         .WithMany()

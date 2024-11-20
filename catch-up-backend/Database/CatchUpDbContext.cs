@@ -31,6 +31,7 @@ namespace catch_up_backend.Database
         public DbSet<TaskPresetModel> TasksPresets { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
         public DbSet<UserNotificationModel> UsersNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
