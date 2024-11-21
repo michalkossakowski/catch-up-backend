@@ -64,6 +64,14 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
+        [Route("GetByTitle/{title}")]
+        public async Task<IActionResult> GetByTitle(string title)
+        {
+            var taskContents = await _taskContentService.GetByTitle(title);
+            return Ok(taskContents);
+        }
+
+        [HttpGet]
         [Route("GetByCreatorId/{creatorId:Guid}")]
         public async Task<IActionResult> GetByCreatorId(Guid creatorId)
         {

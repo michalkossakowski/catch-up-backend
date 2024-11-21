@@ -48,8 +48,8 @@ namespace catch_up_backend.Services
                 taskContent.CreatorId = newTaskContent.CreatorId;
                 taskContent.CategoryId = newTaskContent.CategoryId;
                 taskContent.MaterialsId = newTaskContent.MaterialsId;
-                taskContent.Title = newTaskContent.Title;
-                taskContent.Description = newTaskContent.Description;
+                taskContent.Title = newTaskContent.Title ?? "";
+                taskContent.Description = newTaskContent.Description ?? "";
                 _context.TaskContents.Update(taskContent);
                 await _context.SaveChangesAsync();
             }
@@ -70,6 +70,7 @@ namespace catch_up_backend.Services
             try
             {
                 taskContent.State = StateEnum.Deleted;
+                _context.TaskContents.Update(taskContent);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -116,6 +117,27 @@ namespace catch_up_backend.Services
             }
 
             return taskContent;
+        }
+
+        public async Task<List<TaskContentDto>> GetByTitle(string title)
+        {
+            var taskContents = await _context.TaskContents
+                .Where(tc => tc.Title.Contains(title) && tc.State != StateEnum.Deleted)
+                .Select(tc => new TaskContentDto
+                {
+                    Id = tc.Id,
+                    CreatorId = tc.CreatorId,
+                    CategoryId = tc.CategoryId,
+                    MaterialsId = tc.MaterialsId,
+                    Title = tc.Title,
+                    Description = tc.Description
+                }).ToListAsync();
+
+            if (taskContents == null || taskContents.Count == 0)
+            {
+                throw new Exception("No TaskContent found");
+            }
+            return taskContents;
         }
 
         public async Task<List<TaskContentDto>> GetByCreatorId(Guid creatorId)
