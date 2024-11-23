@@ -31,7 +31,7 @@ namespace catch_up_backend.Controllers
         }
 
         // Archiwizuje przypisania nowego pracownika do mentora
-        [HttpPut]
+        [HttpDelete]
         [Route("Archive/{newbieId:guid}/{mentorId:guid}")]
         public async Task<IActionResult> Archive(Guid newbieId, Guid mentorId)
         {
