@@ -144,7 +144,7 @@ namespace catch_up_backend.Controllers
 
             return Ok(mentors);
         }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora. Kot
+        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora.
         [HttpGet]
         [Route("GetAllUnassignedNewbies/{mentorId:guid}")]
         public async Task<IActionResult> GetAllUnassignedNewbies(Guid mentorId)
