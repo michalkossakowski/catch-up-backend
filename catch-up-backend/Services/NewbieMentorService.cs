@@ -37,8 +37,12 @@ public class NewbieMentorService : INewbieMentorService
                 }
                 else
                 {
-                    assignment.State = StateEnum.Active;
+                    if (assignment.State == StateEnum.Deleted) //jeżeli jest usunięty to zliczanie od początku liczymy, jak zaarchiwizowany to usuwamy tylko końcową, jakby kontynuacja
+                    {
+                        assignment.StartDate = DateTime.Now;
+                    }
                     assignment.EndDate = null;
+                    assignment.State = StateEnum.Active;
                 }
                 await _context.SaveChangesAsync();
                 return true;
