@@ -38,6 +38,7 @@ public class NewbieMentorService : INewbieMentorService
                 else
                 {
                     assignment.State = StateEnum.Active;
+                    assignment.EndDate = null;
                 }
                 await _context.SaveChangesAsync();
                 return true;
@@ -56,6 +57,7 @@ public class NewbieMentorService : INewbieMentorService
         }
 
         assignment.State = StateEnum.Archived;
+        assignment.EndDate = DateTime.Now;
         await _context.SaveChangesAsync();
         return true;
     }
@@ -70,6 +72,7 @@ public class NewbieMentorService : INewbieMentorService
         }
 
         assignment.State= StateEnum.Deleted;
+        assignment.EndDate = DateTime.Now;
         await _context.SaveChangesAsync();
         return true;
     }
@@ -135,5 +138,25 @@ public class NewbieMentorService : INewbieMentorService
                 !_context.NewbiesMentors
                     .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == user.Id && nm.MentorId == mentorId))
             .ToListAsync();
+    }
+    public async Task<string> GetDateStart(Guid newbieId, Guid mentorId)
+    {
+         NewbieMentorModel? newbieMentor= await _context.NewbiesMentors
+             .FindAsync(newbieId, mentorId);
+        if(newbieMentor == null)
+        {
+            return null;
+        }
+        return newbieMentor.StartDate.ToString();
+    }
+    public async Task<string> GetDateEnd(Guid newbieId, Guid mentorId)
+    {
+        NewbieMentorModel? newbieMentor = await _context.NewbiesMentors
+            .FindAsync(newbieId, mentorId);
+        if (newbieMentor == null)
+        {
+            return null;
+        }
+        return newbieMentor.EndDate.ToString();
     }
 }

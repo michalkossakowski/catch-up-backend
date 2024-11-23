@@ -157,5 +157,31 @@ namespace catch_up_backend.Controllers
 
             return Ok(unassigned);
         }
+        // Zwraca datę rozpoczęcia szkolenia
+        [HttpGet]
+        [Route("GetDateStart/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> GetDateStart(Guid newbieId, Guid mentorId)
+        {
+            string dateStart = await _newbieMentorService.GetDateStart(newbieId, mentorId);
+            if (dateStart==null)
+            {
+                return NotFound(new { message = $"No start datefound." });
+            }
+
+            return Ok(dateStart);
+        }
+        // Zwraca datę zakończenia szkolenia 
+        [HttpGet]
+        [Route("GetDateEnd/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> GetDateEnd(Guid newbieId, Guid mentorId)
+        {
+            string dateEnd = await _newbieMentorService.GetDateEnd(newbieId, mentorId);
+            if (dateEnd == null)
+            {
+                return NotFound(new { message = $"No start datefound." });
+            }
+
+            return Ok(dateEnd);
+        }
     }
 }
