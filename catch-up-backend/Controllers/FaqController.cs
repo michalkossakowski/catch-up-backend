@@ -20,7 +20,7 @@ namespace catch_up_backend.Controllers
         {
             return await _faqService.Add(newQuestion) 
                 ? Ok(new { message = "FAQ added", faq = newQuestion })
-                : StatusCode(500, new { message = $"FAQ adding error"});
+                : StatusCode(500, new { message = "FAQ adding error"});
         }
 
         [HttpPut]
@@ -29,7 +29,7 @@ namespace catch_up_backend.Controllers
         {
             return await _faqService.Edit(questionId, newQuestion)
                 ? Ok(new { message = $"FAQ edited", faq = newQuestion })
-                : StatusCode(500, new { message = $"FAQ editing error", faqId = questionId });
+                : StatusCode(500, new { message = "FAQ editing error", faqId = questionId });
         }
 
         [HttpDelete]
@@ -37,8 +37,8 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Delete(int questionId)
         {
             return await _faqService.Delete(questionId) 
-                ? Ok(new { message = $"FAQ deleted", faqId = questionId })
-                : NotFound(new { message = $"FAQ not found", faqId = questionId });
+                ? Ok(new { message = "FAQ deleted", faqId = questionId })
+                : NotFound(new { message = "FAQ not found", faqId = questionId });
         }
 
         [HttpGet]

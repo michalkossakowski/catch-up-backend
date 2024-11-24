@@ -161,7 +161,7 @@ namespace catch_up_backend.Database
             modelBuilder.Entity<RoadMapPointModel>()
                 .HasOne<RoadMapModel>()
                 .WithMany()
-                .HasForeignKey(x => x.RoadmapId);
+                .HasForeignKey(x => x.RoadMapId);
 
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()
