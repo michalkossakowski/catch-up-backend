@@ -13,7 +13,7 @@ namespace catch_up_backend.Models
         [ForeignKey("TaskContentId")]
         public int TaskContentId { get; set; }
         [ForeignKey("RoadmapPointId")]
-        public string? RoadMapPointId { get; set; }
+        public int? RoadMapPointId { get; set; }
         public string Status { get; set; }
         public DateTime AssignmentDate { get; set; }
         public DateTime? FinalizationDate { get; set; }
@@ -22,7 +22,7 @@ namespace catch_up_backend.Models
         public int Priority { get; set; }
         public int? Rate { get; set; }
         public StateEnum State { get; set; }
-        public TaskModel(Guid? newbieId, int taskContentId, string? roadMapPointId, string status, int deadline, int priority)
+        public TaskModel(Guid? newbieId, int taskContentId, int? roadMapPointId, string status, int deadline, int priority)
         {
             NewbieId = newbieId;
             TaskContentId = taskContentId;

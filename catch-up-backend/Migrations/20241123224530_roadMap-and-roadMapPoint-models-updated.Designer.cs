@@ -12,8 +12,8 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    [Migration("20241120130246_database_newInit")]
-    partial class database_newInit
+    [Migration("20241123224530_roadMap-and-roadMapPoint-models-updated")]
+    partial class roadMapandroadMapPointmodelsupdated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -455,11 +455,21 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("FinishDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -489,19 +499,18 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoadmapId")
+                    b.Property<int>("RoadMapId")
                         .HasColumnType("int");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoadmapId");
+                    b.HasIndex("RoadMapId");
 
                     b.ToTable("RoadMapPoints");
                 });
@@ -598,17 +607,17 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CreatorId")
+                    b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MaterialsId")
+                    b.Property<int?>("MaterialsId")
                         .HasColumnType("int");
 
                     b.Property<int>("State")
@@ -893,7 +902,7 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.RoadMapModel", null)
                         .WithMany()
-                        .HasForeignKey("RoadmapId")
+                        .HasForeignKey("RoadMapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -941,21 +950,15 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.CategoryModel", null)
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorId");
 
                     b.HasOne("catch_up_backend.Models.MaterialsModel", null)
                         .WithMany()
-                        .HasForeignKey("MaterialsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaterialsId");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.TaskModel", b =>

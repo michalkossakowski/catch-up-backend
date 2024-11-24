@@ -65,7 +65,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Error: Faq Edit " + e);
+                throw new Exception("Error: Faq Delete " + e);
             }
             return true;
         }
