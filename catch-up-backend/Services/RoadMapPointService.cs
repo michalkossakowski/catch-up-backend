@@ -11,9 +11,9 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
 
-        public RoadMapPointService(CatchUpDbContext contex)
+        public RoadMapPointService(CatchUpDbContext context)
         {
-            _context = contex;
+            _context = context;
         }
 
         public async Task<bool> Add(RoadMapPointDto newRoadMapPoint)
