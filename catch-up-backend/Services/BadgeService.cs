@@ -101,5 +101,54 @@ namespace catch_up_backend.Services
 
             return badges;
         }
+
+        public async Task AssignBadgeManuallyAsync(Guid userId, int badgeId)
+        {
+            await ExecuteAssignment(userId, badgeId);
+        }
+
+        public async Task AssignBadgeAutomatically(Guid userId, string countType, int count)
+        {
+            int? badgeId = await CheckConditions(countType, count);
+
+            if (badgeId.HasValue)
+            {
+                await ExecuteAssignment(userId, badgeId.Value);
+                Console.WriteLine($"Assign badge {badgeId.Value} to mentor {userId}.");
+            }
+            else
+            {
+                Console.WriteLine("No badge to assign.");
+            }
+        }
+
+        public async Task<int?> CheckConditions(string countType, int countToCheck)
+        {
+            var badge = await _context.Badges
+                .Where(b => b.CountType == countType && b.State != StateEnum.Deleted && b.Count <= countToCheck)
+                .OrderByDescending(b => b.Count)
+                .FirstOrDefaultAsync();
+
+            return badge?.Id;
+        }
+
+        private async Task ExecuteAssignment(Guid mentorId, int badgeId)
+        {
+            try
+            {
+                var mentorBadge = new MentorBadgeModel(mentorId, badgeId);
+
+                await _context.MentorsBadges.AddAsync(mentorBadge);
+
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine($"Assign badge {badgeId} to mentor {mentorId} with date: {mentorBadge.AchievedDate}.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while assign badge: {ex.Message}");
+            }
+        }
+
     }
 }
