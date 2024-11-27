@@ -79,11 +79,11 @@ namespace catch_up_backend.Services
                 .Select(rm => new RoadMapDto
                 {
                     Id = rm.Id,
+                    Name = rm.Name,
                     NewbieId = rm.NewbieId,
                     StartDate = rm.StartDate,
                     FinishDate = rm.FinishDate,
-                    IsFinished = rm.IsFinished,
-                    State = rm.State
+                    IsFinished = rm.IsFinished
                 })
                .ToListAsync();
 
@@ -97,11 +97,11 @@ namespace catch_up_backend.Services
                 .Select(rm => new RoadMapDto
                 {
                     Id = rm.Id,
+                    Name = rm.Name,
                     NewbieId = rm.NewbieId,
                     StartDate = rm.StartDate,
                     FinishDate = rm.FinishDate,
-                    IsFinished = rm.IsFinished,
-                    State = rm.State
+                    IsFinished = rm.IsFinished
                 }).FirstOrDefaultAsync();
 
             return roadMap;
@@ -114,11 +114,11 @@ namespace catch_up_backend.Services
                 .Select(rm => new RoadMapDto
                 {
                     Id = rm.Id,
+                    Name = rm.Name,
                     NewbieId = rm.NewbieId,
                     StartDate = rm.StartDate,
                     FinishDate = rm.FinishDate,
-                    IsFinished = rm.IsFinished,
-                    State = rm.State
+                    IsFinished = rm.IsFinished
                 }).ToListAsync();
 
             return roadMaps;

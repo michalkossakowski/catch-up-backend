@@ -10,6 +10,5 @@ namespace catch_up_backend.Dtos
         public DateTime? StartDate { get; set; }
         public DateTime? FinishDate { get; set; }
         public bool? IsFinished { get; set; }
-        public StateEnum State { get; set; }
     }
 }
