@@ -91,10 +91,10 @@ namespace catch_up_backend.Services
 
             return feedback;
         }
-        public async Task<FeedbackDto> GetBySenderId(string SenderId)
+        public async Task<FeedbackDto> GetBySenderId(Guid SenderId)
         {
             var feedback = await _context.Feedbacks
-                .Where(f => f.SenderId.ToString() == SenderId && f.State != StateEnum.Deleted)
+                .Where(f => f.SenderId == SenderId && f.State != StateEnum.Deleted)
                 .Select(f => new FeedbackDto
                 {
                     Id = f.Id,
@@ -108,10 +108,10 @@ namespace catch_up_backend.Services
             return feedback;
         }
 
-        public async Task<FeedbackDto> GetByReceiverId(string ReceiverId)
+        public async Task<FeedbackDto> GetByReceiverId(Guid ReceiverId)
         {
             var feedback = await _context.Feedbacks
-                .Where(f => f.ReceiverId.ToString() == ReceiverId && f.State != StateEnum.Deleted)
+                .Where(f => f.ReceiverId == ReceiverId && f.State != StateEnum.Deleted)
                 .Select(f => new FeedbackDto
                 {
                     Id = f.Id,

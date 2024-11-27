@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using catch_up_backend.Models;
 using catch_up_backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -54,8 +55,8 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetBySenderId/{SenderId:string}")]
-        public async Task<IActionResult> GetBySenderId(string senderId)
+        [Route("GetBySenderId/{senderId:Guid}")]
+        public async Task<IActionResult> GetBySenderId(Guid senderId)
         {
             var feedback = await _feedbackService.GetBySenderId(senderId);
             if (feedback == null)
@@ -63,9 +64,22 @@ namespace catch_up_backend.Controllers
             return Ok(feedback);
         }
 
+        //[HttpGet]
+        //[Route("GetAssignmentsByMentor/{mentorId:guid}")]
+        //public async Task<IActionResult> GetAssignmentsByMentor(Guid mentorId)
+        //{
+        //    IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
+        //    if (!assignments.Any())
+        //    {
+        //        return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
+        //    }
+
+        //    return Ok(assignments);
+        //}
+
         [HttpGet]
-        [Route("GetByReceiverId/{ReceiverId:string}")]
-        public async Task<IActionResult> GetByReceiverId(string receiverId)
+        [Route("GetByReceiverId/{receiverId:Guid}")]
+        public async Task<IActionResult> GetByReceiverId(Guid receiverId)
         {
             var feedback = await _feedbackService.GetByReceiverId(receiverId);
             if (feedback == null)
@@ -73,15 +87,15 @@ namespace catch_up_backend.Controllers
             return Ok(feedback);
         }
 
-        [HttpGet]
-        [Route("GetByOrigin/{Origin:string}")]
-        public async Task<IActionResult> GetByOrigin(string origin)
-        {
-            var feedback = await _feedbackService.GetByOrigin(origin);
-            if (feedback == null)
-                return NotFound(new { message = $"Feedback with origin: {origin} not found" });
-            return Ok(feedback);
-        }
+        //[HttpGet]
+        //[Route("GetByOrigin/{Origin:string}")]
+        //public async Task<IActionResult> GetByOrigin(string origin)
+        //{
+        //    var feedback = await _feedbackService.GetByOrigin(origin);
+        //    if (feedback == null)
+        //        return NotFound(new { message = $"Feedback with origin: {origin} not found" });
+        //    return Ok(feedback);
+        //}
 
         [HttpGet]
         [Route("GetAll")]
