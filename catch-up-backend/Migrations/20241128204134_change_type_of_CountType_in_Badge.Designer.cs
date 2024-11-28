@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128204134_change_type_of_CountType_in_Badge")]
+    partial class change_type_of_CountType_in_Badge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

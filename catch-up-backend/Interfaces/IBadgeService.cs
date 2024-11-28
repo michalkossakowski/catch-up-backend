@@ -12,7 +12,7 @@ namespace catch_up_backend.Interfaces
         public Task<List<BadgeDto>> GetAll();
         public Task AssignBadgeManuallyAsync(Guid userId, int badgeId);
         public Task AssignBadgeAutomatically(Guid userId, BadgeTypeCountEnum countType, int count);
-        public Task<int?> CheckConditions(string countType, int countToCheck);
-
+        public Task<int?> CheckConditions(BadgeTypeCountEnum countType, int countToCheck);
+        public Task<List<MentorBadgeDto>> GetByMentorId(Guid userId);
     }
 }

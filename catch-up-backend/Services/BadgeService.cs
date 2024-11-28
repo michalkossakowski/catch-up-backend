@@ -109,7 +109,7 @@ namespace catch_up_backend.Services
 
         public async Task AssignBadgeAutomatically(Guid userId, BadgeTypeCountEnum countType, int count)
         {
-            int? badgeId = await CheckConditions(countType.ToString(), count);
+            int? badgeId = await CheckConditions(countType, count);
 
             if (badgeId.HasValue)
             {
@@ -122,7 +122,7 @@ namespace catch_up_backend.Services
             }
         }
 
-        public async Task<int?> CheckConditions(string countType, int countToCheck)
+        public async Task<int?> CheckConditions(BadgeTypeCountEnum countType, int countToCheck)
         {
             var badge = await _context.Badges
                 .Where(b => b.CountType == countType && b.State != StateEnum.Deleted && b.Count <= countToCheck)
@@ -148,6 +148,21 @@ namespace catch_up_backend.Services
             {
                 Console.WriteLine($"Error while assign badge: {ex.Message}");
             }
+        }
+
+        public async Task<List<MentorBadgeDto>> GetByMentorId(Guid userId)
+        {
+            var mentorBadges = await _context.MentorsBadges
+                .Where(mb => mb.MentorId == userId)
+                .Select(mb => new MentorBadgeDto
+                {
+                    MentorId = mb.MentorId,
+                    BadgeId = mb.BadgeId,
+                    AchievedDate = mb.AchievedDate
+                })
+                .ToListAsync();
+
+            return mentorBadges;
         }
 
     }

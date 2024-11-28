@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace catch_up_backend.Database
 {
@@ -264,11 +265,18 @@ namespace catch_up_backend.Database
             modelBuilder.Entity<UserModel>()
                 .Property(u => u.Counters)
                 .HasConversion(
-                    v => v == null ? null : JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                    v => string.IsNullOrEmpty(v) ? new Dictionary<BadgeTypeCountEnum, int>() :
+                    v => v == null ? null : JsonSerializer.Serialize(v, new JsonSerializerOptions
+                    {
+                        Converters = { new JsonStringEnumConverter() }
+                    }),
+                    v => string.IsNullOrEmpty(v) ?
+                          catch_up_backend.Models.UserModel.InitializeCounters() :
                           JsonSerializer.Deserialize<Dictionary<BadgeTypeCountEnum, int>>(
                               v,
-                              JsonSerializerOptions.Default
+                              new JsonSerializerOptions
+                              {
+                                  Converters = { new JsonStringEnumConverter() }
+                              }
                           )
                 );
 

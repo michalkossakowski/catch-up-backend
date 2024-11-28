@@ -77,5 +77,15 @@ namespace catch_up_backend.Controllers
                 return StatusCode(500, new { message = "Error assigning badge manually", error = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("GetByMentorId/{userId:guid}")]
+        public async Task<IActionResult> GetByMentorId(Guid userId)
+        {
+            var mentorBadges = await _badgeService.GetByMentorId(userId);
+            if (mentorBadges == null || !mentorBadges.Any())
+                return NotFound(new { message = $"Mentor with id: {userId} has no assigned badges" });
+            return Ok(mentorBadges);
+        }
     }
 }
