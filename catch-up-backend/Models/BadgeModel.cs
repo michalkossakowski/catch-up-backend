@@ -11,9 +11,9 @@ namespace catch_up_backend.Models
         public string Description { get; set; }
         public string IconSource { get; set; }
         public int? Count { get; set; }
-        public string? CountType { get; set; }
+        public BadgeTypeCountEnum? CountType { get; set; }
         public StateEnum State { get; set; }
-        public BadgeModel(string name, string description, string iconSource, int? count, string? countType)
+        public BadgeModel(string name, string description, string iconSource, int? count, BadgeTypeCountEnum? countType)
         {
             Name = name;
             Description = description;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128162527_create_Badge_Counter")]
+    partial class create_Badge_Counter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +36,8 @@ namespace catch_up_backend.Migrations
                     b.Property<int?>("Count")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CountType")
-                        .HasColumnType("int");
+                    b.Property<string>("CountType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -329,12 +332,6 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("MentorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("State")
                         .HasColumnType("int");
 
@@ -458,21 +455,11 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("FinishDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -486,11 +473,8 @@ namespace catch_up_backend.Migrations
 
             modelBuilder.Entity("catch_up_backend.Models.RoadMapPointModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("AssignmentDate")
                         .HasColumnType("datetime2");
@@ -505,18 +489,19 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoadMapId")
+                    b.Property<int>("RoadmapId")
                         .HasColumnType("int");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoadMapId");
+                    b.HasIndex("RoadmapId");
 
                     b.ToTable("RoadMapPoints");
                 });
@@ -670,8 +655,8 @@ namespace catch_up_backend.Migrations
                     b.Property<int?>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoadMapPointId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoadMapPointId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpendTime")
                         .HasColumnType("int");
@@ -912,7 +897,7 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.RoadMapModel", null)
                         .WithMany()
-                        .HasForeignKey("RoadMapId")
+                        .HasForeignKey("RoadmapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
