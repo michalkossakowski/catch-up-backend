@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
+using catch_up_backend.Services;
 
 public class NewbieMentorService : INewbieMentorService
 {
@@ -39,7 +40,22 @@ public class NewbieMentorService : INewbieMentorService
                 {
                     assignment.State = StateEnum.Active;
                 }
+                if (mentor.Counters.ContainsKey(BadgeTypeCountEnum.AssignNewbiesCount))
+                {
+                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]++;
+                }
+                else
+                {
+                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount] = 1;
+                }
+
+                _context.Users.Update(mentor);
                 await _context.SaveChangesAsync();
+                await new BadgeService(_context).AssignBadgeAutomatically(
+                mentor.Id,
+                BadgeTypeCountEnum.AssignNewbiesCount,
+                mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]
+            );
                 return true;
             }
         }

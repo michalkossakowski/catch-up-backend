@@ -1,5 +1,9 @@
-﻿using catch_up_backend.Models;
+﻿using catch_up_backend.Enums;
+using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
 
 namespace catch_up_backend.Database
 {
@@ -256,6 +260,17 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserModel>()
+                .Property(u => u.Counters)
+                .HasConversion(
+                    v => v == null ? null : JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                    v => string.IsNullOrEmpty(v) ? new Dictionary<BadgeTypeCountEnum, int>() :
+                          JsonSerializer.Deserialize<Dictionary<BadgeTypeCountEnum, int>>(
+                              v,
+                              JsonSerializerOptions.Default
+                          )
+                );
 
             base.OnModelCreating(modelBuilder);
         }

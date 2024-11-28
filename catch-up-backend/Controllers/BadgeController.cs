@@ -62,5 +62,20 @@ namespace catch_up_backend.Controllers
                 return NotFound(new { message = "No Badges found" });
             return Ok(badge);
         }
+
+        [HttpPost]
+        [Route("AssignManualBadge")]
+        public async Task<IActionResult> AssignManualBadge([FromQuery] Guid mentorId, [FromQuery] int badgeId)
+        {
+            try
+            {
+                await _badgeService.AssignBadgeManuallyAsync(mentorId, badgeId);
+                return Ok(new { message = $"Badge {badgeId} has been manually assigned to mentor {mentorId}" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error assigning badge manually", error = ex.Message });
+            }
+        }
     }
 }

@@ -107,9 +107,9 @@ namespace catch_up_backend.Services
             await ExecuteAssignment(userId, badgeId);
         }
 
-        public async Task AssignBadgeAutomatically(Guid userId, string countType, int count)
+        public async Task AssignBadgeAutomatically(Guid userId, BadgeTypeCountEnum countType, int count)
         {
-            int? badgeId = await CheckConditions(countType, count);
+            int? badgeId = await CheckConditions(countType.ToString(), count);
 
             if (badgeId.HasValue)
             {
