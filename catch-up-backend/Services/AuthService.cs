@@ -29,7 +29,7 @@ namespace catch_up_backend.Services
                 throw new Exception("Wrong password");
             }
 
-            var (accesToken, refreshToken) = GenerateTokens(user);
+            var (accesToken, refreshToken) = GenerateTokens(user.Id);
             await StoreRefreshToken(user.Id, refreshToken);
 
             return new AuthResponseDto(accesToken, refreshToken);
@@ -53,21 +53,21 @@ namespace catch_up_backend.Services
             await userRepository.Add(newUser);
             var user = await userRepository.GetByMail(request.Email);
 
-            var (accessToken, refreshToken) = GenerateTokens(user);
+            var (accessToken, refreshToken) = GenerateTokens(user.Id);
             await StoreRefreshToken(user.Id, refreshToken);
 
             return new AuthResponseDto(accessToken, refreshToken);
         }
 
-        private (string accessToken, string refreshToken) GenerateTokens(UserModel user){
+        private (string accessToken, string refreshToken) GenerateTokens(Guid id){
             var accessToken = GenerateJwtToken(
-                user.Id,
+                id,
                 _config["Jwt:AccessTokenSecret"],
                 TimeSpan.FromSeconds(30)
             );
 
             var refreshToken = GenerateJwtToken(
-                user.Id,
+                id,
                 _config["Jwt:AccessTokenSecret"],
                 TimeSpan.FromDays(7)
             );
@@ -127,7 +127,7 @@ namespace catch_up_backend.Services
             var user = await userRepository.GetById(userId);
             if (user == null)
                 throw new Exception("User not found");
-            var (accessToken, newRefreshToken) = GenerateTokens(user);
+            var (accessToken, newRefreshToken) = GenerateTokens(user.Id);
 
             // Replace old refresh token
             await refreshTokenRepository.Delete(storedToken);
