@@ -154,11 +154,16 @@ namespace catch_up_backend.Services
         {
             var mentorBadges = await _context.MentorsBadges
                 .Where(mb => mb.MentorId == userId)
-                .Select(mb => new MentorBadgeDto
+                .Join(_context.Badges,
+                    mb => mb.BadgeId,
+                    b => b.Id,
+                    (mb, b) => new { MentorBadge = mb, Badge = b })
+                .Where(x => x.Badge.State != StateEnum.Deleted)
+                .Select(x => new MentorBadgeDto
                 {
-                    MentorId = mb.MentorId,
-                    BadgeId = mb.BadgeId,
-                    AchievedDate = mb.AchievedDate
+                    MentorId = x.MentorBadge.MentorId,
+                    BadgeId = x.MentorBadge.BadgeId,
+                    AchievedDate = x.MentorBadge.AchievedDate
                 })
                 .ToListAsync();
 
