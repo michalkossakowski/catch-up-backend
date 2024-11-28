@@ -1,4 +1,6 @@
-﻿namespace catch_up_backend.Dtos
+﻿using catch_up_backend.Enums;
+
+namespace catch_up_backend.Dtos
 {
     public class UserDto
     {
@@ -9,5 +11,6 @@
         public string? Password { get; set; }
         public string? Type { get; set; }
         public string? Position { get; set; }
+        public Dictionary<BadgeTypeCountEnum, int> Counters { get; set; }
     }
 }
