@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
