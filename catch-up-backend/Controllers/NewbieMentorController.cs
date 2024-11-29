@@ -170,8 +170,7 @@ namespace catch_up_backend.Controllers
 
             return Ok(unassigned);
         }
-        // GetAllUnassignedMentors(Guid mentorId)
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora
+        // Pobieranie wszystkich mentorów jeszcze nie przypisanych do konretnego nowego pracownika
         [HttpGet]
         [Route("GetAllUnassignedMentors/{newbieId:guid}")]
         public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
