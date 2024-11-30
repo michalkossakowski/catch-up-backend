@@ -24,12 +24,17 @@ namespace catch_up_backend.Services
             await userRepository.Delete(userId);
         }
 
-        public async Task<UserModel> GetById(Guid userId){
+        public async Task<UserDto> GetById(Guid userId){
             return await userRepository.GetById(userId);
         }
 
         public async Task<List<UserModel>> GetAll(){
             return await userRepository.GetAll();
+        }
+
+        public async Task<string> GetRole(Guid userId)
+        {
+            return await userRepository.GetRole(userId);
         }
     }
 }

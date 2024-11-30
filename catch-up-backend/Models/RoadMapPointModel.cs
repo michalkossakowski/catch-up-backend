@@ -7,23 +7,22 @@ namespace catch_up_backend.Models
     public class RoadMapPointModel
     {
         [Key]
-        public string Id { get; set; }
-        [ForeignKey("RoadMap")]
-        public int RoadmapId { get; set; }
+        public int Id { get; set; }
+        [ForeignKey("RoadMapId")]
+        public int RoadMapId { get; set; }
         public string Name { get; set; }
         public DateTime AssignmentDate { get; set; }
         public DateTime? FinalizationDate { get; set; }
         public int Deadline { get; set; }
-        public string Status { get; set; }
+        public StatusEnum Status { get; set; }
         public StateEnum State { get; set; }
-        public RoadMapPointModel(string id, int roadmapId, string name, int deadline, string status)
+        public RoadMapPointModel(int roadMapId, string name, int deadline)
         {
-            Id = id;
-            RoadmapId = roadmapId;
+            RoadMapId = roadMapId;
             Name = name;
             AssignmentDate = DateTime.Now;
             Deadline = deadline;
-            Status = status;
+            Status = StatusEnum.ToDo;
             State = StateEnum.Active;
         }
     }

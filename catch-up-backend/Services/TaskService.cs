@@ -9,9 +9,9 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
 
-        public TaskService(CatchUpDbContext contex)
+        public TaskService(CatchUpDbContext context)
         {
-            _context = contex;
+            _context = context;
         }
         public async Task Add(TaskDto newTask, Guid newbieID, int taskContentId)
         {

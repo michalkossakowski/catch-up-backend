@@ -1,5 +1,10 @@
-﻿using catch_up_backend.Models;
+﻿using catch_up_backend.Enums;
+using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace catch_up_backend.Database
 {
@@ -161,7 +166,7 @@ namespace catch_up_backend.Database
             modelBuilder.Entity<RoadMapPointModel>()
                 .HasOne<RoadMapModel>()
                 .WithMany()
-                .HasForeignKey(x => x.RoadmapId);
+                .HasForeignKey(x => x.RoadMapId);
 
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()
@@ -256,6 +261,24 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserModel>()
+                .Property(u => u.Counters)
+                .HasConversion(
+                    v => v == null ? null : JsonSerializer.Serialize(v, new JsonSerializerOptions
+                    {
+                        Converters = { new JsonStringEnumConverter() }
+                    }),
+                    v => string.IsNullOrEmpty(v) ?
+                          catch_up_backend.Models.UserModel.InitializeCounters() :
+                          JsonSerializer.Deserialize<Dictionary<BadgeTypeCountEnum, int>>(
+                              v,
+                              new JsonSerializerOptions
+                              {
+                                  Converters = { new JsonStringEnumConverter() }
+                              }
+                          )
+                );
 
             base.OnModelCreating(modelBuilder);
         }

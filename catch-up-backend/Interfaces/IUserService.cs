@@ -7,7 +7,8 @@ namespace catch_up_backend.Interfaces
         Task Add(UserDto newUser);
         Task Edit(Guid userId, UserDto updatedUser);
         Task Delete(Guid userId);
-        Task<UserModel> GetById(Guid userId);
+        Task<UserDto> GetById(Guid userId);
         Task<List<UserModel>> GetAll();
+        Task<string> GetRole(Guid userId);
     }
 }

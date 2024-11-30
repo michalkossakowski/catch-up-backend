@@ -12,8 +12,8 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    [Migration("20241120130246_database_newInit")]
-    partial class database_newInit
+    [Migration("20241128162527_create_Badge_Counter")]
+    partial class create_Badge_Counter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -598,17 +598,17 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CreatorId")
+                    b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MaterialsId")
+                    b.Property<int?>("MaterialsId")
                         .HasColumnType("int");
 
                     b.Property<int>("State")
@@ -705,6 +705,10 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Counters")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -941,21 +945,15 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.CategoryModel", null)
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorId");
 
                     b.HasOne("catch_up_backend.Models.MaterialsModel", null)
                         .WithMany()
-                        .HasForeignKey("MaterialsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaterialsId");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.TaskModel", b =>

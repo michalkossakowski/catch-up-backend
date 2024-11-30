@@ -1,4 +1,6 @@
-﻿namespace catch_up_backend.Dtos
+﻿using catch_up_backend.Enums;
+
+namespace catch_up_backend.Dtos
 {
     public class BadgeDto
     {
@@ -7,6 +9,6 @@
         public string? Description { get; set; }
         public string? IconSource { get; set; }
         public int? Count { get; set; }
-        public string? CountType { get; set; }
+        public BadgeTypeCountEnum? CountType { get; set; }
     }
 }

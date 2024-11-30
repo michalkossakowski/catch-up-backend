@@ -11,9 +11,9 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
 
-        public FaqService(CatchUpDbContext contex)
+        public FaqService(CatchUpDbContext context)
         {
-            _context = contex;
+            _context = context;
         }
         public async Task<bool> Add(FaqDto newQuestion)
         {
@@ -65,7 +65,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Error: Faq Edit " + e);
+                throw new Exception("Error: Faq Delete " + e);
             }
             return true;
         }
