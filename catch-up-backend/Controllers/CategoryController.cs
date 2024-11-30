@@ -45,7 +45,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetById/{categoryId")]
+        [Route("GetById/{categoryId}")]
         public async Task<IActionResult> GetById(int categoryId)
         {
             var category = await _categoryService.GetById(categoryId);
