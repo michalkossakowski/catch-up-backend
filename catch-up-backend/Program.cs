@@ -67,6 +67,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
             builder.Services.AddScoped<ITaskContentService, TaskContentService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
