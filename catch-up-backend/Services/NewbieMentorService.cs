@@ -149,6 +149,12 @@ public class NewbieMentorService : INewbieMentorService
             .Where(a => a.State == StateEnum.Active && a.Type == "Mentor")
             .ToListAsync();
     }
+    public async Task<IEnumerable<UserModel>> GetAllNewbies()
+    {
+        return await _context.Users
+            .Where(a => a.State == StateEnum.Active && a.Type == "Newbie")
+            .ToListAsync();
+    }
     public async Task<IEnumerable<UserModel>> GetAllUnassignedNewbies(Guid mentorId)
     {
         return await _context.Users
@@ -158,6 +164,16 @@ public class NewbieMentorService : INewbieMentorService
                 !_context.NewbiesMentors
                     .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == user.Id && nm.MentorId == mentorId))
             .ToListAsync();
+    }
+    public async Task<IEnumerable<UserModel>> GetAllUnassignedMentors(Guid newbieId)
+    {
+        return await _context.Users
+           .Where(user =>
+               user.State == StateEnum.Active &&
+               user.Type == "Mentor" &&
+               !_context.NewbiesMentors
+                   .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == newbieId && nm.MentorId == user.Id))
+           .ToListAsync();
     }
     public async Task<string> GetDateStart(Guid newbieId, Guid mentorId)
     {
