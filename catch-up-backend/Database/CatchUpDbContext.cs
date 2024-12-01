@@ -1,5 +1,10 @@
-﻿using catch_up_backend.Models;
+﻿using catch_up_backend.Enums;
+using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace catch_up_backend.Database
 {
@@ -256,6 +261,31 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserModel>()
+                .Property(u => u.Counters)
+                .HasConversion(
+                    v => v == null ? null : JsonSerializer.Serialize(v, new JsonSerializerOptions
+                    {
+                        Converters = { new JsonStringEnumConverter() }
+                    }),
+                    v => string.IsNullOrEmpty(v) ?
+                          catch_up_backend.Models.UserModel.InitializeCounters() :
+                          JsonSerializer.Deserialize<Dictionary<BadgeTypeCountEnum, int>>(
+                              v,
+                              new JsonSerializerOptions
+                              {
+                                  Converters = { new JsonStringEnumConverter() }
+                              }
+                          )
+                )
+                .Metadata.SetValueComparer(
+                    new ValueComparer<Dictionary<BadgeTypeCountEnum, int>>(
+                        (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
+                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                        c => c == null ? null : c.ToDictionary(entry => entry.Key, entry => entry.Value)
+                    )
+                );
 
             base.OnModelCreating(modelBuilder);
         }

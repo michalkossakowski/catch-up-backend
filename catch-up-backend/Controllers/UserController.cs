@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -55,6 +54,14 @@ namespace catch_up_backend.Controllers
         {
             var users = await _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("GetRole/{userId}")]
+        public async Task<IActionResult> GetRole(Guid userId)
+        {
+            var role = await _userService.GetRole(userId);
+            return Ok(role);
         }
     }
 }

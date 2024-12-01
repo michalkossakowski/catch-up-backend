@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
+using catch_up_backend.Services;
 
 public class NewbieMentorService : INewbieMentorService
 {
@@ -44,7 +45,22 @@ public class NewbieMentorService : INewbieMentorService
                     assignment.EndDate = null;
                     assignment.State = StateEnum.Active;
                 }
+                if (mentor.Counters.ContainsKey(BadgeTypeCountEnum.AssignNewbiesCount))
+                {
+                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]++;
+                }
+                else
+                {
+                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount] = 1;
+                }
+
+                _context.Users.Update(mentor);
                 await _context.SaveChangesAsync();
+                await new BadgeService(_context).AssignBadgeAutomatically(
+                mentor.Id,
+                BadgeTypeCountEnum.AssignNewbiesCount,
+                mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]
+            );
                 return true;
             }
         }
@@ -133,6 +149,12 @@ public class NewbieMentorService : INewbieMentorService
             .Where(a => a.State == StateEnum.Active && a.Type == "Mentor")
             .ToListAsync();
     }
+    public async Task<IEnumerable<UserModel>> GetAllNewbies()
+    {
+        return await _context.Users
+            .Where(a => a.State == StateEnum.Active && a.Type == "Newbie")
+            .ToListAsync();
+    }
     public async Task<IEnumerable<UserModel>> GetAllUnassignedNewbies(Guid mentorId)
     {
         return await _context.Users
@@ -142,6 +164,16 @@ public class NewbieMentorService : INewbieMentorService
                 !_context.NewbiesMentors
                     .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == user.Id && nm.MentorId == mentorId))
             .ToListAsync();
+    }
+    public async Task<IEnumerable<UserModel>> GetAllUnassignedMentors(Guid newbieId)
+    {
+        return await _context.Users
+           .Where(user =>
+               user.State == StateEnum.Active &&
+               user.Type == "Mentor" &&
+               !_context.NewbiesMentors
+                   .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == newbieId && nm.MentorId == user.Id))
+           .ToListAsync();
     }
     public async Task<string> GetDateStart(Guid newbieId, Guid mentorId)
     {

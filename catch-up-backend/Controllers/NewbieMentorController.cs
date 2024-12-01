@@ -96,7 +96,7 @@ namespace catch_up_backend.Controllers
         }
         //  Zwraca liczbę powiązanych do nowego pracownika mentorów
         [HttpGet]
-        [Route("GetMentorCountByNewbie/{mentorId:guid}")]
+        [Route("GetMentorCountByNewbie/{newbieId:guid}")]
         public async Task<IActionResult>GetMentorsCountByNewbie(Guid newbieId)
         {
             int count = await _newbieMentorService.GetMentorsCountByNewbie(newbieId);
@@ -144,12 +144,38 @@ namespace catch_up_backend.Controllers
 
             return Ok(mentors);
         }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora.
+        // Pobieranie wszystkich newbies
+        [HttpGet]
+        [Route("GetAllNewbies")]
+        public async Task<IActionResult> GetAllNewbies()
+        {
+            IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllNewbies();
+            if (!mentors.Any())
+            {
+                return NotFound(new { message = $"No mentors found." });
+            }
+
+            return Ok(mentors);
+        }
+        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora
         [HttpGet]
         [Route("GetAllUnassignedNewbies/{mentorId:guid}")]
         public async Task<IActionResult> GetAllUnassignedNewbies(Guid mentorId)
         {
             IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies(mentorId);
+            if (!unassigned.Any())
+            {
+                return NotFound(new { message = $"No unassigned newbies found. " });
+            }
+
+            return Ok(unassigned);
+        }
+        // Pobieranie wszystkich mentorów jeszcze nie przypisanych do konretnego nowego pracownika
+        [HttpGet]
+        [Route("GetAllUnassignedMentors/{newbieId:guid}")]
+        public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
+        {
+            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedMentors(newbieId);
             if (!unassigned.Any())
             {
                 return NotFound(new { message = $"No unassigned newbies found. " });

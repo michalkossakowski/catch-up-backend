@@ -51,10 +51,19 @@ namespace catch_up_backend.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<UserModel> GetById(Guid userId)
+        public async Task<UserDto> GetById(Guid userId)
         {
             var user = await _context.Users
-                .Where(u => u.Id == userId).FirstOrDefaultAsync();
+                .Where(u => u.Id == userId)
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    Position = u.Position
+                })
+                .FirstOrDefaultAsync();
 
             return user;
         }
@@ -72,6 +81,16 @@ namespace catch_up_backend.Repositories
             var users = await _context.Users.ToListAsync();
 
             return users;
+        }
+
+        public async Task<string> GetRole(Guid userId)
+        {
+            var userRole = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.Type)
+                .FirstOrDefaultAsync();
+
+            return userRole;
         }
     }
 }
