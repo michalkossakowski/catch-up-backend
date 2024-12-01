@@ -70,6 +70,8 @@ namespace catch_up_backend
             builder.Services.AddScoped<IRoadMapService, RoadMapService>();
             builder.Services.AddScoped<IRoadMapPointService, RoadMapPointService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<ISchoolingService, SchoolingService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
