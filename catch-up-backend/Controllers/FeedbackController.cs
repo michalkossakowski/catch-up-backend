@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using catch_up_backend.Services;
@@ -87,15 +88,22 @@ namespace catch_up_backend.Controllers
             return Ok(feedback);
         }
 
-        //[HttpGet]
-        //[Route("GetByOrigin/{Origin:string}")]
-        //public async Task<IActionResult> GetByOrigin(string origin)
-        //{
-        //    var feedback = await _feedbackService.GetByOrigin(origin);
-        //    if (feedback == null)
-        //        return NotFound(new { message = $"Feedback with origin: {origin} not found" });
-        //    return Ok(feedback);
-        //}
+        [HttpGet]
+        [Route("GetByResource/{resourceType:int}/{resourceId:int}")]
+        public async Task<IActionResult> GetByResource(ResourceTypeEnum resourceType, int resourceId)
+        {
+            var feedbacks = await _feedbackService.GetFeedbacksByResource(resourceType, resourceId);
+
+            if (!feedbacks.Any())
+            {
+                return NotFound(new
+                {
+                    message = $"No feedbacks found for resource type {resourceType} with ID {resourceId}"
+                });
+            }
+
+            return Ok(feedbacks);
+        }
 
         [HttpGet]
         [Route("GetAll")]

@@ -14,16 +14,18 @@ namespace catch_up_backend.Models
         public Guid ReceiverId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Origin { get; set; }
+        public ResourceTypeEnum ResourceType { get; set; }
+        public int ResourceId { get; set; }
 
         public StateEnum State { get; set; }
-        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, string origin)
+        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, ResourceTypeEnum resourceType, int resourceId)
         {
             SenderId = senderId;
             ReceiverId = receiverId;
             Title = title;
             Description = description;
-            Origin = origin;
+            ResourceType = resourceType;
+            ResourceId = resourceId;
             State = StateEnum.Active;
         }
     }

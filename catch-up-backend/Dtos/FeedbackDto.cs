@@ -11,6 +11,7 @@ namespace catch_up_backend.Dtos
         public Guid ReceiverId { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
-        public required string Origin { get; set; }
+        public ResourceTypeEnum ResourceType { get; set; }
+        public int ResourceId { get; set; }
     }
 }

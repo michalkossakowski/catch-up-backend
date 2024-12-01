@@ -24,7 +24,8 @@ namespace catch_up_backend.Services
                 newFeedback.ReceiverId,
                 newFeedback.Title ?? "",
                 newFeedback.Description ?? "",
-                newFeedback.Origin ?? "");
+                newFeedback.ResourceType,
+                newFeedback.ResourceId);
                 await _context.AddAsync(feedback);
                 await _context.SaveChangesAsync();
             }
@@ -47,7 +48,8 @@ namespace catch_up_backend.Services
                 feedback.ReceiverId = newFeedback.ReceiverId;
                 feedback.Title = newFeedback.Title;
                 feedback.Description = newFeedback.Description;
-                feedback.Origin = newFeedback.Origin;
+                feedback.ResourceType = newFeedback.ResourceType;
+                feedback.ResourceId = newFeedback.ResourceId;
                 _context.Feedbacks.Update(feedback);
                 await _context.SaveChangesAsync();
             }
@@ -86,7 +88,8 @@ namespace catch_up_backend.Services
                     ReceiverId = f.ReceiverId,
                     Title = f.Title,
                     Description = f.Description,
-                    Origin = f.Origin,
+                    ResourceType = f.ResourceType,
+                    ResourceId = f.ResourceId
                 }).FirstOrDefaultAsync();
 
             return feedback;
@@ -102,7 +105,8 @@ namespace catch_up_backend.Services
                     ReceiverId = f.ReceiverId,
                     Title = f.Title,
                     Description = f.Description,
-                    Origin = f.Origin,
+                    ResourceType = f.ResourceType,
+                    ResourceId = f.ResourceId
                 }).FirstOrDefaultAsync();
 
             return feedback;
@@ -119,24 +123,8 @@ namespace catch_up_backend.Services
                     ReceiverId = f.ReceiverId,
                     Title = f.Title,
                     Description = f.Description,
-                    Origin = f.Origin,
-                }).FirstOrDefaultAsync();
-
-            return feedback;
-        }
-
-        public async Task<FeedbackDto> GetByOrigin(string Origin)
-        {
-            var feedback = await _context.Feedbacks
-                .Where(f => f.Origin.ToString() == Origin && f.State != StateEnum.Deleted)
-                .Select(f => new FeedbackDto
-                {
-                    Id = f.Id,
-                    SenderId = f.SenderId,
-                    ReceiverId = f.ReceiverId,
-                    Title = f.Title,
-                    Description = f.Description,
-                    Origin = f.Origin,
+                    ResourceType = f.ResourceType,
+                    ResourceId = f.ResourceId
                 }).FirstOrDefaultAsync();
 
             return feedback;
@@ -153,10 +141,32 @@ namespace catch_up_backend.Services
                     ReceiverId = f.ReceiverId,
                     Title = f.Title,
                     Description = f.Description,
-                    Origin = f.Origin,
+                    ResourceType = f.ResourceType,
+                    ResourceId = f.ResourceId
                 }).ToListAsync();
 
             return feedback;
+        }
+
+        public async Task<List<FeedbackDto>> GetFeedbacksByResource(ResourceTypeEnum resourceType, int resourceId)
+        {
+            var feedbacks = await _context.Feedbacks
+                .Where(f => f.ResourceType == resourceType &&
+                            f.ResourceId == resourceId &&
+                            f.State != StateEnum.Deleted)
+                .Select(f => new FeedbackDto
+                {
+                    Id = f.Id,
+                    SenderId = f.SenderId,
+                    ReceiverId = f.ReceiverId,
+                    Title = f.Title,
+                    Description = f.Description,
+                    ResourceType = f.ResourceType,
+                    ResourceId = f.ResourceId
+                })
+                .ToListAsync();
+
+            return feedbacks;
         }
     }
 }
