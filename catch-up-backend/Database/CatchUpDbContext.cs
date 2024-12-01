@@ -278,6 +278,13 @@ namespace catch_up_backend.Database
                                   Converters = { new JsonStringEnumConverter() }
                               }
                           )
+                )
+                .Metadata.SetValueComparer(
+                    new ValueComparer<Dictionary<BadgeTypeCountEnum, int>>(
+                        (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
+                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                        c => c == null ? null : c.ToDictionary(entry => entry.Key, entry => entry.Value)
+                    )
                 );
 
             base.OnModelCreating(modelBuilder);

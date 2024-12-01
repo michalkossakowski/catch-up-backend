@@ -14,7 +14,7 @@ namespace catch_up_backend.Models
         public string Password { get; set; }
         public string Type { get; set; }
         public string Position { get; set; }
-        public Dictionary<BadgeTypeCountEnum, int> Counters { get; set; }
+        public Dictionary<BadgeTypeCountEnum, int>? Counters { get; set; }
         public StateEnum State { get; set; }
         public UserModel(string name, string surname, string email, string password, string type, string position)
         {
