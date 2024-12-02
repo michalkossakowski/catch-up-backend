@@ -1,6 +1,4 @@
-﻿using catch_up_backend.Enums;
-
-namespace catch_up_backend.Dtos
+﻿namespace catch_up_backend.Dtos
 {
     public class CategoryDto
     {
