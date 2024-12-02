@@ -21,5 +21,11 @@ namespace catch_up_backend.Controllers
             await _taskService.Add(newTask, newbieID, taskContentId);
             return Ok(new { message = "Task added", task = newTask });
         }
+        [HttpGet]
+        [Route("GetAllFullTasks")]
+        public async Task<List<FullTask>> GetAllFullTasks()
+        {
+            return await _taskService.GetAllTasks();
+        }
     }
 }
