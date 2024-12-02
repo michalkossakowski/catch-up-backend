@@ -69,6 +69,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IRoadMapService, RoadMapService>();
             builder.Services.AddScoped<IRoadMapPointService, RoadMapPointService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
 
