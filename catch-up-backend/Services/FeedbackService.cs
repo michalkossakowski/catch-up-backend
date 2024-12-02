@@ -22,7 +22,7 @@ namespace catch_up_backend.Services
                 var feedback = new FeedbackModel(
                 newFeedback.SenderId,
                 newFeedback.ReceiverId,
-                newFeedback.Title ?? "",
+                newFeedback.Title,
                 newFeedback.Description ?? "",
                 newFeedback.ResourceType,
                 newFeedback.ResourceId);
@@ -39,9 +39,7 @@ namespace catch_up_backend.Services
         {
             var feedback = await _context.Feedbacks.FindAsync(feedbackId);
             if (feedback == null)
-            {
                 return false;
-            }
             try
             {
                 feedback.SenderId = newFeedback.SenderId;
@@ -63,9 +61,7 @@ namespace catch_up_backend.Services
         {
             var feedback = await _context.Feedbacks.FindAsync(feedbackId);
             if (feedback == null)
-            {
                 return false;
-            }
             try
             {
                 feedback.State = StateEnum.Deleted;

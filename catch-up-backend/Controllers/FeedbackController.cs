@@ -32,7 +32,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Edit(int feedbackId, [FromBody] FeedbackDto newFeedback)
         {
             return await _feedbackService.Edit(feedbackId, newFeedback)
-                ? Ok(new { message = "Feedback edited", badge = newFeedback })
+                ? Ok(new { message = "Feedback edited", feedback = newFeedback })
                 : StatusCode(500, new { message = "Error: Feedback edit" });
         }
 
@@ -64,19 +64,6 @@ namespace catch_up_backend.Controllers
                 return NotFound(new { message = $"Feedback with sender id: {senderId} not found" });
             return Ok(feedback);
         }
-
-        //[HttpGet]
-        //[Route("GetAssignmentsByMentor/{mentorId:guid}")]
-        //public async Task<IActionResult> GetAssignmentsByMentor(Guid mentorId)
-        //{
-        //    IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
-        //    if (!assignments.Any())
-        //    {
-        //        return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
-        //    }
-
-        //    return Ok(assignments);
-        //}
 
         [HttpGet]
         [Route("GetByReceiverId/{receiverId:Guid}")]
