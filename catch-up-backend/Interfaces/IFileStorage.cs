@@ -2,8 +2,8 @@
 {
     public interface IFileStorage
     {
-        public Task<string> UploadFileAsync(string fileName, Stream fileStream);
-        public Task<Stream> DownloadFileAsync(string source);
-        public Task DeleteFileAsync(string source);
+        public Task<string> UploadFile(string fileName, Stream fileStream);
+        public Task<Stream> DownloadFile(string source);
+        public Task DeleteFile(string source);
     }
 }

@@ -25,7 +25,7 @@ namespace catch_up_backend.Controllers
         [Route("Upload")]
         public async Task<IActionResult> Upload(IFormFile file, int? materialId)
         {
-            var fileDto = await _fileService.UploadFileAsync(file, materialId);
+            var fileDto = await _fileService.UploadFile(file, materialId);
             return Ok(new { message = "File uploaded ", fileDto, materialId });
         }
 
@@ -39,7 +39,7 @@ namespace catch_up_backend.Controllers
         [Route("Delete/{fileId:int}")]
         public async Task<IActionResult> Delete(int fileId)
         {
-            await _fileService.DeleteFileAsync(fileId);
+            await _fileService.DeleteFile(fileId);
             return Ok(new { message = "File deleted"});
         }
 
@@ -52,7 +52,7 @@ namespace catch_up_backend.Controllers
         [Route("Archive/{fileId:int}")]
         public async Task<IActionResult> Archive(int fileId)
         {
-            await _fileService.ArchiveFileAsync(fileId);
+            await _fileService.ArchiveFile(fileId);
             return Ok(new { message = "File archived" });
         }
 
@@ -65,7 +65,7 @@ namespace catch_up_backend.Controllers
         [Route("Get/{fileId:int}")]
         public async Task<IActionResult> Get(int fileId)
         {
-            var fileDto = await _fileService.GetByIdAsync(fileId);
+            var fileDto = await _fileService.GetById(fileId);
             return Ok(new { message = "File found", fileDto });
         }
 
@@ -90,8 +90,8 @@ namespace catch_up_backend.Controllers
         [Route("Download/{fileId:int}")]
         public async Task<IActionResult> Download(int fileId)
         {
-            var fileDto = await _fileService.GetByIdAsync(fileId);
-            var stream = await _fileService.DownloadFileAsync(fileId);
+            var fileDto = await _fileService.GetById(fileId);
+            var stream = await _fileService.DownloadFile(fileId);
             return File(stream, fileDto.Type, fileDto.Name);
         }
     }

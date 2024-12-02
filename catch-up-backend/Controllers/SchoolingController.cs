@@ -39,10 +39,10 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
-        public async Task<IActionResult> GetAllAsync()
+        [Route("GetAllFull")]
+        public async Task<IActionResult> GetAllFullAsync()
         {
-            var schoolings = await _schoolingService.GetAllAsync();
+            var schoolings = await _schoolingService.GetAllFullAsync();
             return Ok(new { message = "Schoolings retrieved successfully", data = schoolings });
         }
 
@@ -52,6 +52,23 @@ namespace catch_up_backend.Controllers
         {
             var isDeleted = await _schoolingService.DeleteAsync(schoolingId);
             return Ok(new { message = "Schooling deleted successfully" });
+        }
+
+        // Do dokończenia
+        [HttpPut]
+        [Route("Edit")]
+        public async Task<IActionResult> EditAsync([FromBody] FullSchoolingDto fullSchoolingDto)
+        {
+            await _schoolingService.Edit(fullSchoolingDto);
+            return Ok(new { message = "Schooling updated successfully" });
+        }
+
+        [HttpPost]
+        [Route("AddSchoolingPart/{schoolingId:int}")]
+        public async Task<IActionResult> AddSchoolingPartAsync(int schoolingId, [FromBody] SchoolingPartDto schoolingPartDto)
+        {
+            await _schoolingService.AddSchoolingPart(schoolingPartDto, schoolingId);
+            return Ok(new { message = "Schooling part added successfully" });
         }
     }
 }

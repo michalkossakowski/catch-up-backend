@@ -28,7 +28,7 @@ namespace catch_up_backend.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create(MaterialDto materialDto)
         {
-            var material = await _materialService.CreateMaterialAsync(materialDto);
+            var material = await _materialService.CreateMaterial(materialDto);
             return CreatedAtAction(nameof(Get), new { materialId = material.Id }, new { message = "Material  created", material });
         }
 
@@ -43,7 +43,7 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{materialId:int}/{name}")]
         public async Task<IActionResult> Edit(int materialId, string name )
         {
-            await _materialService.EditAsync(materialId, name);
+            await _materialService.Edit(materialId, name);
             return Ok(new { message = "Material  edited"});
         }
 
@@ -57,7 +57,7 @@ namespace catch_up_backend.Controllers
         [Route("Delete/{materialId:int}")]
         public async Task<IActionResult> Delete(int materialId)
         {
-            await _materialService.DeleteAsync(materialId);
+            await _materialService.Delete(materialId);
             return Ok(new { message = "Material  deleted" });
         }
 
@@ -71,7 +71,7 @@ namespace catch_up_backend.Controllers
         [Route("Archive/{materialId:int}")]
         public async Task<IActionResult> Archive(int materialId)
         {
-            await _materialService.ArchiveAsync(materialId);
+            await _materialService.Archive(materialId);
             return Ok(new { message = "Material  deleted" });
         }
 
@@ -85,7 +85,7 @@ namespace catch_up_backend.Controllers
         [Route("AddFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> AddFile(int materialId, int fileId)
         {
-            await _materialService.AddFileAsync(materialId, fileId);
+            await _materialService.AddFile(materialId, fileId);
             return Ok(new { message = "Added File to material",});
         }
 
@@ -99,7 +99,7 @@ namespace catch_up_backend.Controllers
         [Route("RemoveFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> RemoveFile(int materialId, int fileId)
         {
-            await _materialService.RemoveFileAsync(materialId, fileId);
+            await _materialService.RemoveFile(materialId, fileId);
             return Ok(new { message = "File Removed" });
         }
 
@@ -115,7 +115,7 @@ namespace catch_up_backend.Controllers
         [Route("Get/{materialId:int}")]
         public async Task<IActionResult> Get(int materialId)
         {
-            var materialDto = await _materialService.GetMaterialAsync(materialId);
+            var materialDto = await _materialService.GetMaterial(materialId);
             return Ok(new { message = "Material found", materialDto });
         }
 
@@ -132,7 +132,7 @@ namespace catch_up_backend.Controllers
         [Route("GetWithFiles/{materialId:int}")]
         public async Task<IActionResult> GetWithFiles(int materialId)
         {
-            var materialDto = await _materialService.GetFilesInMaterialAsync(materialId);
+            var materialDto = await _materialService.GetFilesInMaterial(materialId);
             return Ok(new { message = "Material found", materialDto });
         }
 
@@ -146,7 +146,7 @@ namespace catch_up_backend.Controllers
         [Route("GetAllMaterials")]
         public async Task<List<MaterialDto>> GetAllMaterials()
         {
-            return await _materialService.GetMaterialsAync();
+            return await _materialService.GetMaterials();
         }
     }
 }
