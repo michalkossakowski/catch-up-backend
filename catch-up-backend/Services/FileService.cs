@@ -80,9 +80,17 @@ namespace catch_up_backend.Services
         public async Task AddToMaterialAsync(int fileId, int materialId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-            
+
             if (file.State != StateEnum.Active)
                 throw new NotFoundException("File is not active.");
+
+            var fim = await _context.FileInMaterials.FindAsync(fileId, materialId);
+            if (fim is not null)
+            {
+                fim.State = StateEnum.Active;
+                await _context.SaveChangesAsync();
+                return;
+            }
 
             if (await _context.Materials.FindAsync(materialId) == null)
                 throw new Exception("Material not found");
