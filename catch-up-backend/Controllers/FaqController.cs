@@ -18,8 +18,10 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] FaqDto newQuestion)
         {
-            return await _faqService.Add(newQuestion) 
-                ? Ok(new { message = "FAQ added", faq = newQuestion })
+            var result = await _faqService.Add(newQuestion);
+
+            return result != null
+                ? Ok(new { message = "FAQ added", faq = result })
                 : StatusCode(500, new { message = "FAQ adding error"});
         }
 

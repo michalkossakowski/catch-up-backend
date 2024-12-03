@@ -4,7 +4,7 @@ namespace catch_up_backend.Interfaces
 {
     public interface IFaqService
     {
-        public Task<bool> Add(FaqDto newQuestion);
+        public Task<FaqDto> Add(FaqDto newQuestion);
         public Task<bool> Edit(int questionId, FaqDto newQuestion);
         public Task<bool> Delete(int questionId);
         public Task<FaqDto> GetById(int questionId);

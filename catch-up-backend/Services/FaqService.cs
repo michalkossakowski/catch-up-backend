@@ -15,7 +15,7 @@ namespace catch_up_backend.Services
         {
             _context = context;
         }
-        public async Task<bool> Add(FaqDto newQuestion)
+        public async Task<FaqDto> Add(FaqDto newQuestion)
         {
             try
             {
@@ -25,12 +25,13 @@ namespace catch_up_backend.Services
                 newQuestion.MaterialsId);
                 await _context.AddAsync(question);
                 await _context.SaveChangesAsync();
+                newQuestion.Id = question.Id;
             }
             catch(Exception e)
             {
                 throw new Exception("Error: Faq Add " + e);
             }
-            return true;
+            return newQuestion;
         }
 
         public async Task<bool> Edit(int questionId, FaqDto newQuestion)
