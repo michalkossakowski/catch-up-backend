@@ -15,21 +15,18 @@ namespace catch_up_backend.Services
         {
             _context = context;
         }
-        public async Task Add(TaskDto newTask, Guid newbieID, int taskContentId)
+        public async Task Add(TaskDto newTask )
         {
             
             var task = new TaskModel(
-                newbieID,
-                taskContentId,
+                newTask.NewbieId,
+                newTask.TaskContentId,
                 newTask.RoadMapPointId,
                 newTask.Status,
                 newTask.Deadline,
                 newTask.Priority
                 );
-            //Uncomment if you want to have valid response body
-            //newTask.NewbieId = newbieID;
-            //newTask.TaskContentId = taskContentId;
-            //newTask.AssignmentDate = task.AssignmentDate;
+            newTask = new TaskDto( task );
             await _context.Tasks.AddAsync( task );
             await _context.SaveChangesAsync();
         }

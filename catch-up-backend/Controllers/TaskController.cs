@@ -15,10 +15,10 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddTaskToUser/{newbieID:guid}/{taskContentId:int}")]
-        public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask,Guid newbieID, int taskContentId)
+        [Route("AddTaskToUser")]
+        public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
-            await _taskService.Add(newTask, newbieID, taskContentId);
+            await _taskService.Add(newTask);
             return Ok(new { message = "Task added", task = newTask });
         }
         [HttpGet]

@@ -5,7 +5,7 @@ namespace catch_up_backend.Interfaces
 {
     public interface ITaskService
     {
-        public Task Add(TaskDto newTask, Guid newbieID, int taskContentId);
+        public Task Add(TaskDto newTask);
         public Task<List<FullTask>> GetAllFullTasks();
         public Task<FullTask> GetFullTaskById(int id);
         public Task<List<FullTask>> GetAllFullTaskByTaskContentId(int id);
