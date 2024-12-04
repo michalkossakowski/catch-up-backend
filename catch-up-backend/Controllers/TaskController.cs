@@ -21,6 +21,22 @@ namespace catch_up_backend.Controllers
             await _taskService.Add(newTask);
             return Ok(new { message = "Task added", task = newTask });
         }
+        [HttpPut]
+        [Route("EditTask/{taskId:int}")]
+        public async Task<IActionResult> Edit(int taskId, TaskDto newTask)
+        {
+            return await _taskService.Edit(taskId, newTask)
+                ? Ok(new { message = $"Task edited", task = newTask })
+                : StatusCode(500, new { message = "Task editing error", taskId = taskId });
+        }
+        [HttpPut]
+        [Route("EditFullTask/{taskId:int}/{userId:guid}")]
+        public async Task<IActionResult> EditFullTask(int taskId, FullTask fullTask,Guid userId)
+        {
+            return await _taskService.EditFullTask(taskId, fullTask, userId)
+                ? Ok(new { message = $"FullTask edited", fullTask = fullTask })
+                : StatusCode(500, new { message = "FullTask editing error", fullTaskId = taskId });
+        }
         [HttpGet]
         [Route("GetAllTasks")]
         public async Task<IActionResult> GetAllTasks()

@@ -12,10 +12,12 @@ namespace catch_up_backend.Services
     public class TaskService : ITaskService
     {
         private readonly CatchUpDbContext _context;
+        private readonly ITaskContentService _contentService;
 
-        public TaskService(CatchUpDbContext context)
+        public TaskService(CatchUpDbContext context, ITaskContentService contentService)
         {
             _context = context;
+            _contentService = contentService;
         }
         public async Task Add(TaskDto newTask )
         {
@@ -32,7 +34,28 @@ namespace catch_up_backend.Services
             await _context.Tasks.AddAsync( task );
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> EditFullTask(int id, FullTask fullTask, Guid mentorId)
+        public async Task<bool> Edit(int taskId, TaskDto newTask)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null) return false;
+            try
+            {
+                task.RoadMapPointId = newTask.RoadMapPointId;
+                task.Status = newTask.Status ?? "";
+                task.Deadline = newTask.Deadline;
+                task.SpendTime = newTask.SpendTime;
+                task.Priority = newTask.Priority;
+                task.State = newTask.State;
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error: Edit Task: " + ex);
+            }
+            return true;
+        }
+        public async Task<bool> EditFullTask(int id, FullTask fullTask, Guid userId)
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null) return false;
@@ -53,12 +76,16 @@ namespace catch_up_backend.Services
                     || fullTask.Title != taskContent.Title 
                     || fullTask.Description != taskContent.Description)
                 {
-                    var newTaskContent = new TaskContentDto(mentorId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title,fullTask.Description);
-
+                    var newTaskContent = new TaskContentDto(userId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title,fullTask.Description);
+                    newTaskContent = await _contentService.Add(newTaskContent);
+                    if (newTaskContent == null) return false;
+                    task.TaskContentId = newTaskContent.Id;
                 }
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex) {
-                new Exception(ex.ToString()); 
+                throw new Exception("Error: Edit Task: " + ex);
             }
             return true;
         }
