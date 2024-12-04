@@ -11,9 +11,12 @@ namespace catch_up_backend.Controllers
     public class SchoolingController : ControllerBase
     {
         private readonly ISchoolingService _schoolingService;
-        public SchoolingController(ISchoolingService schoolingService)
+        private readonly ISchoolingPartService _schoolingPartService;
+
+        public SchoolingController(ISchoolingService schoolingService, ISchoolingPartService schoolingPartService)
         {
             _schoolingService = schoolingService;
+            _schoolingPartService = schoolingPartService;
         }
 
         [HttpGet]
@@ -37,7 +40,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetUserSchoolingsID(Guid userId)
         {
             var schoolingsIds = await _schoolingService.GetUserSchoolingsID(userId);
-            return Ok(new { message = "Schoolings retrieved successfully", data = schoolingsIds });
+            return Ok(new { message = "Creator of schooling id retrieved successfully", data = schoolingsIds });
         }
 
         [HttpGet]
@@ -48,12 +51,12 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Schoolings retrieved successfully", data = schoolings });
         }
 
-        // To do
         [HttpGet]
         [Route("GetAllSchoolingParts")]
         public async Task<IActionResult> GetAllSchoolingParts()
         {
-            return Ok(new { message = "Schoolings retrieved successfully"});
+            var schoolingsParts = _schoolingPartService.GetAllSchoolingParts();
+            return Ok(new { message = "Schoolings parts retrieved successfully", data = schoolingsParts });
         }
 
         // To do
@@ -93,7 +96,6 @@ namespace catch_up_backend.Controllers
             return CreatedAtAction("GetFull", new { schoolingId = fullSchoolingDto.Schooling.Id }, new { message = "Schooling  created", data = fullSchoolingDto });
         }
 
-        // To do
         [HttpPost]
         [Route("AddSchoolingPart/{schoolingId:int}")]
         public async Task<IActionResult> AddSchoolingPart(int schoolingId, [FromBody] SchoolingPartDto schoolingPartDto)
@@ -110,12 +112,12 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Added schooling to user" });
         }
 
-        //To do
         [HttpPost]
         [Route("AddMaterialToSchooling/{shoolingPartId:int}/{materialId:int}")]
         public async Task<IActionResult> AddMaterialToSchooling(int shoolingPartId, int materialId)
         {
-            return Ok(new { message = "Added schooling to user" });
+            await _schoolingPartService.AddMaterialToSchooling(shoolingPartId, materialId);
+            return Ok(new { message = "Added material to schooling part" });
         }
 
         [HttpDelete]
@@ -123,7 +125,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> ArchiveUserSchooling(Guid userId, int schoolingId)
         {
             await _schoolingService.ArchiveUserSchooling(userId, schoolingId);
-            return Ok(new { message = "Schooling successfully archived" });
+            return Ok(new { message = "User archived in schoolig" });
         }
 
         [HttpDelete]
@@ -131,22 +133,23 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> DeleteUserSchooling(Guid userId, int schoolingId)
         {
             await _schoolingService.DeleteUserSchooling(userId, schoolingId);
-            return Ok(new { message = "Schooling successfully deleted" });
-        }
-        // To do
-        [HttpDelete]
-        [Route("ArchiveSchoolingPart/{schoolingPartId:int}")]
-        public async Task<IActionResult> ArchiveSchoolingPart(int schoolingId)
-        {
-            return Ok(new { message = "Schooling part added successfully" });
+            return Ok(new { message = "User deleted in schoolig" });
         }
 
-        // To do
+        [HttpDelete]
+        [Route("ArchiveSchoolingPart/{schoolingPartId:int}")]
+        public async Task<IActionResult> ArchiveSchoolingPart(int schoolingPartId)
+        {
+            await _schoolingPartService.ArchiveSchoolingPart(schoolingPartId);
+            return Ok(new { message = "Schooling part archived" });
+        }
+
         [HttpDelete]
         [Route("DeleteSchoolingPart/{schoolingPartId:int}")]
         public async Task<IActionResult> DeleteSchoolingPart(int schoolingPartId)
         {
-            return Ok(new { message = "Schooling part added successfully" });
+            await _schoolingPartService.DeleteSchoolingPart(schoolingPartId);
+            return Ok(new { message = "Schooling part deleted" });
         }
 
         [HttpDelete]
@@ -165,19 +168,20 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = "Schooling archived successfully" });
         }
 
-        // To do
         [HttpDelete]
         [Route("ArchiveMaterialFromSchooling/{schoolingPartId:int}/{materialId:int}")]
         public async Task<IActionResult> ArchiveMaterialFromSchooling(int schoolingPartId, int materialId)
         {
-            return Ok(new { message = "Schooling part added successfully" });
+            await _schoolingPartService.ArchiveMaterialFromSchooling(schoolingPartId, materialId);
+            return Ok(new { message = "Material from schooling part has been archived" });
         }
-        // To do
+
         [HttpDelete]
         [Route("DeleteMaterialFromSchooling/{schoolingPartId:int}/{materialId:int}")]
         public async Task<IActionResult> DeleteMaterialFromSchooling(int schoolingPartId, int materialId)
         {
-            return Ok(new { message = "Schooling part added successfully" });
+            await _schoolingPartService.DeleteMaterialFromSchooling(schoolingPartId, materialId);
+            return Ok(new { message = "Material from schooling part has been deleted" });
         }
     }
 }

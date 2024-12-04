@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Database;
 using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,11 @@ namespace catch_up_backend.Services
 
             var materials = new List<MaterialDto>();
 
+            materialIds = await _context.Materials
+                .Where(m => materialIds.Contains(m.Id) && m.State == Enums.StateEnum.Active)
+                .Select(m => m.Id)
+                .ToListAsync();
+
             foreach (var materialId in materialIds)
             {
                 materials.Add(await _materialService.GetFilesInMaterial(materialId));
@@ -51,6 +57,88 @@ namespace catch_up_backend.Services
             return materials;
         }
 
+        public async Task AddMaterialToSchooling(int schoolingPartId, int materialId)
+        {
+            if (!await _context.Materials.AnyAsync(m => m.Id == materialId && m.State == StateEnum.Active))
+                throw new NotFoundException("Material not found or material is not active");
 
+            if (!await _context.SchoolingParts.AnyAsync(sp => sp.Id == schoolingPartId && sp.State == StateEnum.Active))
+                throw new NotFoundException("SchoolingPart not found or schoolingPart is not active");
+
+            var materialInSchooling = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId });
+
+            if (materialInSchooling == null)
+            {
+                materialInSchooling = new MaterialsSchoolingPartModel(materialId, schoolingPartId);
+                await _context.AddAsync(materialInSchooling);
+            }
+            else
+                materialInSchooling.State = StateEnum.Active;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ArchiveSchoolingPart(int schoolingPartId)
+        {
+            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId)
+                ?? throw new NotFoundException("SchoolingPart not found");
+
+            schoolingPart.State = StateEnum.Archived;
+
+            await _context.MaterialsSchoolingParts
+                .Where(msp => msp.SchoolingPartId == schoolingPartId && msp.State == StateEnum.Active)
+                .ForEachAsync(msp => msp.State = StateEnum.Archived);            
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteSchoolingPart(int schoolingPartId)
+        {
+            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId)
+                ?? throw new NotFoundException("SchoolingPart not found");
+
+            schoolingPart.State = StateEnum.Deleted;
+
+            await _context.MaterialsSchoolingParts
+                .Where(msp => msp.SchoolingPartId == schoolingPartId)
+                .ForEachAsync(msp => msp.State = StateEnum.Archived);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ArchiveMaterialFromSchooling(int schoolingPartId, int materialId)
+        {
+            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId })
+                ?? throw new NotFoundException("SchoolingPart not found");
+
+            msp.State = StateEnum.Archived;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteMaterialFromSchooling(int schoolingPartId, int materialId)
+        {
+            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId })
+                ?? throw new NotFoundException("SchoolingPart not found");
+
+            msp.State = StateEnum.Deleted;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<SchoolingPartDto>> GetAllSchoolingParts()
+        {
+            var schoolingParts = await _context.SchoolingParts
+            .Where(sp => sp.State == Enums.StateEnum.Active)
+            .Select(sp => new SchoolingPartDto
+            {
+                Id = sp.Id,
+                Name = sp.Name,
+                Content = sp.Content
+            })
+            .ToListAsync();
+
+            foreach (var part in schoolingParts)
+            {
+                part.Materials = await GetMaterials(part.Id);
+            }
+            return schoolingParts;
+        }
     }
 }
