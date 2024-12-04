@@ -19,10 +19,11 @@ namespace catch_up_backend.Services
             _context = context;
             _contentService = contentService;
         }
-        public async Task Add(TaskDto newTask )
+        public async Task<TaskDto> Add(TaskDto newTask )
         {
-            
-            var task = new TaskModel(
+            try
+            {
+                var task = new TaskModel(
                 newTask.NewbieId,
                 newTask.TaskContentId,
                 newTask.RoadMapPointId,
@@ -30,9 +31,16 @@ namespace catch_up_backend.Services
                 newTask.Deadline,
                 newTask.Priority
                 );
-            newTask = new TaskDto( task );
-            await _context.Tasks.AddAsync( task );
-            await _context.SaveChangesAsync();
+                await _context.Tasks.AddAsync(task);
+                await _context.SaveChangesAsync();
+                newTask.Id = task.Id;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error: Add taskContent: " + ex);
+            }
+            return newTask;
+
         }
         public async Task<bool> Edit(int taskId, TaskDto newTask)
         {
@@ -45,7 +53,6 @@ namespace catch_up_backend.Services
                 task.Deadline = newTask.Deadline;
                 task.SpendTime = newTask.SpendTime;
                 task.Priority = newTask.Priority;
-                task.State = newTask.State;
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
             }
@@ -69,8 +76,6 @@ namespace catch_up_backend.Services
                 task.Status = fullTask.Status ?? "";
                 task.Deadline = fullTask.Deadline;
                 task.SpendTime = fullTask.SpendTime;
-                task.Priority = fullTask.Priority;
-                task.State = fullTask.State;
                 if (fullTask.CategoryId != taskContent.CategoryId 
                     || fullTask.MaterialsId != taskContent.MaterialsId 
                     || fullTask.Title != taskContent.Title 

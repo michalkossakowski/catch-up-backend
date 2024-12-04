@@ -18,8 +18,10 @@ namespace catch_up_backend.Controllers
         [Route("AddTaskToUser")]
         public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
-            await _taskService.Add(newTask);
-            return Ok(new { message = "Task added", task = newTask });
+            var result = await _taskService.Add(newTask);
+            return result != null
+                ? Ok(new { message = "Task added", task = result })
+                : StatusCode(500, new { message = "Error: Task add" });
         }
         [HttpPut]
         [Route("EditTask/{taskId:int}")]

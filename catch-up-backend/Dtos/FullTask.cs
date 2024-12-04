@@ -12,7 +12,6 @@ namespace catch_up_backend.Dtos
         public int? CategoryId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public StateEnum State { get; set; }
         public int? RoadMapPointId { get; set; }
         public string Status { get; set; }
         public DateTime AssignmentDate { get; set; }
@@ -30,7 +29,6 @@ namespace catch_up_backend.Dtos
             MaterialsId = taskContent.MaterialsId;
             Title = taskContent.Title;
             Description = taskContent.Description;
-            State = task.State;
             RoadMapPointId = task.RoadMapPointId;
             Status = task.Status;
             AssignmentDate = task.AssignmentDate;
@@ -40,7 +38,7 @@ namespace catch_up_backend.Dtos
             Priority = task.Priority;
             Rate = task.Rate;
         }
-        public FullTask(int id, Guid? newbieId, int? materialsId, int? categoryId, string title, string description, StateEnum state, int? roadMapPointId, string status, DateTime assignmentDate, DateTime? finalizationDate, int deadline, int spendTime, int priority, int? rate)
+        public FullTask(int id, Guid? newbieId, int? materialsId, int? categoryId, string title, string description, int? roadMapPointId, string status, DateTime assignmentDate, DateTime? finalizationDate, int deadline, int spendTime, int priority, int? rate)
         {
             Id = id;
             NewbieId = newbieId;
@@ -48,7 +46,6 @@ namespace catch_up_backend.Dtos
             CategoryId = categoryId;
             Title = title;
             Description = description;
-            State = state;
             RoadMapPointId = roadMapPointId;
             Status = status;
             AssignmentDate = assignmentDate;
