@@ -15,6 +15,7 @@ namespace catch_up_backend.Controllers
         {
             _schoolingService = schoolingService;
         }
+
         [HttpGet]
         [Route("GetFull/{schoolingId:int}")]
         public async Task<IActionResult> GetFull(int schoolingId)

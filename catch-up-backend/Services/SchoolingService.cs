@@ -40,8 +40,9 @@ namespace catch_up_backend.Services
         {
             if (schoolingDto.CategoryId == 0)
                 throw new ValidationException("Category is neeeded");
-            else if (!await _categoryService.IsActive(schoolingDto.CategoryId))
-                throw new NotFoundException("Category not found or is not active");
+
+            var category = await _categoryService.GetById(schoolingDto.CategoryId)
+                ?? throw new NotFoundException("Category not found or is not active");
 
             var schooling = new SchoolingModel(
                 schoolingDto.CreatorId,
@@ -53,7 +54,10 @@ namespace catch_up_backend.Services
             await _context.AddAsync(schooling);
             await _context.SaveChangesAsync();
             schoolingDto.Id = schooling.Id;
-            return new FullSchoolingDto(schoolingDto, new CategoryDto(), new List<SchoolingPartDto>());
+
+
+
+            return new FullSchoolingDto(schoolingDto, category, new List<SchoolingPartDto>());
         }
 
         public async Task DeleteSchooling(int schoolingId)
