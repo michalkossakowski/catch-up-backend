@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Database;
+﻿using System.Collections.Generic;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
@@ -87,7 +88,7 @@ namespace catch_up_backend.Services
 
             await _context.MaterialsSchoolingParts
                 .Where(msp => msp.SchoolingPartId == schoolingPartId && msp.State == StateEnum.Active)
-                .ForEachAsync(msp => msp.State = StateEnum.Archived);            
+                .ForEachAsync(msp => msp.State = StateEnum.Archived);
             await _context.SaveChangesAsync();
         }
 
@@ -139,6 +140,54 @@ namespace catch_up_backend.Services
                 part.Materials = await GetMaterials(part.Id);
             }
             return schoolingParts;
+        }
+
+        public async Task EditSchoolingPart(SchoolingPartDto schoolingPart)
+        {
+            await Edit(schoolingPart);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditManySchoolingPart(List<SchoolingPartDto> schoolingParts)
+        {
+            foreach (var part in schoolingParts)
+            {
+                await Edit(part);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task Edit(SchoolingPartDto schoolingPart)
+        {
+            var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id)
+                ?? throw new NotFoundException("SchoolingPart not found");
+
+            schoolingPartModel.Name = schoolingPart.Name;
+            schoolingPartModel.Content = schoolingPart.Content;
+
+            var existingMaterials = _context.MaterialsSchoolingParts
+                .Where(m => m.SchoolingPartId == schoolingPart.Id)
+                .Select(m => m.MaterialsId)
+                .ToList();
+
+            var materialsToRemove = existingMaterials
+                .Where(existingMaterialId => !schoolingPart.Materials.Any(m => m.Id == existingMaterialId))
+                .ToList();
+
+            var materialsToAdd = schoolingPart.Materials
+                .Where(newMaterial => !existingMaterials.Contains(newMaterial.Id))
+                .Select(newMaterial => newMaterial.Id)
+                .ToList();
+
+            foreach (var materialId in materialsToRemove)
+            {
+                await DeleteMaterialFromSchooling(schoolingPart.Id, materialId);
+            }
+
+            foreach (var materialId in materialsToAdd)
+            {
+                await AddMaterialToSchooling(schoolingPart.Id, materialId);
+            }
         }
     }
 }

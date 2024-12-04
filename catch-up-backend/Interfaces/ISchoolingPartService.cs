@@ -12,6 +12,8 @@ namespace catch_up_backend.Interfaces
         public Task DeleteSchoolingPart(int schoolingPartId);
         public Task ArchiveMaterialFromSchooling(int schoolingPartId,int materialId);
         public Task DeleteMaterialFromSchooling(int schoolingPartId, int materialId);
+        public Task EditSchoolingPart(SchoolingPartDto schoolingPart);
+        public Task EditManySchoolingPart(List<SchoolingPartDto> schoolingPart);
 
     }
 }

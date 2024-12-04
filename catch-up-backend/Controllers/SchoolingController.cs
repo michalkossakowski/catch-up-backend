@@ -55,11 +55,10 @@ namespace catch_up_backend.Controllers
         [Route("GetAllSchoolingParts")]
         public async Task<IActionResult> GetAllSchoolingParts()
         {
-            var schoolingsParts = _schoolingPartService.GetAllSchoolingParts();
+            var schoolingsParts = await _schoolingPartService.GetAllSchoolingParts();
             return Ok(new { message = "Schoolings parts retrieved successfully", data = schoolingsParts });
         }
 
-        // To do
         [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit([FromBody] FullSchoolingDto fullSchoolingDto)
@@ -72,14 +71,15 @@ namespace catch_up_backend.Controllers
         [Route("EditSchooling")]
         public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
         {
+            await _schoolingService.EditSchooling(schoolingDto);
             return Ok(new { message = "Schooling updated successfully" });
         }
 
-        // To do
         [HttpPut]
         [Route("EditSchoolingPart")]
         public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartDto schoolingPartDto)
         {
+            await _schoolingPartService.EditSchoolingPart(schoolingPartDto);
             return Ok(new { message = "Schooling updated successfully" });
         }
 

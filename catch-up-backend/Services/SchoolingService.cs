@@ -112,17 +112,14 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
         }
 
-
-        // Dokończyć
         public async Task Edit(FullSchoolingDto fullSchoolingDto)
         {
             var existingSchooling = await _context.Schoolings.FindAsync(fullSchoolingDto.Schooling.Id)
                 ?? throw new NotFoundException("Schooling not found");
 
-            existingSchooling.Title = fullSchoolingDto.Schooling.Title;
-            existingSchooling.Description = fullSchoolingDto.Schooling.Description;
-            existingSchooling.Priority = fullSchoolingDto.Schooling.Priority;
-            existingSchooling.CategoryId = fullSchoolingDto.Schooling.CategoryId;
+            await EditSchooling(fullSchoolingDto.Schooling);
+            await _schoolingPartService.EditManySchoolingPart(fullSchoolingDto.Parts);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<FullSchoolingDto>> GetAllFull()
@@ -251,6 +248,20 @@ namespace catch_up_backend.Services
                 .Where(su => su.NewbieId == userId && su.State == StateEnum.Active)
                 .Select(su => su.SchoolingId)
                 .ToListAsync();
+        }
+
+        public async Task EditSchooling(SchoolingDto schoolingDto)
+        {
+            var existingSchooling = await _context.Schoolings.FindAsync(schoolingDto.Id)
+                ?? throw new NotFoundException("Schooling not found");
+            if(!await _categoryService.IsActive(existingSchooling.CategoryId))
+                throw new NotFoundException("Category not active or not found");
+            existingSchooling.Title = schoolingDto.Title;
+            existingSchooling.Description = schoolingDto.Description;
+            existingSchooling.Priority = schoolingDto.Priority;
+            existingSchooling.CategoryId = schoolingDto.CategoryId;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

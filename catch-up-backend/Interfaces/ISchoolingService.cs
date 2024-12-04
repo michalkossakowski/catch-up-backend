@@ -8,6 +8,7 @@ namespace catch_up_backend.Interfaces
         public Task<FullSchoolingDto> CreateSchooling(SchoolingDto schoolingDto);
         public Task<List<FullSchoolingDto>> GetAllFull();
         public Task Edit(FullSchoolingDto fullSchoolingDto);
+        public Task EditSchooling(SchoolingDto schoolingDto);
         public Task AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID);
         public Task DeleteSchooling(int schoolingId);
         public Task ArchiveSchooling(int schoolingId);
