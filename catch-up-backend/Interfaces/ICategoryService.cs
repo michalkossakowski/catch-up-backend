@@ -12,5 +12,8 @@ namespace catch_up_backend.Interfaces
         public Task<List<CategoryDto>> SearchCategories(string searchingString);
         public Task<bool> IsUnique(string categoryName);
         public Task<int> GetCount();
+        public Task<bool> IsExists(int categoryId);
+        public Task<CategoryDto> GetActiveCategory(int categoryId);
+        public Task<bool> IsActive(int categoryId);
     }
 }

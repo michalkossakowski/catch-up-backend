@@ -11,14 +11,14 @@ namespace catch_up_backend.FileManagers
             this._storagePath = storagePath;
         }
 
-        public Task DeleteFileAsync(string source)
+        public Task DeleteFile(string source)
         {
             if (File.Exists(source))
                 File.Delete(source);
             return Task.CompletedTask;
         }
 
-        public Task<Stream> DownloadFileAsync(string source)
+        public Task<Stream> DownloadFile(string source)
         {
             if (!File.Exists(source))
             {
@@ -28,7 +28,7 @@ namespace catch_up_backend.FileManagers
             return Task.FromResult<Stream>(fileStream);
         }
 
-        public async Task<string> UploadFileAsync(string uniqFileName, Stream fileStream)
+        public async Task<string> UploadFile(string uniqFileName, Stream fileStream)
         {
             var path = Path.Combine(_storagePath, uniqFileName);
 
