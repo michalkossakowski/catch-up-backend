@@ -12,11 +12,11 @@ namespace catch_up_backend.Services
         private readonly CatchUpDbContext _context;
 
         public TaskContentService(CatchUpDbContext context)
-        {
+        {   
             _context = context;
         }
 
-        public async Task<bool> Add(TaskContentDto newTaskContent)
+        public async Task<TaskContentDto> Add(TaskContentDto newTaskContent)
         {
             try
             {
@@ -28,12 +28,13 @@ namespace catch_up_backend.Services
                 newTaskContent.Description ?? "");
                 await _context.AddAsync(taskContent);
                 await _context.SaveChangesAsync();
+                newTaskContent.Id = taskContent.Id;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Add taskContent: " + ex);
             }
-            return true;
+            return newTaskContent;
         }
 
         public async Task<bool> Edit(int taskContentId, TaskContentDto newTaskContent)

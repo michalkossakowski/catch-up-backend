@@ -5,7 +5,7 @@ namespace catch_up_backend.Interfaces
 {
     public interface ITaskContentService
     {
-        public Task<bool> Add(TaskContentDto newTaskContent );
+        public Task<TaskContentDto> Add(TaskContentDto newTaskContent );
         public Task<bool> Edit(int taskContentId, TaskContentDto newTaskContent);
         public Task<bool> Delete(int taskContentId);
         public Task<List<TaskContentDto>> GetAll();
