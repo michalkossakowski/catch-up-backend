@@ -9,6 +9,7 @@ namespace catch_up_backend.Dtos
         public int Id { get; set; }
         public Guid? NewbieId { get; set; }
         public int? MaterialsId { get; set; }
+        public int? CategoryId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public StateEnum State { get; set; }
@@ -24,6 +25,7 @@ namespace catch_up_backend.Dtos
         {
             Id = task.Id;
             NewbieId = task.NewbieId;
+            CategoryId = taskContent.CategoryId;
             MaterialsId = taskContent.MaterialsId;
             Title = taskContent.Title;
             Description = taskContent.Description;

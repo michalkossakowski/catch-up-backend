@@ -1,5 +1,7 @@
-﻿using catch_up_backend.Database;
+﻿using catch_up_backend.Controllers;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,36 @@ namespace catch_up_backend.Services
             newTask = new TaskDto( task );
             await _context.Tasks.AddAsync( task );
             await _context.SaveChangesAsync();
+        }
+        public async Task<bool> EditFullTask(int id, FullTask fullTask, Guid mentorId)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null) return false;
+
+            var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
+            if (taskContent == null) return false;
+
+            try
+            {
+                task.RoadMapPointId = fullTask.RoadMapPointId;
+                task.Status = fullTask.Status ?? "";
+                task.Deadline = fullTask.Deadline;
+                task.SpendTime = fullTask.SpendTime;
+                task.Priority = fullTask.Priority;
+                task.State = fullTask.State;
+                if (fullTask.CategoryId != taskContent.CategoryId 
+                    || fullTask.MaterialsId != taskContent.MaterialsId 
+                    || fullTask.Title != taskContent.Title 
+                    || fullTask.Description != taskContent.Description)
+                {
+                    var newTaskContent = new TaskContentDto(mentorId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title,fullTask.Description);
+
+                }
+            }
+            catch (Exception ex) {
+                new Exception(ex.ToString()); 
+            }
+            return true;
         }
         public async Task<List<TaskDto>> GetAllTasks()
         {
@@ -110,5 +142,6 @@ namespace catch_up_backend.Services
             return new FullTask(result.Task, result.TaskContent);
         }
 
+        
     }
 }
