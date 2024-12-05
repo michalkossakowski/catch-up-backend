@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace catch_up_backend.Dtos
 {
-    public class TaskDto
+    public class FullTask
     {
         public int Id { get; set; }
         public Guid? NewbieId { get; set; }
-        public int TaskContentId { get; set; }
+        public int? MaterialsId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public StateEnum State { get; set; }
         public int? RoadMapPointId { get; set; }
         public string Status { get; set; }
         public DateTime AssignmentDate { get; set; }
@@ -17,13 +20,14 @@ namespace catch_up_backend.Dtos
         public int SpendTime { get; set; }
         public int Priority { get; set; }
         public int? Rate { get; set; }
-        public StateEnum State { get; set; }
-        public TaskDto() { }
-        public TaskDto(TaskModel task)
+        public FullTask(TaskModel task, TaskContentModel taskContent)
         {
             Id = task.Id;
             NewbieId = task.NewbieId;
-            TaskContentId = task.TaskContentId;
+            MaterialsId = taskContent.MaterialsId;
+            Title = taskContent.Title;
+            Description = taskContent.Description;
+            State = task.State;
             RoadMapPointId = task.RoadMapPointId;
             Status = task.Status;
             AssignmentDate = task.AssignmentDate;
@@ -32,7 +36,6 @@ namespace catch_up_backend.Dtos
             SpendTime = task.SpendTime;
             Priority = task.Priority;
             Rate = task.Rate;
-            State = task.State;
         }
     }
 }

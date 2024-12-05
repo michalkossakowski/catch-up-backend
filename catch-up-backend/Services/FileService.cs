@@ -18,13 +18,13 @@ namespace catch_up_backend.Services
             _fileStorage = fileStorageFactory.CreateFileStorage();
         }
 
-        public async Task<FileDto> UploadFileAsync(IFormFile newFile, int? materialID)
+        public async Task<FileDto> UploadFile(IFormFile newFile, int? materialID)
         {
             var uniqueFileName = $"{Guid.NewGuid()}_{newFile.FileName}";
 
             using Stream fileStream = newFile.OpenReadStream();
 
-            var fileSource = await _fileStorage.UploadFileAsync(uniqueFileName, fileStream);
+            var fileSource = await _fileStorage.UploadFile(uniqueFileName, fileStream);
 
             FileModel fileModel = new FileModel(newFile.FileName, newFile.ContentType, fileSource);
             
@@ -32,7 +32,7 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
 
             if (materialID != null)
-                await AddToMaterialAsync(fileModel.Id, (int)materialID);
+                await AddToMaterial(fileModel.Id, (int)materialID);
 
             await _context.SaveChangesAsync();
             FileDto fileDto = new FileDto
@@ -45,7 +45,7 @@ namespace catch_up_backend.Services
             return fileDto;
         }
 
-        public async Task DeleteFileAsync(int fileId)
+        public async Task DeleteFile(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
 
@@ -53,7 +53,7 @@ namespace catch_up_backend.Services
 
             await _context.SaveChangesAsync();
         }
-        public async Task ArchiveFileAsync(int fileId)
+        public async Task ArchiveFile(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
             file.State = StateEnum.Archived;
@@ -61,7 +61,7 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<FileDto> GetByIdAsync(int fileId)
+        public async Task<FileDto> GetById(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
 
@@ -70,19 +70,27 @@ namespace catch_up_backend.Services
             return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type, Source = file.Source };
         }
 
-        public async Task<Stream> DownloadFileAsync(int fileId)
+        public async Task<Stream> DownloadFile(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
             if (file.State != StateEnum.Active)
                 throw new NotFoundException("File is not active.");
-            return await _fileStorage.DownloadFileAsync(file.Source);
+            return await _fileStorage.DownloadFile(file.Source);
         }
-        public async Task AddToMaterialAsync(int fileId, int materialId)
+        public async Task AddToMaterial(int fileId, int materialId)
         {
             var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-            
+
             if (file.State != StateEnum.Active)
                 throw new NotFoundException("File is not active.");
+
+            var fim = await _context.FileInMaterials.FindAsync(fileId, materialId);
+            if (fim is not null)
+            {
+                fim.State = StateEnum.Active;
+                await _context.SaveChangesAsync();
+                return;
+            }
 
             if (await _context.Materials.FindAsync(materialId) == null)
                 throw new Exception("Material not found");
@@ -93,7 +101,7 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<FileDto>> GetFilesAsync(int materialId)
+        public async Task<List<FileDto>> GetFiles(int materialId)
         {
             return await _context.FileInMaterials
                 .Where(fim => fim.MaterialId == materialId && fim.State == StateEnum.Active)
