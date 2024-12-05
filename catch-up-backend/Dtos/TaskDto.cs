@@ -17,7 +17,6 @@ namespace catch_up_backend.Dtos
         public int SpendTime { get; set; }
         public int Priority { get; set; }
         public int? Rate { get; set; }
-        public StateEnum State { get; set; }
         public TaskDto() { }
         public TaskDto(TaskModel task)
         {
@@ -32,7 +31,6 @@ namespace catch_up_backend.Dtos
             SpendTime = task.SpendTime;
             Priority = task.Priority;
             Rate = task.Rate;
-            State = task.State;
         }
     }
 }
