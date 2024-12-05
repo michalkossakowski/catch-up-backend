@@ -90,9 +90,9 @@ namespace catch_up_backend.Services
 
             return feedback;
         }
-        public async Task<FeedbackDto> GetBySenderId(Guid SenderId)
+        public async Task<List<FeedbackDto>> GetBySenderId(Guid SenderId)
         {
-            var feedback = await _context.Feedbacks
+            var feedbacks = await _context.Feedbacks
                 .Where(f => f.SenderId == SenderId && f.State != StateEnum.Deleted)
                 .Select(f => new FeedbackDto
                 {
@@ -103,14 +103,14 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId
-                }).FirstOrDefaultAsync();
+                }).ToListAsync();
 
-            return feedback;
+            return feedbacks;
         }
 
-        public async Task<FeedbackDto> GetByReceiverId(Guid ReceiverId)
+        public async Task<List<FeedbackDto>> GetByReceiverId(Guid ReceiverId)
         {
-            var feedback = await _context.Feedbacks
+            var feedbacks = await _context.Feedbacks
                 .Where(f => f.ReceiverId == ReceiverId && f.State != StateEnum.Deleted)
                 .Select(f => new FeedbackDto
                 {
@@ -121,9 +121,9 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId
-                }).FirstOrDefaultAsync();
+                }).ToListAsync();
 
-            return feedback;
+            return feedbacks;
         }
 
         public async Task<List<FeedbackDto>> GetAll()

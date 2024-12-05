@@ -59,20 +59,30 @@ namespace catch_up_backend.Controllers
         [Route("GetBySenderId/{senderId:Guid}")]
         public async Task<IActionResult> GetBySenderId(Guid senderId)
         {
-            var feedback = await _feedbackService.GetBySenderId(senderId);
-            if (feedback == null)
-                return NotFound(new { message = $"Feedback with sender id: {senderId} not found" });
-            return Ok(feedback);
+            var feedbacks = await _feedbackService.GetBySenderId(senderId);
+            if (!feedbacks.Any())
+            {
+                return NotFound(new
+                {
+                    message = $"Feedback with receiver id: {senderId} not found"
+                });
+            }
+            return Ok(feedbacks);
         }
 
         [HttpGet]
         [Route("GetByReceiverId/{receiverId:Guid}")]
         public async Task<IActionResult> GetByReceiverId(Guid receiverId)
         {
-            var feedback = await _feedbackService.GetByReceiverId(receiverId);
-            if (feedback == null)
-                return NotFound(new { message = $"Feedback with receiver id: {receiverId} not found" });
-            return Ok(feedback);
+            var feedbacks = await _feedbackService.GetByReceiverId(receiverId);
+            if (!feedbacks.Any())
+            {
+                return NotFound(new
+                {
+                    message = $"Feedback with receiver id: {receiverId} not found"
+                });
+            }
+            return Ok(feedbacks);
         }
 
         [HttpGet]
