@@ -16,13 +16,13 @@ namespace catch_up_backend.Services
             _context = context;
             _fileService = fileService;
         }
-        public async Task AddFileAsync(int materialId, int fileId)
+        public async Task AddFile(int materialId, int fileId)
         {
-            await _fileService.AddToMaterialAsync(fileId, materialId);
-            var addedFile = await _fileService.GetByIdAsync(fileId);
+            await _fileService.AddToMaterial(fileId, materialId);
+            var addedFile = await _fileService.GetById(fileId);
         }
 
-        public async Task<MaterialDto> CreateMaterialAsync(MaterialDto materialDto)
+        public async Task<MaterialDto> CreateMaterial(MaterialDto materialDto)
         {
             var material = new MaterialsModel(materialDto.Name);
             await _context.Materials.AddAsync(material);
@@ -31,7 +31,7 @@ namespace catch_up_backend.Services
             return materialDto;
         }
 
-        public async Task DeleteAsync(int materialId)
+        public async Task Delete(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId)
                 ?? throw new NotFoundException("Material not found");
@@ -48,7 +48,7 @@ namespace catch_up_backend.Services
 
             await _context.SaveChangesAsync();
         }
-        public async Task ArchiveAsync(int materialId)
+        public async Task Archive(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId)
                 ?? throw new NotFoundException("Material not found");
@@ -68,7 +68,7 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditAsync(int materialId, string name)
+        public async Task Edit(int materialId, string name)
         {
             var material = await _context.Materials.FindAsync(materialId)
                 ?? throw new NotFoundException("Material not found");
@@ -79,14 +79,14 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<MaterialDto> GetFilesInMaterialAsync(int materialId)
+        public async Task<MaterialDto> GetFilesInMaterial(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId)
                 ?? throw new NotFoundException("Material not found");
 
             if (material.State != StateEnum.Active)
                 throw new NotFoundException("Material not active");
-            var files = await _fileService.GetFilesAsync(materialId);
+            var files = await _fileService.GetFiles(materialId);
 
             var FilesInMaterial = new MaterialDto
             {
@@ -98,7 +98,7 @@ namespace catch_up_backend.Services
             return FilesInMaterial;
         }
 
-        public async Task<MaterialDto> GetMaterialAsync(int materialId)
+        public async Task<MaterialDto> GetMaterial(int materialId)
         {
             var material = await _context.Materials.FindAsync(materialId)
                 ?? throw new NotFoundException("Material not found");
@@ -111,7 +111,7 @@ namespace catch_up_backend.Services
             return materialDto;
         }
 
-        public async Task<List<MaterialDto>> GetMaterialsAync()
+        public async Task<List<MaterialDto>> GetMaterials()
         {
             var materials = await _context.Materials.Where(m => m.State == StateEnum.Active).Select(m => new MaterialDto
             {
@@ -120,9 +120,9 @@ namespace catch_up_backend.Services
             }).ToListAsync();
             return materials;
         }
-        public async Task RemoveFileAsync(int materialId, int fileId)
+        public async Task RemoveFile(int materialId, int fileId)
         {
-            var file = await _fileService.GetByIdAsync(fileId);
+            var file = await _fileService.GetById(fileId);
             var fileInMaterial = await _context.FileInMaterials
                 .FirstAsync(fim => fim.MaterialId == materialId && fim.FileId == fileId && fim.State == StateEnum.Active);
             fileInMaterial.State = StateEnum.Archived;

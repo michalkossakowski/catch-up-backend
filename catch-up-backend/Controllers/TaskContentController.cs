@@ -20,8 +20,9 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] TaskContentDto newTaskContent)
         {
-            return await _taskContentService.Add(newTaskContent)
-                ? Ok(new { message = "Task content added", taskContent = newTaskContent })
+            var result = await _taskContentService.Add(newTaskContent);
+            return result != null
+                ? Ok(new { message = "Task content added", taskContent = result })
                 : StatusCode(500, new { message = "Error: Task content add" });
         }
 
