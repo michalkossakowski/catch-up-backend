@@ -63,7 +63,7 @@ namespace catch_up_backend.Services
             var accessToken = GenerateJwtToken(
                 id,
                 _config["Jwt:AccessTokenSecret"],
-                TimeSpan.FromMinutes(10)
+                TimeSpan.FromHours(12)
             );
 
             var refreshToken = GenerateJwtToken(
