@@ -63,5 +63,13 @@ namespace catch_up_backend.Controllers
             var role = await _userService.GetRole(userId);
             return Ok(role);
         }
+
+        [HttpGet]
+        [Route("GetMentorAdmin")]
+        public async Task<IActionResult> GetMentorAdmin()
+        {
+            var users = await _userService.GetMentorAdmin();
+            return Ok(users);
+        }
     }
 }

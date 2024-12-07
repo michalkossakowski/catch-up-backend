@@ -10,5 +10,6 @@ namespace catch_up_backend.Interfaces
         Task<UserDto> GetById(Guid userId);
         Task<List<UserModel>> GetAll();
         Task<string> GetRole(Guid userId);
+        Task<List<UserModel>> GetMentorAdmin();
     }
 }
