@@ -1,7 +1,10 @@
-﻿using catch_up_backend.Dtos;
+﻿using catch_up_backend.Database;
+using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace catch_up_backend.Services
 {
@@ -35,6 +38,10 @@ namespace catch_up_backend.Services
         public async Task<string> GetRole(Guid userId)
         {
             return await userRepository.GetRole(userId);
+        }
+        public async Task<List<UserModel>> GetMentorAdmin()
+        {
+            return await userRepository.GetMentorAdmin();
         }
     }
 }

@@ -4,6 +4,7 @@ using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using catch_up_backend.Enums;
 
 namespace catch_up_backend.Repositories
 {
@@ -91,6 +92,12 @@ namespace catch_up_backend.Repositories
                 .FirstOrDefaultAsync();
 
             return userRole;
+        }
+        public async Task<List<UserModel>> GetMentorAdmin()
+        {
+            return await _context.Users
+            .Where(a => a.State == StateEnum.Active && (a.Type == "Mentor" || a.Type == "Admin"))
+            .ToListAsync();
         }
     }
 }
