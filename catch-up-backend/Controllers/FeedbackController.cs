@@ -64,7 +64,7 @@ namespace catch_up_backend.Controllers
             {
                 return NotFound(new
                 {
-                    message = $"Feedback with receiver id: {senderId} not found"
+                    message = $"Feedback with sender id: {senderId} not found"
                 });
             }
             return Ok(feedbacks);
