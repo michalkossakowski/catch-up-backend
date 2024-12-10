@@ -15,8 +15,9 @@ namespace catch_up_backend.Services
             this.userRepository = userRepository;
         }
 
-        public async Task Add(UserDto newUser){
-           await userRepository.Add(newUser);
+        public async Task<UserDto> Add(UserDto newUser)
+        {
+            return await userRepository.Add(newUser);
         }
 
         public async Task Edit(Guid userId, UserDto updatedUser){

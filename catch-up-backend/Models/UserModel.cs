@@ -13,17 +13,17 @@ namespace catch_up_backend.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string Type { get; set; }
-        public string Position { get; set; }
+        public string? Position { get; set; }
         public Dictionary<BadgeTypeCountEnum, int>? Counters { get; set; }
-        public StateEnum State { get; set; }
-        public UserModel(string name, string surname, string email, string password, string type, string position)
+        public StateEnum? State { get; set; }
+        public UserModel(string name, string surname, string email, string password, string type, string? position = null)
         {
-            this.Name = name;
-            this.Surname = surname; 
-            this.Email = email; 
-            this.Password = password; 
+            this.Name = name ?? "";
+            this.Surname = surname ?? "";
+            this.Email = email;
+            this.Password = password;
             this.Type = type;
-            this.Position = position;
+            this.Position = position ?? string.Empty; 
             State = StateEnum.Active;
             Counters = InitializeCounters();
         }

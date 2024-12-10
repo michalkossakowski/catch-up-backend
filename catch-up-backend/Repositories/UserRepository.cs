@@ -16,7 +16,7 @@ namespace catch_up_backend.Repositories
             _context = context;
         }
 
-        public async Task Add(UserDto newUser)
+        public async Task<UserDto> Add(UserDto newUser)
         {
             var user = new UserModel(
                 newUser.Name,
@@ -28,6 +28,16 @@ namespace catch_up_backend.Repositories
 
             await _context.AddAsync(user);
             await _context.SaveChangesAsync();
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Type = user.Type,
+                Position = user.Position
+            };
         }
 
         public async Task Edit(Guid userId, UserDto updatedUser)

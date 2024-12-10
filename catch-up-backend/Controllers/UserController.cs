@@ -20,8 +20,8 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] UserDto newUser)
         {
-            await _userService.Add(newUser);
-            return Ok(new { message = "User added", user = newUser });
+            var addedUser = await _userService.Add(newUser);
+            return Ok(new { message = "User added", user = addedUser });
         }
 
         [HttpPatch]
