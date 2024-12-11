@@ -128,10 +128,9 @@ namespace catch_up_backend.Services
         }
         public async Task<CategoryDto> GetActiveCategory(int categoryId)
         {
-            var categoryModel = await _context.Categories.FindAsync(categoryId)
-                ?? throw new NotFoundException("Category not found");
-            if (categoryModel.State != Enums.StateEnum.Active)
-                throw new NotFoundException("Category not is not active");
+            var categoryModel = await _context.Categories.FindAsync(categoryId);
+            if (categoryModel == null || categoryModel.State != Enums.StateEnum.Active)
+                return null;
             return new CategoryDto { Id = categoryModel.Id, Name = categoryModel.Name };
         }
 

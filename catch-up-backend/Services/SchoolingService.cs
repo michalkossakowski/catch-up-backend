@@ -19,8 +19,11 @@ namespace catch_up_backend.Services
             _schoolingPartService = schoolingPartService;
         }
 
-        public async Task AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
+        public async Task<bool> AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
         {
+            if (schoolingPart == null || schoolingID <= 0)
+                return false;
+
             var schoolingPartModel = new SchoolingPartModel(schoolingID, schoolingPart.Name, schoolingPart.Content);
             _context.SchoolingParts.Add(schoolingPartModel);
 
@@ -34,15 +37,17 @@ namespace catch_up_backend.Services
                 }
                 await _context.SaveChangesAsync();
             }
+            return true;
         }
 
-        public async Task<FullSchoolingDto> CreateSchooling(SchoolingDto schoolingDto)
+        public async Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto)
         {
             if (schoolingDto.CategoryId == 0)
-                throw new ValidationException("Category is neeeded");
+                return null;
 
-            var category = await _categoryService.GetById(schoolingDto.CategoryId)
-                ?? throw new NotFoundException("Category not found or is not active");
+            var category = await _categoryService.GetById(schoolingDto.CategoryId);
+            if (category == null)
+                return null;
 
             var schooling = new SchoolingModel(
                 schoolingDto.CreatorId,
@@ -50,20 +55,20 @@ namespace catch_up_backend.Services
                 schoolingDto.Title,
                 schoolingDto.Description,
                 schoolingDto.Priority
-                );
+            );
             await _context.AddAsync(schooling);
             await _context.SaveChangesAsync();
             schoolingDto.Id = schooling.Id;
 
-
-
             return new FullSchoolingDto(schoolingDto, category, new List<SchoolingPartDto>());
         }
 
-        public async Task DeleteSchooling(int schoolingId)
+        public async Task<bool> DeleteSchooling(int schoolingId)
         {
-            var schooling = await _context.Schoolings.FindAsync(schoolingId)
-                ?? throw new NotFoundException("Schooling not found");
+            var schooling = await _context.Schoolings.FindAsync(schoolingId);
+            if (schooling == null)
+                return false;
+
             schooling.State = StateEnum.Deleted;
 
             var schoolingParts = await _context.SchoolingParts
@@ -84,12 +89,15 @@ namespace catch_up_backend.Services
                 }
             }
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task ArchiveSchooling(int schoolingId)
+        public async Task<bool> ArchiveSchooling(int schoolingId)
         {
-            var schooling = await _context.Schoolings.FindAsync(schoolingId)
-                ?? throw new NotFoundException("Schooling not found");
+            var schooling = await _context.Schoolings.FindAsync(schoolingId);
+            if (schooling == null)
+                return false;
+
             schooling.State = StateEnum.Archived;
 
             var schoolingParts = await _context.SchoolingParts
@@ -110,16 +118,22 @@ namespace catch_up_backend.Services
                 }
             }
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task Edit(FullSchoolingDto fullSchoolingDto)
+        public async Task<bool> Edit(FullSchoolingDto fullSchoolingDto)
         {
-            var existingSchooling = await _context.Schoolings.FindAsync(fullSchoolingDto.Schooling.Id)
-                ?? throw new NotFoundException("Schooling not found");
+            if (fullSchoolingDto == null)
+                return false;
+
+            var existingSchooling = await _context.Schoolings.FindAsync(fullSchoolingDto.Schooling.Id);
+            if (existingSchooling == null)
+                return false;
 
             await EditSchooling(fullSchoolingDto.Schooling);
             await _schoolingPartService.EditManySchoolingPart(fullSchoolingDto.Parts);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<FullSchoolingDto>> GetAllFull()
@@ -141,13 +155,13 @@ namespace catch_up_backend.Services
 
             return fullSchoolingDtos;
         }
-        public async Task AddSchoolingToUser(Guid userId, int schoolingId)
+        public async Task<bool> AddSchoolingToUser(Guid userId, int schoolingId)
         {
             if (await _context.Users.FindAsync(userId) == null)
-                throw new NotFoundException("User not found in database");
+                return false;
 
             if (await _context.Schoolings.FindAsync(schoolingId) == null)
-                throw new NotFoundException("Schooling not found in database");
+                return false;
 
             var schoolingUser = await _context.SchoolingsUsers
                 .FirstOrDefaultAsync(su => su.NewbieId == userId && su.SchoolingId == schoolingId);
@@ -161,48 +175,55 @@ namespace catch_up_backend.Services
                 schoolingUser.State = StateEnum.Active;
 
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task ArchiveUserSchooling(Guid userId, int schoolingId)
+        public async Task<bool> ArchiveUserSchooling(Guid userId, int schoolingId)
         {
             if (await _context.Users.FindAsync(userId) == null)
-                throw new NotFoundException("User not found in database");
+                return false;
 
             if (await _context.Schoolings.FindAsync(schoolingId) == null)
-                throw new NotFoundException("Schooling not found in database");
+                return false;
 
             var schoolingUser = await _context.SchoolingsUsers
-                .FirstOrDefaultAsync(su => su.NewbieId == userId && su.SchoolingId == schoolingId)
-                ?? throw new NotFoundException("User is not assign to this schooling");
+                .FirstOrDefaultAsync(su => su.NewbieId == userId && su.SchoolingId == schoolingId);
+
+            if(schoolingUser == null)
+                return false;
 
             schoolingUser.State = StateEnum.Archived;
 
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteUserSchooling(Guid userId, int schoolingId)
+        public async Task<bool> DeleteUserSchooling(Guid userId, int schoolingId)
         {
             if (await _context.Users.FindAsync(userId) == null)
-                throw new NotFoundException("User not found in database");
+                return false;
 
             if (await _context.Schoolings.FindAsync(schoolingId) == null)
-                throw new NotFoundException("Schooling not found in database");
+                return false;
 
             var schoolingUser = await _context.SchoolingsUsers
-                .FirstOrDefaultAsync(su => su.NewbieId == userId && su.SchoolingId == schoolingId)
-                ?? throw new NotFoundException("User is not assign to this schooling");
+                .FirstOrDefaultAsync(su => su.NewbieId == userId && su.SchoolingId == schoolingId);
+
+            if (schoolingUser == null)
+                return false;
 
             schoolingUser.State = StateEnum.Deleted;
 
             await _context.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<List<FullSchoolingDto>> GetAllFull(Guid userId)
         {
             if (!await _context.Users.AnyAsync(u => u.Id == userId))
-            {
-                throw new NotFoundException("User not found in database");
-            }
+                return null;
+
             var schoolingList = await _context.Schoolings
                 .Where(schooling => schooling.State == StateEnum.Active)
                 .Join(_context.SchoolingsUsers,
@@ -228,8 +249,10 @@ namespace catch_up_backend.Services
 
         public async Task<FullSchoolingDto> GetFull(int schoolingId)
         {
-            var schoolingModel = await _context.Schoolings.FindAsync(schoolingId)
-                ?? throw new NotFoundException("Schooling not found");
+            var schoolingModel = await _context.Schoolings.FindAsync(schoolingId);
+            if(schoolingModel == null)
+                return null;
+
             var schooling = new SchoolingDto(schoolingModel);
 
             var category = await _categoryService.GetActiveCategory(schooling.CategoryId);
@@ -242,7 +265,7 @@ namespace catch_up_backend.Services
         public async Task<List<int>> GetUserSchoolingsID(Guid userId)
         {
             if (await _context.Users.FindAsync(userId) == null)
-                throw new NotFoundException("User not found in database");
+                return null;
 
             return await _context.SchoolingsUsers
                 .Where(su => su.NewbieId == userId && su.State == StateEnum.Active)
@@ -250,18 +273,21 @@ namespace catch_up_backend.Services
                 .ToListAsync();
         }
 
-        public async Task EditSchooling(SchoolingDto schoolingDto)
+        public async Task<bool> EditSchooling(SchoolingDto schoolingDto)
         {
-            var existingSchooling = await _context.Schoolings.FindAsync(schoolingDto.Id)
-                ?? throw new NotFoundException("Schooling not found");
+            var existingSchooling = await _context.Schoolings.FindAsync(schoolingDto.Id);
+            if(existingSchooling == null)
+                return false;
+
             if(!await _categoryService.IsActive(existingSchooling.CategoryId))
-                throw new NotFoundException("Category not active or not found");
+                return false;
             existingSchooling.Title = schoolingDto.Title;
             existingSchooling.Description = schoolingDto.Description;
             existingSchooling.Priority = schoolingDto.Priority;
             existingSchooling.CategoryId = schoolingDto.CategoryId;
 
             await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
