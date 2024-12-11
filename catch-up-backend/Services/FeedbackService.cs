@@ -85,7 +85,8 @@ namespace catch_up_backend.Services
                     Title = f.Title,
                     Description = f.Description,
                     ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId
+                    ResourceId = f.ResourceId,
+                    createdDate = f.createdDate
                 }).FirstOrDefaultAsync();
 
             return feedback;
@@ -102,7 +103,8 @@ namespace catch_up_backend.Services
                     Title = f.Title,
                     Description = f.Description,
                     ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId
+                    ResourceId = f.ResourceId,
+                    createdDate = f.createdDate
                 }).ToListAsync();
 
             return feedbacks;
@@ -120,7 +122,8 @@ namespace catch_up_backend.Services
                     Title = f.Title,
                     Description = f.Description,
                     ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId
+                    ResourceId = f.ResourceId,
+                    createdDate = f.createdDate
                 }).ToListAsync();
 
             return feedbacks;
@@ -138,7 +141,9 @@ namespace catch_up_backend.Services
                     Title = f.Title,
                     Description = f.Description,
                     ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId
+                    ResourceId = f.ResourceId,
+                    createdDate = f.createdDate
+
                 }).ToListAsync();
 
             return feedback;
@@ -158,7 +163,8 @@ namespace catch_up_backend.Services
                     Title = f.Title,
                     Description = f.Description,
                     ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId
+                    ResourceId = f.ResourceId,
+                    createdDate = f.createdDate
                 })
                 .ToListAsync();
 
