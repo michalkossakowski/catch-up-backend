@@ -58,7 +58,8 @@ namespace catch_up_backend.Repositories
         public async Task Delete(Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            _context.Users.Remove(user);
+            user.State = StateEnum.Deleted;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
