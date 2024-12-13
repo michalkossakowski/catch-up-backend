@@ -15,138 +15,140 @@ namespace catch_up_backend.Controllers
         {
             _materialService = materialService;
         }
-
-
         /// <summary>
-        /// It create new material
+        /// Creates a new material.
         /// </summary>
-        /// <param name="materialDto">It takes materialDto, 
-        /// material name is required to create new material
-        /// </param>
-        /// <returns>message and materialDto</returns>
+        /// <param name="materialDto"> Contains the data needed to create the material.The material name is required.</param>
+        /// <returns>
+        /// A message with the material details if creation is successful,
+        /// or an error message if the creation fails. 
+        /// </returns>
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create(MaterialDto materialDto)
         {
             var material = await _materialService.CreateMaterial(materialDto);
-            return CreatedAtAction(nameof(Get), new { materialId = material.Id }, new { message = "Material  created", material });
+            if(material == null)
+                return StatusCode(500, new { message = "Material adding error" });
+            return CreatedAtAction(nameof(Get), new { materialId = material.Id }, material);
         }
-
         /// <summary>
-        /// Only use to change material Name. 
-        /// To add/remove files use AddFile/RemoveFile
+        /// Updates the name of an existing material.
         /// </summary>
-        /// <param name="materialId">To find material</param>
-        /// <param name="name"> name - value that is changed</param>
-        /// <returns>On success, returns the message</returns>
+        /// <param name="materialId">The ID of the material to update.</param>
+        /// <param name="name">The new name for the material.</param>
+        /// <returns> A success message if the material is updated, or an error message if the material is not found. </returns>
         [HttpPut]
         [Route("Edit/{materialId:int}/{name}")]
         public async Task<IActionResult> Edit(int materialId, string name )
         {
-            await _materialService.Edit(materialId, name);
-            return Ok(new { message = "Material  edited"});
+            return  await _materialService.Edit(materialId, name)
+                ? Ok(new { message = "Material edited successfully"})
+                : NotFound(new { message = "Material not found." });
         }
-
         /// <summary>
-        /// It will change state of material to Deleted and 
-        /// all of relations (in table fileInMaterial) to the state deleted
+        /// Deletes a material by marking it as deleted.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <returns>On success, returns the message</returns>
+        /// <param name="materialId">The ID of the material to delete.</param>
+        /// <returns>A success message if the material is deleted, or an error message if the material is not found.</returns>
         [HttpDelete]
         [Route("Delete/{materialId:int}")]
         public async Task<IActionResult> Delete(int materialId)
         {
-            await _materialService.Delete(materialId);
-            return Ok(new { message = "Material  deleted" });
+            return await _materialService.Delete(materialId)
+                ? Ok(new { message = "Material deleted successfully" })
+                : NotFound(new { message = "Material not found." });
         }
 
         /// <summary>
-        /// It will change state of material to Archived and 
-        /// all of relations (in table fileInMaterial) to the state deleted
+        /// Archives a material by marking it as archived.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <returns>On success, returns the message</returns>
+        /// <param name="materialId">The ID of the material to archive.</param>
+        /// <returns>A success message if the material is archived, or an error message if the material is not found.</returns>>
         [HttpDelete]
         [Route("Archive/{materialId:int}")]
         public async Task<IActionResult> Archive(int materialId)
         {
-            await _materialService.Archive(materialId);
-            return Ok(new { message = "Material  deleted" });
+            return await _materialService.Archive(materialId)
+                ? Ok(new { message = "Material archived successfully." })
+                : NotFound(new { message = "Material not found." });
         }
 
         /// <summary>
-        /// It add relation between material and file in table "FileInMaterial"
+        /// Adds a file to a material.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <param name="fileId"></param>
-        /// <returns>On success, returns the message</returns>
+        /// <param name="materialId">The ID of the material to add the file to.</param>
+        /// <param name="fileId">The ID of the file to add.</param>
+        /// <returns>A success message if the file is added, or an error message if the file or material is not found.</returns>
         [HttpPost]
         [Route("AddFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> AddFile(int materialId, int fileId)
         {
-            await _materialService.AddFile(materialId, fileId);
-            return Ok(new { message = "Added File to material",});
+            return await _materialService.AddFile(materialId, fileId)
+                ? Ok(new { message = "File added to material." })
+                : NotFound(new { message = "File or Material not found." });
+
         }
 
         /// <summary>
-        /// It "remove file" in material by changing state of their relation to Archived 
+        /// Removes a file from a material.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <param name="fileId"></param>
-        /// <returns></returns>
+        /// <param name="materialId">The ID of the material to remove the file from.</param>
+        /// <param name="fileId">The ID of the file to remove.</param>
+        /// <returns>A success message if the file is removed, or an error message if the file or material is not found.</returns>
         [HttpPost]
         [Route("RemoveFile/{materialId:int}/{fileId:int}")]
         public async Task<IActionResult> RemoveFile(int materialId, int fileId)
         {
-            await _materialService.RemoveFile(materialId, fileId);
-            return Ok(new { message = "File Removed" });
+            return await _materialService.RemoveFile(materialId, fileId)
+                ? Ok(new { message = "File removed from material successfully." })
+                : NotFound(new { message = "File or material not found." });
         }
 
         /// <summary>
-        /// Give material Id to get material (only With Active state).
-        /// To get not empty List<FileDto> use GetMaterialWithFiles()
+        /// Retrieves a material by its ID.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <returns>
-        /// MaterialDto {Id, Name, (is empty)List<FileDto>}
-        /// /// </returns>
+        /// <param name="materialId">The ID of the material to retrieve.</param>
+        /// <returns>The material details if found, or an error message if not found.</returns>
         [HttpGet]
         [Route("Get/{materialId:int}")]
         public async Task<IActionResult> Get(int materialId)
         {
             var materialDto = await _materialService.GetMaterial(materialId);
-            return Ok(new { message = "Material found", materialDto });
+            if (materialDto == null)
+            {
+                return NotFound(new { message = "Material not found." });
+            }
+            return Ok(materialDto);
         }
 
         /// <summary>
-        /// Use to get material with list of files which have their Id, Name, Type, Source 
-        /// (only where relation state is Active)
-        /// To download one of this files use Download from FileController.
+        /// Retrieves a material along with its associated files.
         /// </summary>
-        /// <param name="materialId"></param>
-        /// <returns>
-        /// MaterialDto {Id, Name, List<FileDto>{Id, Name, Type: Empty, Source: Empty}}
-        /// </returns>
+        /// <param name="materialId">The ID of the material to retrieve along with its files.</param>
+        /// <returns>The material details with associated files, or an error message if not found.</returns>
         [HttpGet]
         [Route("GetWithFiles/{materialId:int}")]
         public async Task<IActionResult> GetWithFiles(int materialId)
         {
             var materialDto = await _materialService.GetFilesInMaterial(materialId);
-            return Ok(new { message = "Material found", materialDto });
+            if (materialDto == null)
+            {
+                return NotFound(new { message = "Material not found." });
+            }
+            return Ok(materialDto);
         }
 
         /// <summary>
-        /// Use to get all materials (only Active materials)
+        /// Retrieves all active materials.
         /// </summary>
-        /// <returns>
-        /// List of materials whit empty List<FileDto> inside
-        /// </returns>
+        /// <returns>A list of all active materials.</returns>
         [HttpGet]
         [Route("GetAllMaterials")]
-        public async Task<List<MaterialDto>> GetAllMaterials()
+        public async Task<IActionResult> GetAllMaterials()
         {
-            return await _materialService.GetMaterials();
+            var materials = await _materialService.GetMaterials();
+            return Ok(materials);
         }
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using catch_up_backend.Exceptions;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Repositories;
 
@@ -101,7 +100,6 @@ namespace catch_up_backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------

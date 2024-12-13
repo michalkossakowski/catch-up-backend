@@ -16,10 +16,10 @@ namespace catch_up_backend.Services
             _context = context;
             _fileService = fileService;
         }
-        public async Task AddFile(int materialId, int fileId)
+        public async Task<bool> AddFile(int materialId, int fileId)
         {
             await _fileService.AddToMaterial(fileId, materialId);
-            var addedFile = await _fileService.GetById(fileId);
+            return true;
         }
 
         public async Task<MaterialDto> CreateMaterial(MaterialDto materialDto)
@@ -30,11 +30,12 @@ namespace catch_up_backend.Services
             materialDto.Id = material.Id;
             return materialDto;
         }
-
-        public async Task Delete(int materialId)
+        public async Task<bool> Delete(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId)
-                ?? throw new NotFoundException("Material not found");
+            var material = await _context.Materials.FindAsync(materialId);
+            if (material == null)
+                return false;
+
             material.State = StateEnum.Deleted;
 
             var fileInMaterial = _context.FileInMaterials
@@ -47,11 +48,13 @@ namespace catch_up_backend.Services
             }
 
             await _context.SaveChangesAsync();
+            return true;
         }
-        public async Task Archive(int materialId)
+        public async Task<bool> Archive(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId)
-                ?? throw new NotFoundException("Material not found");
+            var material = await _context.Materials.FindAsync(materialId);
+            if (material == null)
+                return false;
 
             material.State = StateEnum.Archived;
 
@@ -66,26 +69,27 @@ namespace catch_up_backend.Services
             }
 
             await _context.SaveChangesAsync();
+            return true;
         }
-
-        public async Task Edit(int materialId, string name)
+        public async Task<bool> Edit(int materialId, string name)
         {
-            var material = await _context.Materials.FindAsync(materialId)
-                ?? throw new NotFoundException("Material not found");
+            var material = await _context.Materials.FindAsync(materialId);
+            if (material == null)
+                return false;
 
             material.Name = name;
 
             _context.Update(material);
             await _context.SaveChangesAsync();
+            return true;
         }
-
         public async Task<MaterialDto> GetFilesInMaterial(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId)
-                ?? throw new NotFoundException("Material not found");
+            var material = await _context.Materials.FindAsync(materialId);
+            
+            if (material == null || material.State != StateEnum.Active)
+                return null;
 
-            if (material.State != StateEnum.Active)
-                throw new NotFoundException("Material not active");
             var files = await _fileService.GetFiles(materialId);
 
             var FilesInMaterial = new MaterialDto
@@ -97,20 +101,16 @@ namespace catch_up_backend.Services
 
             return FilesInMaterial;
         }
-
         public async Task<MaterialDto> GetMaterial(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId)
-                ?? throw new NotFoundException("Material not found");
+            var material = await _context.Materials.FindAsync(materialId);
 
-            if (material.State != StateEnum.Active)
-                throw new NotFoundException("Material not found.");
+            if (material == null || material.State != StateEnum.Active)
+                return null;
 
             var materialDto = new MaterialDto { Id = material.Id, Name = material.Name };
-
             return materialDto;
         }
-
         public async Task<List<MaterialDto>> GetMaterials()
         {
             var materials = await _context.Materials.Where(m => m.State == StateEnum.Active).Select(m => new MaterialDto
@@ -120,13 +120,21 @@ namespace catch_up_backend.Services
             }).ToListAsync();
             return materials;
         }
-        public async Task RemoveFile(int materialId, int fileId)
+        public async Task<bool> RemoveFile(int materialId, int fileId)
         {
             var file = await _fileService.GetById(fileId);
+            if(file == null)
+                return false;
+
             var fileInMaterial = await _context.FileInMaterials
                 .FirstAsync(fim => fim.MaterialId == materialId && fim.FileId == fileId && fim.State == StateEnum.Active);
+            
+            if(fileInMaterial == null)
+                return false;
+
             fileInMaterial.State = StateEnum.Archived;
             await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
