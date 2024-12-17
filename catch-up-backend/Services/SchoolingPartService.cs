@@ -58,13 +58,13 @@ namespace catch_up_backend.Services
             return materials;
         }
 
-        public async Task AddMaterialToSchooling(int schoolingPartId, int materialId)
+        public async Task<bool> AddMaterialToSchooling(int schoolingPartId, int materialId)
         {
-            if (!await _context.Materials.AnyAsync(m => m.Id == materialId && m.State == StateEnum.Active))
-                throw new NotFoundException("Material not found or material is not active");
-
-            if (!await _context.SchoolingParts.AnyAsync(sp => sp.Id == schoolingPartId && sp.State == StateEnum.Active))
-                throw new NotFoundException("SchoolingPart not found or schoolingPart is not active");
+            if (!await _context.Materials.AnyAsync(m => m.Id == materialId && m.State == StateEnum.Active) ||
+                !await _context.SchoolingParts.AnyAsync(sp => sp.Id == schoolingPartId && sp.State == StateEnum.Active))
+            {
+                return false;
+            }
 
             var materialInSchooling = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId });
 
@@ -77,12 +77,13 @@ namespace catch_up_backend.Services
                 materialInSchooling.State = StateEnum.Active;
 
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task ArchiveSchoolingPart(int schoolingPartId)
+        public async Task<bool> ArchiveSchoolingPart(int schoolingPartId)
         {
-            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId)
-                ?? throw new NotFoundException("SchoolingPart not found");
+            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId);
+            if (schoolingPart == null) return false;
 
             schoolingPart.State = StateEnum.Archived;
 
@@ -90,12 +91,13 @@ namespace catch_up_backend.Services
                 .Where(msp => msp.SchoolingPartId == schoolingPartId && msp.State == StateEnum.Active)
                 .ForEachAsync(msp => msp.State = StateEnum.Archived);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteSchoolingPart(int schoolingPartId)
+        public async Task<bool> DeleteSchoolingPart(int schoolingPartId)
         {
-            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId)
-                ?? throw new NotFoundException("SchoolingPart not found");
+            var schoolingPart = await _context.SchoolingParts.FindAsync(schoolingPartId);
+            if (schoolingPart == null) return false;
 
             schoolingPart.State = StateEnum.Deleted;
 
@@ -103,24 +105,27 @@ namespace catch_up_backend.Services
                 .Where(msp => msp.SchoolingPartId == schoolingPartId)
                 .ForEachAsync(msp => msp.State = StateEnum.Archived);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task ArchiveMaterialFromSchooling(int schoolingPartId, int materialId)
+        public async Task<bool> ArchiveMaterialFromSchooling(int schoolingPartId, int materialId)
         {
-            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId })
-                ?? throw new NotFoundException("SchoolingPart not found");
+            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId });
+            if (msp == null) return false;
 
             msp.State = StateEnum.Archived;
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteMaterialFromSchooling(int schoolingPartId, int materialId)
+        public async Task<bool> DeleteMaterialFromSchooling(int schoolingPartId, int materialId)
         {
-            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId })
-                ?? throw new NotFoundException("SchoolingPart not found");
+            var msp = await _context.MaterialsSchoolingParts.FindAsync(new object[] { materialId, schoolingPartId });
+            if (msp == null) return false;
 
             msp.State = StateEnum.Deleted;
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<SchoolingPartDto>> GetAllSchoolingParts()
@@ -142,33 +147,35 @@ namespace catch_up_backend.Services
             return schoolingParts;
         }
 
-        public async Task EditSchoolingPart(SchoolingPartDto schoolingPart)
+        public async Task<bool> EditSchoolingPart(SchoolingPartDto schoolingPart)
         {
-            await Edit(schoolingPart);
+            if (!await Edit(schoolingPart)) return false;
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task EditManySchoolingPart(List<SchoolingPartDto> schoolingParts)
+        public async Task<bool> EditManySchoolingPart(List<SchoolingPartDto> schoolingParts)
         {
             foreach (var part in schoolingParts)
             {
-                await Edit(part);
+                if (!await Edit(part)) return false;
             }
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        private async Task Edit(SchoolingPartDto schoolingPart)
+        private async Task<bool> Edit(SchoolingPartDto schoolingPart)
         {
-            var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id)
-                ?? throw new NotFoundException("SchoolingPart not found");
+            var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id);
+            if (schoolingPartModel == null) return false;
 
             schoolingPartModel.Name = schoolingPart.Name;
             schoolingPartModel.Content = schoolingPart.Content;
 
-            var existingMaterials = _context.MaterialsSchoolingParts
+            var existingMaterials = await _context.MaterialsSchoolingParts
                 .Where(m => m.SchoolingPartId == schoolingPart.Id)
                 .Select(m => m.MaterialsId)
-                .ToList();
+                .ToListAsync();
 
             var materialsToRemove = existingMaterials
                 .Where(existingMaterialId => !schoolingPart.Materials.Any(m => m.Id == existingMaterialId))
@@ -188,6 +195,7 @@ namespace catch_up_backend.Services
             {
                 await AddMaterialToSchooling(schoolingPart.Id, materialId);
             }
+            return true;
         }
     }
 }

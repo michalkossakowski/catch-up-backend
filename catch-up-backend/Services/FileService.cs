@@ -21,13 +21,10 @@ namespace catch_up_backend.Services
         public async Task<FileDto> UploadFile(IFormFile newFile, int? materialID)
         {
             var uniqueFileName = $"{Guid.NewGuid()}_{newFile.FileName}";
-
             using Stream fileStream = newFile.OpenReadStream();
-
             var fileSource = await _fileStorage.UploadFile(uniqueFileName, fileStream);
 
             FileModel fileModel = new FileModel(newFile.FileName, newFile.ContentType, fileSource);
-            
             await _context.Files.AddAsync(fileModel);
             await _context.SaveChangesAsync();
 
@@ -35,70 +32,76 @@ namespace catch_up_backend.Services
                 await AddToMaterial(fileModel.Id, (int)materialID);
 
             await _context.SaveChangesAsync();
-            FileDto fileDto = new FileDto
+
+            return new FileDto
             {
                 Id = fileModel.Id,
                 Name = fileModel.Name,
                 Type = fileModel.Type,
                 Source = fileModel.Source
             };
-            return fileDto;
         }
 
-        public async Task DeleteFile(int fileId)
+        public async Task<bool> DeleteFile(int fileId)
         {
-            var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-
+            var file = await _context.Files.FindAsync(fileId);
+            if (file == null)
+                return false;
+            
             file.State = StateEnum.Deleted;
-
             await _context.SaveChangesAsync();
+            return true;
         }
-        public async Task ArchiveFile(int fileId)
+        public async Task<bool> ArchiveFile(int fileId)
         {
-            var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-            file.State = StateEnum.Archived;
+            var file = await _context.Files.FindAsync(fileId);
+            if (file == null)
+                return false;
 
+            file.State = StateEnum.Archived;
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<FileDto> GetById(int fileId)
         {
-            var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
+            var file = await _context.Files.FindAsync(fileId);
 
-            if(file.State != StateEnum.Active)
-                throw new NotFoundException("File is not active.");
+            if (file == null || file.State != StateEnum.Active)
+                return null;
+
             return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type, Source = file.Source };
         }
 
         public async Task<Stream> DownloadFile(int fileId)
         {
-            var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-            if (file.State != StateEnum.Active)
-                throw new NotFoundException("File is not active.");
+            var file = await _context.Files.FindAsync(fileId);
+            if (file == null || file.State != StateEnum.Active)
+                return null;
+
             return await _fileStorage.DownloadFile(file.Source);
         }
-        public async Task AddToMaterial(int fileId, int materialId)
+        public async Task<bool> AddToMaterial(int fileId, int materialId)
         {
-            var file = await _context.Files.FindAsync(fileId) ?? throw new NotFoundException("File not found in database.");
-
-            if (file.State != StateEnum.Active)
-                throw new NotFoundException("File is not active.");
+            var file = await _context.Files.FindAsync(fileId);
+            if (file == null || file.State != StateEnum.Active)
+                return false;
 
             var fim = await _context.FileInMaterials.FindAsync(fileId, materialId);
-            if (fim is not null)
+            if (fim != null)
             {
                 fim.State = StateEnum.Active;
                 await _context.SaveChangesAsync();
-                return;
+                return true;
             }
 
             if (await _context.Materials.FindAsync(materialId) == null)
-                throw new Exception("Material not found");
+                return false;
 
             var connectFileMaterial = new FileInMaterial(materialId, fileId);
-
             await _context.AddAsync(connectFileMaterial);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<FileDto>> GetFiles(int materialId)

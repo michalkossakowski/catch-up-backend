@@ -33,7 +33,7 @@ namespace catch_up_backend.Database
         public DbSet<SchoolingPartModel> SchoolingParts { get; set; }
         public DbSet<SchoolingUserModel> SchoolingsUsers { get; set; }
         public DbSet<TaskContentModel> TaskContents { get; set; }
-        public DbSet<TaskPresetModel> TasksPresets { get; set; }
+        public DbSet<TaskPresetModel> TaskPresets { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
@@ -264,6 +264,7 @@ namespace catch_up_backend.Database
 
             modelBuilder.Entity<UserModel>()
                 .Property(u => u.Counters)
+                .HasColumnType("nvarchar(max)")
                 .HasConversion(
                     v => v == null ? null : JsonSerializer.Serialize(v, new JsonSerializerOptions
                     {

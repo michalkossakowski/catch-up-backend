@@ -5,17 +5,17 @@ namespace catch_up_backend.Interfaces
     public interface ISchoolingService
     {
         public Task<FullSchoolingDto> GetFull(int schoolingId);
-        public Task<FullSchoolingDto> CreateSchooling(SchoolingDto schoolingDto);
+        public Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto);
         public Task<List<FullSchoolingDto>> GetAllFull();
-        public Task Edit(FullSchoolingDto fullSchoolingDto);
-        public Task EditSchooling(SchoolingDto schoolingDto);
-        public Task AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID);
-        public Task DeleteSchooling(int schoolingId);
-        public Task ArchiveSchooling(int schoolingId);
+        public Task<bool> Edit(FullSchoolingDto fullSchoolingDto);
+        public Task<bool> EditSchooling(SchoolingDto schoolingDto);
+        public Task<bool> AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID);
+        public Task<bool> DeleteSchooling(int schoolingId);
+        public Task<bool> ArchiveSchooling(int schoolingId);
         public Task<List<FullSchoolingDto>> GetAllFull(Guid userId);
-        public Task AddSchoolingToUser(Guid userId, int schoolingId);
+        public Task<bool> AddSchoolingToUser(Guid userId, int schoolingId);
         public Task<List<int>> GetUserSchoolingsID(Guid userId);
-        public Task ArchiveUserSchooling(Guid userId, int schoolingId);
-        public Task DeleteUserSchooling(Guid userId, int schoolingId);
+        public Task<bool> ArchiveUserSchooling(Guid userId, int schoolingId);
+        public Task<bool> DeleteUserSchooling(Guid userId, int schoolingId);
     }
 }

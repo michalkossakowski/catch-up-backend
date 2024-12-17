@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210214319_AddCountersToUser")]
+    partial class AddCountersToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,9 +178,6 @@ namespace catch_up_backend.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -717,7 +717,7 @@ namespace catch_up_backend.Migrations
 
                     b.HasIndex("TaskContentId");
 
-                    b.ToTable("TaskPresets");
+                    b.ToTable("TasksPresets");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.UserModel", b =>
@@ -742,9 +742,10 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("State")
+                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
