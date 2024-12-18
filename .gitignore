@@ -358,6 +358,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+.vscode/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/catch-up-backend/Database/CatchUpDbContext.cs

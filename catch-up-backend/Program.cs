@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Repositories;
+using catch_up_backend.Services.Interfaces;
 
 
 namespace catch_up_backend
@@ -73,6 +74,8 @@ namespace catch_up_backend
             builder.Services.AddScoped<ISchoolingService, SchoolingService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISchoolingPartService, SchoolingPartService>();
+            builder.Services.AddScoped<IPresetService, PresetService>();
+            builder.Services.AddScoped<ITaskPresetService, TaskPresetService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
