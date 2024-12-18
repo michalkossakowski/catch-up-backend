@@ -45,6 +45,8 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetById(Guid userId)
         {
             var user = await _userService.GetById(userId);
+            if (user == null)
+                return NotFound(new { message = $"User with id: [{userId}] not found" });
             return Ok(user);
         }
 
