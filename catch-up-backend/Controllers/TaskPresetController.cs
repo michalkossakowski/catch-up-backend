@@ -75,30 +75,51 @@ namespace catch_up_backend.Controllers
         [Route("GetById/{taskPresetId:int}")]
         public async Task<IActionResult> GetById(int taskPresetId)
         {
-            var taskPresets = await _taskPresetService.GetById(taskPresetId);
-            if (!taskPresets.Any())
+            try
+            {
+                var taskPresets = await _taskPresetService.GetById(taskPresetId);
+                if (!taskPresets.Any())
+                    return NotFound(new { message = $"No task presets found for id: {taskPresetId}" });
+                return Ok(taskPresets);
+            }
+            catch (Exception)
+            {
                 return NotFound(new { message = $"No task presets found for id: {taskPresetId}" });
-            return Ok(taskPresets);
+            }
         }
 
         [HttpGet]
         [Route("GetByPreset/{presetId:int}")]
         public async Task<IActionResult> GetByPreset(int presetId)
         {
-            var taskPresets = await _taskPresetService.GetByPresetId(presetId);
-            if (!taskPresets.Any())
+            try
+            {
+                var taskPresets = await _taskPresetService.GetByPresetId(presetId);
+                if (!taskPresets.Any())
+                    return NotFound(new { message = $"No task presets found for preset id: {presetId}" });
+                return Ok(taskPresets);
+            }
+            catch (Exception)
+            {
                 return NotFound(new { message = $"No task presets found for preset id: {presetId}" });
-            return Ok(taskPresets);
+            }
         }
 
         [HttpGet]
         [Route("GetByTaskContent/{taskContentId:int}")]
         public async Task<IActionResult> GetByTaskContent(int taskContentId)
         {
-            var taskPresets = await _taskPresetService.GetByTaskContent(taskContentId);
-            if (!taskPresets.Any())
+            try
+            {
+                var taskPresets = await _taskPresetService.GetByTaskContent(taskContentId);
+                if (!taskPresets.Any())
+                    return NotFound(new { message = $"No task presets found for task content id: {taskContentId}" });
+                return Ok(taskPresets);
+            }
+            catch (Exception)
+            {
                 return NotFound(new { message = $"No task presets found for task content id: {taskContentId}" });
-            return Ok(taskPresets);
+            }
         }
     }
 } 

@@ -46,26 +46,47 @@ namespace catch_up_backend.Controllers
         [Route("GetById/{categoryId}")]
         public async Task<IActionResult> GetById(int categoryId)
         {
-            var category = await _categoryService.GetById(categoryId);
-            if (category == null)
+            try
+            {
+                var category = await _categoryService.GetById(categoryId);
+                if (category == null)
+                    return NotFound(new { message = $"Category with id: {categoryId} not found" });
+                return Ok(category);
+            }
+            catch (Exception)
+            {
                 return NotFound(new { message = $"Category with id: {categoryId} not found" });
-            return Ok(category);
+            }
         }
 
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var category = await _categoryService.GetAll();
-            return Ok(category);
+            try
+            {
+                var category = await _categoryService.GetAll();
+                return Ok(category);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = "Error retrieving categories" });
+            }
         }
 
         [HttpGet]
         [Route("Search/{searchingString}")]
         public async Task<IActionResult> SearchCategories(string searchingString)
         {
-            var category = await _categoryService.SearchCategories(searchingString);
-            return Ok(category);
+            try
+            {
+                var category = await _categoryService.SearchCategories(searchingString);
+                return Ok(category);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Error searching categories with query: {searchingString}" });
+            }
         }
 
         [HttpGet]
