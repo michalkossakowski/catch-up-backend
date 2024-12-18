@@ -62,7 +62,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAssignmentsByMentor(Guid mentorId)
         {
             IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
-            if (!assignments.Any())
+            if (assignments==null)
             {
                 return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
             }
@@ -87,7 +87,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAssignmentsByNewbie(Guid newbieId)
         {
             IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByNewbie(newbieId);
-            if (!assignments.Any())
+            if (assignments==null)
             {
                 return NotFound(new { message = $"No assignments found for mentor with ID {newbieId}" });
             }
@@ -112,7 +112,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllArchived()
         {
             IEnumerable<NewbieMentorModel> archived = await _newbieMentorService.GetAllArchived();
-            if (!archived.Any())
+            if (archived==null)
             {
                 return NotFound(new { message = "There aren't archived connections." });
             }
@@ -124,7 +124,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllDeleted()
         {
             IEnumerable<NewbieMentorModel> deleted = await _newbieMentorService.GetAllDeleted();
-            if (!deleted.Any())
+            if (deleted==null)
             {
                 return NotFound(new { message = "There aren't deleted connections." });
             }
@@ -137,7 +137,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllMentors()
         {
             IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllMentors();
-            if (!mentors.Any())
+            if (mentors==null)
             {
                 return NotFound(new { message = $"No mentors found." });
             }
@@ -150,7 +150,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllNewbies()
         {
             IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllNewbies();
-            if (!mentors.Any())
+            if (mentors == null)
             {
                 return NotFound(new { message = $"No mentors found." });
             }
@@ -163,7 +163,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllUnassignedNewbies(Guid mentorId)
         {
             IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies(mentorId);
-            if (!unassigned.Any())
+            if (unassigned == null)
             {
                 return NotFound(new { message = $"No unassigned newbies found. " });
             }
@@ -176,7 +176,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
         {
             IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedMentors(newbieId);
-            if (!unassigned.Any())
+            if (unassigned == null)
             {
                 return NotFound(new { message = $"No unassigned newbies found. " });
             }
