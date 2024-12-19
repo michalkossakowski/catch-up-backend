@@ -58,10 +58,17 @@ namespace catch_up_backend.Controllers
         [Route("GetById/{taskContentId:int}")]
         public async Task<IActionResult> GetById(int taskContentId)
         {
-            var taskContent = await _taskContentService.GetById(taskContentId);
-            if (taskContent == null)
+            try
+            {
+                var taskContent = await _taskContentService.GetById(taskContentId);
+                if (taskContent == null)
+                    return NotFound(new { message = $"Task content with id: {taskContentId} not found" });
+                return Ok(taskContent);
+            }
+            catch (Exception)
+            {
                 return NotFound(new { message = $"Task content with id: {taskContentId} not found" });
-            return Ok(taskContent);
+            }
         }
 
         [HttpGet]
