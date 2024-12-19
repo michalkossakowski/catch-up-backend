@@ -17,6 +17,7 @@ namespace catch_up_backend.Interfaces
         public Task<TaskDto> GetTaskById(int taskId);
         public Task<List<TaskDto>> GetAllTaskByTaskContentId(int taskContentId);
         public Task<List<TaskDto>> GetAllTasksByNewbieId(Guid newbieId);
+        public Task<bool> Delete(int taskId);
 
         //public Task AsignTask(int taskId,Guid newbieID);
     }
