@@ -16,11 +16,11 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
+        [Route("GetAllCities")]
         public async Task<ActionResult<IEnumerable<CompanyCityDto>>> GetAllCities()
         {
             var cities = await _companyCityService.GetAllCitiesAsync();
-            if (cities == null || !cities.Any())
+            if (cities == null)
             {
                 return NotFound("No cities found.");
             }
@@ -28,7 +28,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("Get/{cityName}")]
+        [Route("GetCityByName/{cityName}")]
         public async Task<ActionResult<CompanyCityDto>> GetCityByName(string cityName)
         {
             var city = await _companyCityService.GetCityByNameAsync(cityName);
@@ -40,7 +40,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("AddCity")]
         public async Task<ActionResult> AddCity([FromBody] CompanyCityDto cityDto)
         {
             if (cityDto == null)
@@ -58,7 +58,7 @@ namespace catch_up_backend.Controllers
 
 
         [HttpDelete]
-        [Route("Delete/{cityName}")]
+        [Route("DeleteCity/{cityName}")]
         public async Task<ActionResult> DeleteCity(string cityName)
         {
             var result = await _companyCityService.DeleteCityAsync(cityName);
