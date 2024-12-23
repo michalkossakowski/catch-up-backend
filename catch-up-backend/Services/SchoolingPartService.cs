@@ -37,6 +37,25 @@ namespace catch_up_backend.Services
             return schoolingParts;
         }
 
+        public async Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId)
+        {
+            var result = await _context.SchoolingParts
+            .FirstOrDefaultAsync(sp => sp.Id == schoolingPartId && StateEnum.Active == sp.State);
+            
+            if(result == null)
+                return null;
+
+            var schoolingPart = new SchoolingPartDto
+            {
+                Id = result.Id,
+                Name = result.Name,
+                Content = result.Content
+            };
+
+
+            schoolingPart.Materials = await GetMaterials(schoolingPartId);
+            return schoolingPart;
+        }
         public async Task<List<MaterialDto>> GetMaterials(int schoolingPartId)
         {
             var materialIds = await _context.MaterialsSchoolingParts
