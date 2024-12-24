@@ -8,18 +8,18 @@ namespace catch_up_backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
         [ForeignKey("NewbieId")]
         public Guid NewbieId { get; set; }
+        public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? FinishDate { get; set; }
-        public bool IsFinished { get; set; }
+        public StatusEnum Status { get; set; }
         public StateEnum State { get; set; }
-        public RoadMapModel(string name, Guid newbieId)
+        public RoadMapModel(Guid newbieId, string name)
         {
-            this.Name = name;
             this.NewbieId = newbieId;
-            this.IsFinished = false;
+            this.Name = name;
+            this.Status = StatusEnum.ToDo;
             this.StartDate = DateTime.Now;
             State = StateEnum.Active;
         }

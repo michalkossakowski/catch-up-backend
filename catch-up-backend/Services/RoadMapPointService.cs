@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Database;
+﻿using catch_up_backend.Controllers;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
@@ -16,27 +17,47 @@ namespace catch_up_backend.Services
             _context = context;
         }
 
-        public async Task<bool> Add(RoadMapPointDto newRoadMapPoint)
+        public async Task<RoadMapPointDto> AddAsync(RoadMapPointDto newRoadMapPoint)
         {
             try
             {
                 var roadMapPoint = new RoadMapPointModel(
                     newRoadMapPoint.RoadMapId,
                     newRoadMapPoint.Name ?? "",
-                    newRoadMapPoint.Deadline ?? 0);
-
+                    newRoadMapPoint.Deadline);
                 await _context.AddAsync(roadMapPoint);
                 await _context.SaveChangesAsync();
+                newRoadMapPoint.Id = roadMapPoint.Id;
             }
             catch (Exception e)
             {
                 throw new Exception("Error: Road Map Add " + e);
             }
-            return true;
-
-
+            return newRoadMapPoint;
         }
-        public async Task<bool> SetStatus(int roadMapPointId, StatusEnum status)
+
+        public async Task<RoadMapPointDto> EditAsync(int roadMapPointId, RoadMapPointDto newRoadMapPoint)
+        {
+            var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
+            if (roadMapPoint == null)
+                return null;
+            try
+            {
+                roadMapPoint.RoadMapId = newRoadMapPoint.RoadMapId;
+                roadMapPoint.Name = newRoadMapPoint.Name ?? "";
+                roadMapPoint.StartDate = newRoadMapPoint.StartDate ?? DateTime.Now;
+                roadMapPoint.FinishDate = newRoadMapPoint.FinishDate;
+                _context.RoadMapPoints.Update(roadMapPoint);
+                await _context.SaveChangesAsync();
+                newRoadMapPoint.Id = roadMapPoint.Id;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error: Road Map Add " + e);
+            }
+            return newRoadMapPoint;
+        }
+        public async Task<bool> SetStatusAsync(int roadMapPointId, StatusEnum status)
         {
             var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
             if (roadMapPoint == null)
@@ -45,7 +66,7 @@ namespace catch_up_backend.Services
             {
                 roadMapPoint.Status = status;
                 if(status == StatusEnum.ToReview)
-                    roadMapPoint.FinalizationDate = DateTime.Now;
+                    roadMapPoint.FinishDate = DateTime.Now;
                 _context.RoadMapPoints.Update(roadMapPoint);
                 await _context.SaveChangesAsync();
             }
@@ -56,7 +77,7 @@ namespace catch_up_backend.Services
             return true;
 
         }
-        public async Task<bool> Delete(int roadMapPointId)
+        public async Task<bool> DeleteAsync(int roadMapPointId)
         {
             var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
             if (roadMapPoint == null)
@@ -75,7 +96,7 @@ namespace catch_up_backend.Services
 
         }
 
-        public async Task<List<RoadMapPointDto>> GetByRoadMapId(int roadMapId)
+        public async Task<List<RoadMapPointDto>> GetByRoadMapIdAsync(int roadMapId)
         {
             var roadMapPoints = await _context.RoadMapPoints
                 .Where(rmp => rmp.State == StateEnum.Active && rmp.RoadMapId == roadMapId)
@@ -84,8 +105,8 @@ namespace catch_up_backend.Services
                     Id = rmp.Id,
                     RoadMapId = rmp.RoadMapId,
                     Name = rmp.Name,
-                    AssignmentDate = rmp.AssignmentDate,
-                    FinalizationDate = rmp.FinalizationDate,
+                    StartDate = rmp.StartDate,
+                    FinishDate = rmp.FinishDate,
                     Deadline = rmp.Deadline,
                     Status = rmp.Status
                 }).ToListAsync();
