@@ -55,6 +55,7 @@ namespace catch_up_backend.Services
             }
             return newRoadMap;
         }
+
         public async Task<bool> SetStatusAsync(int roadMapId, StatusEnum status)
         {
             var roadMap = await _context.RoadMaps.FindAsync(roadMapId);
@@ -75,6 +76,7 @@ namespace catch_up_backend.Services
             }
             return true;
         }
+
         public async Task<bool> DeleteAsync(int roadMapId)
         {
             var roadMap = await _context.RoadMaps.FindAsync(roadMapId);
