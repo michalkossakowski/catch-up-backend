@@ -4,11 +4,11 @@ namespace catch_up_backend.Interfaces
 {
     public interface IFaqService
     {
-        public Task<FaqDto> Add(FaqDto newQuestion);
-        public Task<bool> Edit(int questionId, FaqDto newQuestion);
-        public Task<bool> Delete(int questionId);
-        public Task<FaqDto> GetById(int questionId);
-        public Task<List<FaqDto>> GetAll();
-        public Task<List<FaqDto>> GetByTitle(string searchingTitle);
+        public Task<FaqDto> AddAsync(FaqDto newFaq);
+        public Task<FaqDto> EditAsync(int faqId, FaqDto newFaq);
+        public Task<bool> DeleteAsync(int faqId);
+        public Task<FaqDto> GetByIdAsync(int faqId);
+        public Task<List<FaqDto>> GetAllAsync();
+        public Task<List<FaqDto>> GetByQuestionAsync(string searchingQuestion);
     }
 }

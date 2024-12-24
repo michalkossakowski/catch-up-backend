@@ -8,16 +8,16 @@ namespace catch_up_backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Question { get; set; }
         public string Answer { get; set; }
         [ForeignKey("MaterialsId")]
-        public int? MaterialsId { get; set; }
+        public int? MaterialId { get; set; }
         public StateEnum State { get; set; }
-        public FaqModel(string title, string answer, int? materialsId)
+        public FaqModel(string question, string answer, int? materialId)
         {
-            this.Title = title;
+            this.Question = question;
             this.Answer = answer;
-            this.MaterialsId = materialsId;
+            this.MaterialId = materialId;
             State = StateEnum.Active;
         }
     }

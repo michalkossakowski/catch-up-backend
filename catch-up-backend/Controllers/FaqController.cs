@@ -16,40 +16,41 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add([FromBody] FaqDto newQuestion)
+        public async Task<IActionResult> Add([FromBody] FaqDto newFaq)
         {
-            var result = await _faqService.Add(newQuestion);
+            var result = await _faqService.AddAsync(newFaq);
 
             return result != null
                 ? Ok(new { message = "FAQ added", faq = result })
-                : StatusCode(500, new { message = "FAQ adding error"});
+                : StatusCode(500, new { message = "FAQ adding error" });
         }
 
         [HttpPut]
-        [Route("Edit/{questionId:int}")]
-        public async Task<IActionResult> Edit(int questionId, [FromBody] FaqDto newQuestion)
+        [Route("Edit/{faqId:int}")]
+        public async Task<IActionResult> Edit(int faqId, [FromBody] FaqDto newFaq)
         {
-            return await _faqService.Edit(questionId, newQuestion)
-                ? Ok(new { message = $"FAQ edited", faq = newQuestion })
-                : StatusCode(500, new { message = "FAQ editing error", faqId = questionId });
+            var result = await _faqService.EditAsync(faqId, newFaq);
+            return result != null
+                ? Ok(new { message = $"FAQ edited", faq = result })
+                : StatusCode(500, new { message = "FAQ editing error" });
         }
 
         [HttpDelete]
-        [Route("Delete/{questionId:int}")]
-        public async Task<IActionResult> Delete(int questionId)
+        [Route("Delete/{faqId:int}")]
+        public async Task<IActionResult> Delete(int faqId)
         {
-            return await _faqService.Delete(questionId) 
-                ? Ok(new { message = "FAQ deleted", faqId = questionId })
-                : NotFound(new { message = "FAQ not found", faqId = questionId });
+            return await _faqService.DeleteAsync(faqId) 
+                ? Ok(new { message = $"FAQ '{faqId}' deleted"})
+                : NotFound(new { message = $"FAQ with id: '{faqId}' not found" });
         }
 
         [HttpGet]
-        [Route("GetById/{questionId:int}")]
-        public async Task<IActionResult> GetById(int questionId)
+        [Route("GetById/{faqId:int}")]
+        public async Task<IActionResult> GetById(int faqId)
         {
-            var faq = await _faqService.GetById(questionId);
+            var faq = await _faqService.GetByIdAsync(faqId);
             if (faq == null)
-                return NotFound(new { message = $"FAQ with id: [{questionId}] not found" });
+                return NotFound(new { message = $"FAQ with id: '{faqId}' not found" });
             return Ok(faq);
         }
 
@@ -57,19 +58,19 @@ namespace catch_up_backend.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var faqs = await _faqService.GetAll();
+            var faqs = await _faqService.GetAllAsync();
             if (!faqs.Any())
                 return NotFound(new { message = "No FAQs found" });
             return Ok(faqs);
         }
 
         [HttpGet]
-        [Route("GetByTitle/{title}")]
-        public async Task<IActionResult> GetByTitle(string title)
+        [Route("GetByQuestion/{searchingQuestion}")]
+        public async Task<IActionResult> GetByQuestion(string searchingQuestion)
         {
-            var faqs = await _faqService.GetByTitle(title);
+            var faqs = await _faqService.GetByQuestionAsync(searchingQuestion);
             if (!faqs.Any())
-                return NotFound(new { message = $"No FAQs found with: '{title}' in title" });
+                return NotFound(new { message = $"No FAQs found with: '{searchingQuestion}' in question" });
             return Ok(faqs);
         }
     }
