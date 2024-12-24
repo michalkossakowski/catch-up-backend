@@ -5,6 +5,7 @@ namespace catch_up_backend.Interfaces
     public interface ISchoolingPartService
     {
         public Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId);
+        public Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId);
         public Task<List<MaterialDto>> GetMaterials(int schoolingId);
         public Task<List<SchoolingPartDto>> GetAllSchoolingParts();
         public Task<bool> AddMaterialToSchooling(int schoolingPartId, int materialId);
