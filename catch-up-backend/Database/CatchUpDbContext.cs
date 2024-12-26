@@ -47,7 +47,7 @@ namespace catch_up_backend.Database
             modelBuilder.Entity<FaqModel>()
                 .HasOne<MaterialsModel>()
                 .WithMany()
-                .HasForeignKey(x => x.MaterialsId);
+                .HasForeignKey(x => x.MaterialId);
 
             //FeedbackModel One To Many
             modelBuilder.Entity<FeedbackModel>()
