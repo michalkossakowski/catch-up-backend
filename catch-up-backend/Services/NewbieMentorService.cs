@@ -7,14 +7,16 @@ using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
 using catch_up_backend.Services;
+using catch_up_backend.Controllers;
 
 public class NewbieMentorService : INewbieMentorService
 {
     private readonly CatchUpDbContext _context;
-
+    private readonly EmailController emailController;
     public NewbieMentorService(CatchUpDbContext context)
     {
         _context = context;
+        emailController = new EmailController();
     }
 
     public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
@@ -30,7 +32,12 @@ public class NewbieMentorService : INewbieMentorService
             {
                 NewbieMentorModel? assignment = await _context.NewbiesMentors
                     .FindAsync(newbieId, mentorId);
-
+                await emailController.SendEmail(newbie.Email,
+                    "Nowe Przypisanie", $"Witaj {newbie.Name} {newbie.Surname}! \nW systemie został Ci przypisany nowy mentor {mentor.Name} {mentor.Surname}"
+                    );
+                await emailController.SendEmail(mentor.Email,
+                 "Nowe Przypisanie", $"Witaj {mentor.Name} {mentor.Surname}! \nW systemie został Ci przypisany nowy newbie {newbie.Name} {newbie.Surname}"
+                 );
                 if (assignment == null)
                 {
                     NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
@@ -75,7 +82,14 @@ public class NewbieMentorService : INewbieMentorService
         {
             return false;
         }
-
+        UserModel? newbie = await _context.Users.FindAsync(newbieId);
+        UserModel? mentor = await _context.Users.FindAsync(mentorId);
+        await emailController.SendEmail(newbie.Email,
+            "Archiwizacja Przypisania", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie mentor {mentor.Name} {mentor.Surname} został od Ciebie odpięty"
+            );
+        await emailController.SendEmail(mentor.Email,
+         "Archiwizacja Przypisania", $"Witaj {mentor.Name} {mentor.Surname}! \n W systemie newbie {newbie.Name} {newbie.Surname} został od Ciebie odpięty"
+         );
         assignment.State = StateEnum.Archived;
         assignment.EndDate = DateTime.Now;
         await _context.SaveChangesAsync();
@@ -84,13 +98,19 @@ public class NewbieMentorService : INewbieMentorService
     public async Task<bool> Delete(Guid newbieId,Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId); 
-
+            .FindAsync(newbieId, mentorId);
         if (assignment == null)
         {
             return false;
         }
-
+        UserModel? newbie = await _context.Users.FindAsync(newbieId);
+        UserModel? mentor = await _context.Users.FindAsync(mentorId);
+        await emailController.SendEmail(newbie.Email,
+            "Usunięcie Przypisania", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie mentor {mentor.Name} {mentor.Surname} został od Ciebie odpięty"
+            );
+        await emailController.SendEmail(mentor.Email,
+         "Usunięcie Przypisania", $"Witaj {mentor.Name} {mentor.Surname}! \n W systemie newbie {newbie.Name} {newbie.Surname} został od Ciebie odpięty"
+         );
         assignment.State= StateEnum.Deleted;
         assignment.EndDate = DateTime.Now;
         await _context.SaveChangesAsync();

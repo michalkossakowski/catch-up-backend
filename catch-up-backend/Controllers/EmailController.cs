@@ -9,11 +9,7 @@ namespace catch_up_backend.Controllers
     [Route("api/[controller]")] 
     public class EmailController : ControllerBase
     {
-        private readonly IEmailService _emailService;
-        public EmailController(IEmailService emailService)
-        {
-            _emailService = emailService;
-        }
+        private readonly IEmailService _emailService = new EmailService();
 
         [HttpPost]
         [Route("Add")]

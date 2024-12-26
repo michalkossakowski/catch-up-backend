@@ -89,6 +89,22 @@ namespace catch_up_backend.Controllers
             return Ok(schoolingsParts);
         }
         /// <summary>
+        /// Retrieves schooling part of passed Id.
+        /// Schooling parts represent individual components or sections of a schooling,
+        /// such as content, files
+        /// </summary>
+        /// <returns>One schooling part.</returns>
+        [HttpGet]
+        [Route("GetSchoolingPart/{schoolingPartId:int}")]
+        public async Task<IActionResult> GetSchoolingPart(int schoolingPartId)
+        {
+            var schoolingsPart = await _schoolingPartService.GetSchoolingPart(schoolingPartId);
+            if(schoolingsPart == null)
+                return NotFound(new { message = "Schooling part not found." });
+            return Ok(schoolingsPart);
+
+        }
+        /// <summary>
         /// Updates an entire schooling, including its metadata and all associated parts.
         /// (exclude files), if you want update category just change category id in "schooling", not in "category")
         /// Synchronizes the relationships between the schooling parts and their materials.
@@ -114,8 +130,9 @@ namespace catch_up_backend.Controllers
         [Route("EditSchooling")]
         public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
         {
-            await _schoolingService.EditSchooling(schoolingDto);
-            return Ok(new { message = "Schooling updated successfully" });
+            return await _schoolingService.EditSchooling(schoolingDto)
+                ? Ok(new { message = "Schooling updated successfully." })
+                : NotFound(new { message = "Schooling not found." });
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241218135949_readded_deadline_as_datetime")]
+    partial class readded_deadline_as_datetime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,25 +79,6 @@ namespace catch_up_backend.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.CompanyCity", b =>
-                {
-                    b.Property<string>("CityName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("RadiusKm")
-                        .HasColumnType("float");
-
-                    b.HasKey("CityName");
-
-                    b.ToTable("CompanyCities");
-                });
-
             modelBuilder.Entity("catch_up_backend.Models.EmployeeCardModel", b =>
                 {
                     b.Property<int>("Id")
@@ -147,19 +131,19 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaterialId")
+                    b.Property<int?>("MaterialsId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("MaterialId");
+                    b.HasIndex("MaterialsId");
 
                     b.ToTable("Faqs");
                 });
@@ -485,6 +469,9 @@ namespace catch_up_backend.Migrations
                     b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -496,9 +483,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -516,10 +500,13 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Deadline")
+                    b.Property<DateTime>("AssignmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("FinishDate")
+                    b.Property<int>("Deadline")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FinalizationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -528,9 +515,6 @@ namespace catch_up_backend.Migrations
 
                     b.Property<int>("RoadMapId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -627,19 +611,6 @@ namespace catch_up_backend.Migrations
                     b.HasIndex("SchoolingId");
 
                     b.ToTable("SchoolingsUsers");
-                });
-
-            modelBuilder.Entity("catch_up_backend.Models.SettingModel", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Value")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Name");
-
-                    b.ToTable("CompanySettings");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.TaskContentModel", b =>
@@ -813,7 +784,7 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.MaterialsModel", null)
                         .WithMany()
-                        .HasForeignKey("MaterialId");
+                        .HasForeignKey("MaterialsId");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.FeedbackModel", b =>
