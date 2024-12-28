@@ -38,7 +38,7 @@ namespace catch_up_backend.Services
             }
             catch(Exception ex)
             {
-                throw new Exception("Error: AddAsync taskContent: " + ex);
+                throw new Exception("Error: Add taskContent: " + ex);
             }
             return newTask;
 
@@ -59,7 +59,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: EditAsync Task: " + ex);
+                throw new Exception("Error: Edit Task: " + ex);
             }
             return true;
         }
@@ -97,7 +97,7 @@ namespace catch_up_backend.Services
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex) {
-                throw new Exception("Error: EditAsync Task: " + ex);
+                throw new Exception("Error: Edit Task: " + ex);
             }
             return (task, taskContent);
         }

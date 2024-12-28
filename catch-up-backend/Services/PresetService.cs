@@ -62,7 +62,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: EditAsync preset:" + ex);
+                throw new Exception("Error: Edit preset:" + ex);
             }
             return newPreset;
         }
@@ -93,7 +93,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: DeleteAsync preset:" + ex);
+                throw new Exception("Error: Delete preset:" + ex);
             }
             return true;
         }

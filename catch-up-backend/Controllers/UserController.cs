@@ -17,7 +17,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] UserDto newUser)
         {
             var addedUser = await _userService.Add(newUser);
@@ -25,7 +25,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPatch]
-        [Route("EditAsync/{userId}")]
+        [Route("Edit/{userId}")]
         public async Task<IActionResult> Edit(Guid userId, [FromBody] UserDto updatedUser)
         {
             await _userService.Edit(userId, updatedUser);
@@ -33,7 +33,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{userId}")]
+        [Route("Delete/{userId}")]
         public async Task<IActionResult> Delete(Guid userId)
         {
             await _userService.Delete(userId);

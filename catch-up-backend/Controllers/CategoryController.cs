@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] CategoryDto newCategory)
         {
             return await _categoryService.AddCategory(newCategory)
@@ -25,7 +25,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("EditAsync/{categoryId:int}")]
+        [Route("Edit/{categoryId:int}")]
         public async Task<IActionResult> Edit(int categoryId, [FromBody] CategoryDto newCategory)
         {
             return await _categoryService.EditCategory(categoryId, newCategory)
@@ -34,7 +34,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{categoryId:int}")]
+        [Route("Delete/{categoryId:int}")]
         public async Task<IActionResult> Delete(int categoryId)
         {
             return await _categoryService.DeleteCategory(categoryId)

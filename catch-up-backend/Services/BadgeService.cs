@@ -29,7 +29,7 @@ namespace catch_up_backend.Services
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex) {
-                throw new Exception("Error: AddAsync badge: " + ex);
+                throw new Exception("Error: Add badge: " + ex);
             }
             return true;
         }
@@ -49,7 +49,7 @@ namespace catch_up_backend.Services
                 await _context.SaveChangesAsync();
             } 
             catch (Exception ex) {
-                throw new Exception("Error: EditAsync badge:" + ex);
+                throw new Exception("Error: Edit badge:" + ex);
             }
             return true;
         }
@@ -64,7 +64,7 @@ namespace catch_up_backend.Services
                 badge.State = StateEnum.Deleted;
                 await _context.SaveChangesAsync();
             } catch (Exception ex) {
-                throw new Exception("Error: DeleteAsync badge:" + ex);
+                throw new Exception("Error: Delete badge:" + ex);
             }
             return true;
         }

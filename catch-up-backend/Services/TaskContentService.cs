@@ -32,7 +32,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: AddAsync taskContent: " + ex);
+                throw new Exception("Error: Add taskContent: " + ex);
             }
             return newTaskContent;
         }
@@ -56,7 +56,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: EditAsync taskContent:" + ex);
+                throw new Exception("Error: Edit taskContent:" + ex);
             }
             return true;
         }
@@ -76,7 +76,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: DeleteAsync taskContent:" + ex);
+                throw new Exception("Error: Delete taskContent:" + ex);
             }
             return true;
         }

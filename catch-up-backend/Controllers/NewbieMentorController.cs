@@ -45,7 +45,7 @@ namespace catch_up_backend.Controllers
         }
         // Usuwanie przypisania nowego pracownika do mentora
         [HttpDelete]
-        [Route("DeleteAsync/{newbieId:guid}/{mentorId:guid}")]
+        [Route("Delete/{newbieId:guid}/{mentorId:guid}")]
         public async Task<IActionResult> Delete(Guid newbieId, Guid mentorId)
         {
             bool result = await _newbieMentorService.Delete(newbieId, mentorId);

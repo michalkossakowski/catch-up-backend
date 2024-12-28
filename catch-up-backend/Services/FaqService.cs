@@ -29,7 +29,7 @@ namespace catch_up_backend.Services
             }
             catch(Exception e)
             {
-                throw new Exception("Error: Faq AddAsync " + e);
+                throw new Exception("Error: Faq Add " + e);
             }
             return newQuestion;
         }
@@ -49,7 +49,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e) 
             {
-                throw new Exception("Error: Faq EditAsync " + e);
+                throw new Exception("Error: Faq Edit " + e);
             }
             return true;
         }
@@ -66,7 +66,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Error: Faq DeleteAsync " + e);
+                throw new Exception("Error: Faq Delete " + e);
             }
             return true;
         }

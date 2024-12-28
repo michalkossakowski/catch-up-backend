@@ -28,7 +28,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: AddAsync category: " + ex);
+                throw new Exception("Error: Add category: " + ex);
             }
             return true;
         }
@@ -48,7 +48,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: EditAsync category: " + ex);
+                throw new Exception("Error: Edit category: " + ex);
             }
             return true;
         }
@@ -67,7 +67,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: DeleteAsync category: " + ex);
+                throw new Exception("Error: Delete category: " + ex);
             }
             return true;
         }

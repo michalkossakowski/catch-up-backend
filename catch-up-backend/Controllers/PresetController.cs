@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] PresetDto newPreset)
         {
             try
@@ -38,7 +38,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("EditAsync")]
+        [Route("Edit")]
         public async Task<IActionResult> Edit([FromBody] PresetDto newPreset)
         {
             var result = await _presetService.Edit(newPreset);
@@ -46,7 +46,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{presetId:int}")]
+        [Route("Delete/{presetId:int}")]
         public async Task<IActionResult> Delete(int presetId)
         {
             return await _presetService.DeletePreset(presetId)

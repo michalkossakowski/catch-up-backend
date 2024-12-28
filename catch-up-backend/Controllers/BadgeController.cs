@@ -17,7 +17,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] BadgeDto newBadge)
         {
             return await _badgeService.Add(newBadge)
@@ -26,7 +26,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("EditAsync/{badgeId:int}")]
+        [Route("Edit/{badgeId:int}")]
         public async Task<IActionResult> Edit(int badgeId, [FromBody] BadgeDto newBadge)
         {
             return await _badgeService.Edit(badgeId, newBadge)
@@ -35,7 +35,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{badgeId:int}")]
+        [Route("Delete/{badgeId:int}")]
         public async Task<IActionResult> Delete(int badgeId)
         {
             return await _badgeService.Delete(badgeId)

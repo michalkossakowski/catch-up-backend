@@ -19,7 +19,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] FeedbackDto newFeedback)
         {
             return await _feedbackService.Add(newFeedback)
@@ -28,7 +28,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("EditAsync/{feedbackId:int}")]
+        [Route("Edit/{feedbackId:int}")]
         public async Task<IActionResult> Edit(int feedbackId, [FromBody] FeedbackDto newFeedback)
         {
             return await _feedbackService.Edit(feedbackId, newFeedback)
@@ -37,7 +37,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{feedbackId:int}")]
+        [Route("Delete/{feedbackId:int}")]
         public async Task<IActionResult> Delete(int feedbackId)
         {
             return await _feedbackService.Delete(feedbackId)

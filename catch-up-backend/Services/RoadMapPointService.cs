@@ -30,7 +30,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Error: Road Map AddAsync " + e);
+                throw new Exception("Error: Road Map Add " + e);
             }
             return true;
 
@@ -69,7 +69,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Error: RoadMap DeleteAsync " + e);
+                throw new Exception("Error: RoadMap Delete " + e);
             }
             return true;
 

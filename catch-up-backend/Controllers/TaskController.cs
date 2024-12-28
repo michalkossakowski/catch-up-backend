@@ -19,7 +19,7 @@ namespace catch_up_backend.Controllers
         [Route("AddTaskToUser")]
         public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
-            var result = await _taskService.AddAsync(newTask);
+            var result = await _taskService.Add(newTask);
             return result != null
                 ? Ok(new { message = "Task added", task = result })
                 : StatusCode(500, new { message = "Error: Task add" });
@@ -29,7 +29,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Edit(int taskId, TaskDto newTask)
         {
 
-            return await _taskService.EditAsync(taskId, newTask)
+            return await _taskService.Edit(taskId, newTask)
                 ? Ok(new { message = $"Task edited", task = newTask })
                 : StatusCode(500, new { message = "Task editing error", taskId = taskId });
         }
@@ -137,10 +137,10 @@ namespace catch_up_backend.Controllers
             return Ok(fullTask);
         }
         [HttpDelete]
-        [Route("DeleteAsync/{taskId:int}")]
+        [Route("Delete/{taskId:int}")]
         public async Task<IActionResult> Delete(int taskId)
         {
-            return await _taskService.DeleteAsync(taskId)
+            return await _taskService.Delete(taskId)
                 ? Ok(new { message = "Task deleted successfully" })
                 : NotFound(new { message = "Task not found." });
         }

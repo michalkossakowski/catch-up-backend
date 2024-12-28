@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("AddAsync")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] RoadMapPointDto roadMapPoint)
         {
             return await _roadMapPointService.Add(roadMapPoint) 
@@ -34,7 +34,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteAsync/{roadMapPointId:int}")]
+        [Route("Delete/{roadMapPointId:int}")]
         public async Task<IActionResult> Delete(int roadMapPointId)
         {
             return await _roadMapPointService.Delete(roadMapPointId) 

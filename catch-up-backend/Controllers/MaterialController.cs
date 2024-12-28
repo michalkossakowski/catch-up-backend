@@ -39,7 +39,7 @@ namespace catch_up_backend.Controllers
         /// <param name="name">The new name for the material.</param>
         /// <returns> A success message if the material is updated, or an error message if the material is not found. </returns>
         [HttpPut]
-        [Route("EditAsync/{materialId:int}/{name}")]
+        [Route("Edit/{materialId:int}/{name}")]
         public async Task<IActionResult> Edit(int materialId, string name )
         {
             return  await _materialService.Edit(materialId, name)
@@ -52,7 +52,7 @@ namespace catch_up_backend.Controllers
         /// <param name="materialId">The ID of the material to delete.</param>
         /// <returns>A success message if the material is deleted, or an error message if the material is not found.</returns>
         [HttpDelete]
-        [Route("DeleteAsync/{materialId:int}")]
+        [Route("Delete/{materialId:int}")]
         public async Task<IActionResult> Delete(int materialId)
         {
             return await _materialService.Delete(materialId)
