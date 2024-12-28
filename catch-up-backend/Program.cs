@@ -33,7 +33,7 @@ namespace catch_up_backend
 
             //Authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)   // this tells .NET to use JWT  bearer authentication as the default one
-                .AddJwtBearer(options => {                                               // settings fot the JWT bearer authentication
+                .AddJwtBearer(options => {                                               // comapnySettings fot the JWT bearer authentication
                     options.TokenValidationParameters = new TokenValidationParameters    // this object contains all of the rules for validating
                     {
                         ValidateIssuerSigningKey = true,                                 // this tells .NET to validate the issuer signing key
@@ -80,6 +80,8 @@ namespace catch_up_backend
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
+            builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();
 
             //CORS
             builder.Services.AddCors(options =>

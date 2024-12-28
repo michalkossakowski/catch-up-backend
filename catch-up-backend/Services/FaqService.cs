@@ -15,104 +15,106 @@ namespace catch_up_backend.Services
         {
             _context = context;
         }
-        public async Task<FaqDto> Add(FaqDto newQuestion)
+        public async Task<FaqDto> AddAsync(FaqDto newFaq)
         {
             try
             {
                 var question = new FaqModel(
-                newQuestion.Title ?? "",
-                newQuestion.Answer ?? "",
-                newQuestion.MaterialsId);
+                    newFaq.Question ?? "",
+                    newFaq.Answer ?? "",
+                    newFaq.MaterialId
+                );
                 await _context.AddAsync(question);
                 await _context.SaveChangesAsync();
-                newQuestion.Id = question.Id;
+                newFaq.Id = question.Id;
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                throw new Exception("Error: Faq Add " + e);
+                throw new Exception("Error: Faq Add: " + ex);
             }
-            return newQuestion;
+            return newFaq;
         }
 
-        public async Task<bool> Edit(int questionId, FaqDto newQuestion)
+        public async Task<FaqDto> EditAsync(int questionId, FaqDto newFaq)
         {
-            var question = await _context.Faqs.FindAsync(questionId);
-            if (question == null)
+            var faq = await _context.Faqs.FindAsync(questionId);
+            if (faq == null)
+                return null;
+            try
+            {
+                faq.Question = newFaq.Question ?? "";
+                faq.Answer = newFaq.Answer ?? "";
+                faq.MaterialId = newFaq.MaterialId;
+                _context.Faqs.Update(faq);
+                await _context.SaveChangesAsync();
+                newFaq.Id = faq.Id;
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("Error: Faq Edit: " + ex);
+            }
+            return newFaq;
+        }
+        public async Task<bool> DeleteAsync(int faqId)
+        {
+            var faq = await _context.Faqs.FindAsync(faqId);
+            if (faq == null)
                 return false;
             try
             {
-                question.Title = newQuestion.Title ?? "";
-                question.Answer = newQuestion.Answer ?? "";
-                question.MaterialsId = newQuestion.MaterialsId;
-                _context.Faqs.Update(question);
+                faq.State = StateEnum.Deleted;
+                _context.Faqs.Update(faq);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e) 
+            catch (Exception ex)
             {
-                throw new Exception("Error: Faq Edit " + e);
+                throw new Exception("Error: Faq Delete: " + ex);
             }
             return true;
         }
-        public async Task<bool> Delete(int questionId)
+        public async Task<FaqDto> GetByIdAsync(int questionId)
         {
-            var question = await _context.Faqs.FindAsync(questionId);
-            if (question == null)
-                return false;
-            try
-            {
-                question.State = StateEnum.Deleted;
-                _context.Faqs.Update(question);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error: Faq Delete " + e);
-            }
-            return true;
-        }
-        public async Task<FaqDto> GetById(int questionId)
-        {
-            var question = await _context.Faqs
-                .Where(q => q.State == StateEnum.Active && q.Id == questionId)
-                .Select(q => new FaqDto
+            var faq = await _context.Faqs
+                .Where(f => f.State == StateEnum.Active && f.Id == questionId)
+                .Select(f => new FaqDto
                 {
-                    Id = q.Id,
-                    Title = q.Title,
-                    Answer = q.Answer,
-                    MaterialsId = q.MaterialsId
+                    Id = f.Id,
+                    Question = f.Question,
+                    Answer = f.Answer,
+                    MaterialId = f.MaterialId
                 }).FirstOrDefaultAsync();
 
-            return question;
+            return faq;
         }
-        public async Task<List<FaqDto>> GetAll()
+        public async Task<List<FaqDto>> GetAllAsync()
         {
-            var questions = await _context.Faqs
-                .Where(q => q.State == StateEnum.Active)
-                .Select(q => new FaqDto
+            var faqs = await _context.Faqs
+                .Where(f => f.State == StateEnum.Active)
+                .Select(f => new FaqDto
                 { 
-                   Id = q.Id,
-                   Title = q.Title,
-                   Answer = q.Answer,
-                   MaterialsId = q.MaterialsId
+                   Id = f.Id,
+                   Question = f.Question,
+                   Answer = f.Answer,
+                   MaterialId = f.MaterialId
                 })
                .ToListAsync();
 
-            return questions;
+            return faqs;
         }
-        public async Task<List<FaqDto>> GetByTitle(string title)
+        public async Task<List<FaqDto>> GetByQuestionAsync(string title)
         {
-            var questions = await _context.Faqs
-                .Where(q => q.State == StateEnum.Active && q.Title.ToLower().Contains(title.ToLower()))
-                .Select(q => new FaqDto
+            var faqs = await _context.Faqs
+                .Where(f => f.State == StateEnum.Active && f.Question.ToLower().Contains(title.ToLower()))
+                .Select(f => new FaqDto
                 { 
-                    Id = q.Id,
-                    Title = q.Title,
-                    Answer = q.Answer,
-                    MaterialsId = q.MaterialsId
+                    Id = f.Id,
+                    Question = f.Question,
+                    Answer = f.Answer,
+                    MaterialId = f.MaterialId
                 })
                .ToListAsync();
 
-            return questions;
+            return faqs;
         }
     }
 }

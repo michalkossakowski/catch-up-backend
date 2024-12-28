@@ -38,6 +38,8 @@ namespace catch_up_backend.Database
         public DbSet<UserModel> Users { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
         public DbSet<UserNotificationModel> UsersNotifications { get; set; }
+        public DbSet<SettingModel> CompanySettings { get; set; }
+        public DbSet<CompanyCity> CompanyCities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,7 +47,7 @@ namespace catch_up_backend.Database
             modelBuilder.Entity<FaqModel>()
                 .HasOne<MaterialsModel>()
                 .WithMany()
-                .HasForeignKey(x => x.MaterialsId);
+                .HasForeignKey(x => x.MaterialId);
 
             //FeedbackModel One To Many
             modelBuilder.Entity<FeedbackModel>()

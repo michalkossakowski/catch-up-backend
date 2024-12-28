@@ -58,58 +58,102 @@ namespace catch_up_backend.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var presets = await _presetService.GetAll();
-            if (!presets.Any())
-                return NotFound(new { message = "No presets found" });
-            return Ok(presets);
+            try
+            {
+                var presets = await _presetService.GetAll();
+                if (!presets.Any())
+                    return NotFound(new { message = "No presets found" });
+                return Ok(presets);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = "Error retrieving presets" });
+            }
         }
 
         [HttpGet]
         [Route("GetById/{presetId:int}")]
         public async Task<IActionResult> GetById(int presetId)
         {
-            var preset = await _presetService.GetById(presetId);
-            return Ok(preset);
+            try
+            {
+                var preset = await _presetService.GetById(presetId);
+                if (preset == null)
+                    return NotFound(new { message = $"Preset with id: {presetId} not found" });
+                return Ok(preset);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Preset with id: {presetId} not found" });
+            }
         }
 
         [HttpGet]
         [Route("GetByCreatorId/{creatorId:Guid}")]
         public async Task<IActionResult> GetByCreatorId(Guid creatorId)
         {
-            var presets = await _presetService.GetByCreatorId(creatorId);
-            if (!presets.Any())
-                return NotFound(new { message = $"No presets found for creator with id: {creatorId}" });
-            return Ok(presets);
+            try
+            {
+                var presets = await _presetService.GetByCreatorId(creatorId);
+                if (!presets.Any())
+                    return NotFound(new { message = $"No presets found for creator with id: {creatorId}" });
+                return Ok(presets);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Error retrieving presets for creator with id: {creatorId}" });
+            }
         }
 
         [HttpGet]
         [Route("GetByName/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-            var presets = await _presetService.GetByName(name);
-            if (!presets.Any())
-                return NotFound(new { message = $"No presets found with name containing: {name}" });
-            return Ok(presets);
+            try
+            {
+                var presets = await _presetService.GetByName(name);
+                if (!presets.Any())
+                    return NotFound(new { message = $"No presets found with name containing: {name}" });
+                return Ok(presets);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Error retrieving presets with name containing: {name}" });
+            }
         }
 
         [HttpGet]
         [Route("GetByTaskContent/{taskContentId:int}")]
         public async Task<IActionResult> GetByTaskContent(int taskContentId)
         {
-            var presets = await _presetService.GetByTaskContent(taskContentId);
-            if (!presets.Any())
-                return NotFound(new { message = $"No presets found for task content with id: {taskContentId}" });
-            return Ok(presets);
+            try
+            {
+                var presets = await _presetService.GetByTaskContent(taskContentId);
+                if (!presets.Any())
+                    return NotFound(new { message = $"No presets found for task content with id: {taskContentId}" });
+                return Ok(presets);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Error retrieving presets for task content with id: {taskContentId}" });
+            }
         }
 
         [HttpGet]
         [Route("SearchPresets/{searchingString}")]
         public async Task<IActionResult> SearchPresets(string searchingString)
         {
-            var presets = await _presetService.SearchPresets(searchingString);
-            if (!presets.Any())
-                return NotFound(new { message = $"No presets found matching: {searchingString}" });
-            return Ok(presets);
+            try
+            {
+                var presets = await _presetService.SearchPresets(searchingString);
+                if (!presets.Any())
+                    return NotFound(new { message = $"No presets found matching: {searchingString}" });
+                return Ok(presets);
+            }
+            catch (Exception)
+            {
+                return NotFound(new { message = $"Error searching presets with query: {searchingString}" });
+            }
         }
     }
 } 
