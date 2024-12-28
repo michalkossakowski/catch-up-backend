@@ -31,7 +31,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Add feedback: " + ex);
+                throw new Exception("Error: AddAsync feedback: " + ex);
             }
             return true;
         }
@@ -53,7 +53,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Edit badge:" + ex);
+                throw new Exception("Error: EditAsync badge:" + ex);
             }
             return true;
         }
@@ -69,7 +69,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Delete feedback:" + ex);
+                throw new Exception("Error: DeleteAsync feedback:" + ex);
             }
             return true;
         }

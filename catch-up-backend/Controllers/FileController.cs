@@ -38,7 +38,7 @@ namespace catch_up_backend.Controllers
         /// <param name="fileId">The ID of the file to delete.</param>
         /// <returns>A success message if the file was deleted, or a not-found message if the file does not exist.</returns>
         [HttpDelete]
-        [Route("Delete/{fileId:int}")]
+        [Route("DeleteAsync/{fileId:int}")]
         public async Task<IActionResult> Delete(int fileId)
         {
             return await _fileService.DeleteFile(fileId)

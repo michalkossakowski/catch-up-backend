@@ -15,7 +15,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
+        [Route("AddAsync")]
         public async Task<IActionResult> Add([FromBody] FaqDto newQuestion)
         {
             var result = await _faqService.Add(newQuestion);
@@ -26,7 +26,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("Edit/{questionId:int}")]
+        [Route("EditAsync/{questionId:int}")]
         public async Task<IActionResult> Edit(int questionId, [FromBody] FaqDto newQuestion)
         {
             return await _faqService.Edit(questionId, newQuestion)
@@ -35,7 +35,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{questionId:int}")]
+        [Route("DeleteAsync/{questionId:int}")]
         public async Task<IActionResult> Delete(int questionId)
         {
             return await _faqService.Delete(questionId) 

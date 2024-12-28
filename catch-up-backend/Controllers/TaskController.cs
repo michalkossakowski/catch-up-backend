@@ -19,7 +19,7 @@ namespace catch_up_backend.Controllers
         [Route("AddTaskToUser")]
         public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
-            var result = await _taskService.Add(newTask);
+            var result = await _taskService.AddAsync(newTask);
             return result != null
                 ? Ok(new { message = "Task added", task = result })
                 : StatusCode(500, new { message = "Error: Task add" });
@@ -28,108 +28,119 @@ namespace catch_up_backend.Controllers
         [Route("EditTask/{taskId:int}")]
         public async Task<IActionResult> Edit(int taskId, TaskDto newTask)
         {
-            return await _taskService.Edit(taskId, newTask)
+
+            return await _taskService.EditAsync(taskId, newTask)
                 ? Ok(new { message = $"Task edited", task = newTask })
                 : StatusCode(500, new { message = "Task editing error", taskId = taskId });
         }
         [HttpPut]
-        [Route("EditFullTask/{taskId:int}/{userId:guid}")]
+        [Route("EditFullTaskAsync/{taskId:int}/{userId:guid}")]
         public async Task<IActionResult> EditFullTask(int taskId, FullTask fullTask,Guid userId)
         {
-            return await _taskService.EditFullTask(taskId, fullTask, userId)
-                ? Ok(new { message = $"FullTask edited", fullTask = fullTask })
-                : StatusCode(500, new { message = "FullTask editing error", fullTaskId = taskId });
+            var (task, taskContent) = await _taskService.EditFullTaskAsync(taskId, fullTask, userId);
+            if (task == null || taskContent == null)
+                return NotFound(new { message = $"Task with id: [{taskId}] not found" , fullTaskId = taskId });
+            return Ok(new { message = $"FullTask edited", fullTask = fullTask, task = task, taskContent = taskContent });
         }
         [HttpGet]
-        [Route("GetAllTasks")]
+        [Route("GetAllTasksAsync")]
         public async Task<IActionResult> GetAllTasks()
         {
-            var fullTasks = await _taskService.GetAllTasks();
+            var fullTasks = await _taskService.GetAllTasksAsync();
+            return Ok(fullTasks);
+        }
+        [HttpGet]
+        [Route("GetAllTasksByAssigningId/{AssigningId:guid}")]
+        public async Task<IActionResult> GetAllTasksByAssigningId(Guid AssigningId)
+        {
+            var fullTasks = await _taskService.GetAllTasksByNewbieIdAsync(AssigningId);
+            if (fullTasks == null)
+                return NotFound(new { message = $"There is no user with ID: [{AssigningId}]" });
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetAllTasksByNewbieId/{newbieID:guid}")]
+        [Route("GetAllTasksByNewbieIdAsync/{newbieID:guid}")]
         public async Task<IActionResult> GetAllTasksByNewbieId(Guid newbieID)
         {
-            var fullTasks = await _taskService.GetAllTasksByNewbieId(newbieID);
+            var fullTasks = await _taskService.GetAllTasksByNewbieIdAsync(newbieID);
             if (fullTasks == null)
                 return NotFound(new { message = $"There is no user with ID: [{newbieID}]" });
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetAllTaskByTaskContentId/{taskContentId:int}")]
+        [Route("GetAllTaskByTaskContentIdAsync/{taskContentId:int}")]
         public async Task<IActionResult> GetAllTaskByTaskContentId(int taskContentId)
         {
-            var fullTasks = await _taskService.GetAllTaskByTaskContentId(taskContentId);
+            var fullTasks = await _taskService.GetAllTaskByTaskContentIdAsync(taskContentId);
             if (fullTasks == null)
                 return NotFound(new { message = $"There is no TaskContent with ID: [{taskContentId}]" });
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetTaskById/{id:int}")]
+        [Route("GetTaskByIdAsync/{id:int}")]
         public async Task<IActionResult> GetTaskById(int id)
         {
-            var fullTask = await _taskService.GetTaskById(id);
+            var fullTask = await _taskService.GetTaskByIdAsync(id);
             if (fullTask == null)
                 return NotFound(new { message = $"Task with id: [{id}] not found" });
             return Ok(fullTask);
         }
 
         [HttpGet]
-        [Route("GetAllFullTasks")]
+        [Route("GetAllFullTasksAsync")]
         public async Task<IActionResult> GetAllFullTasks()
         {
-            var fullTasks = await _taskService.GetAllFullTasks();
+            var fullTasks = await _taskService.GetAllFullTasksAsync();
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksByNewbieId/{newbieID:guid}")]
+        [Route("GetAllFullTasksByNewbieIdAsync/{newbieID:guid}")]
         public async Task<IActionResult> GetAllFullTasksByNewbieId(Guid newbieID)
         {
-            var fullTasks = await _taskService.GetAllFullTasksByNewbieId(newbieID);
+            var fullTasks = await _taskService.GetAllFullTasksByNewbieIdAsync(newbieID);
             if (fullTasks == null)
                 return NotFound(new { message = $"There is no user with ID: [{newbieID}]" });
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetAllFullTaskByTaskContentId/{taskContentId:int}")]
+        [Route("GetAllFullTaskByTaskContentIdAsync/{taskContentId:int}")]
         public async Task<IActionResult> GetAllFullTaskByTaskContentId(int taskContentId)
         {
-            var fullTasks = await _taskService.GetAllFullTaskByTaskContentId(taskContentId);
+            var fullTasks = await _taskService.GetAllFullTaskByTaskContentIdAsync(taskContentId);
             if (fullTasks == null)
                 return NotFound(new { message = $"There is no TaskContent with ID: [{taskContentId}]" });
             return Ok(fullTasks);
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksByCreatorId/{creatorID:guid}")]
-        public async Task<IActionResult> GetAllFullTasksByCreatorId(Guid creatorID)
+        [Route("GetAllFullTasksByAssigningIdAsync/{AssigningId:guid}")]
+        public async Task<IActionResult> GetAllFullTasksByAssigningId(Guid AssigningId)
         {
-            var fullTasks = await _taskService.GetAllFullTasksByCreatorId(creatorID);
+            var fullTasks = await _taskService.GetAllFullTasksByAssigningIdAsync(AssigningId);
             if (fullTasks == null)
-                return NotFound(new { message = $"There is no user with ID: [{creatorID}]" });
+                return NotFound(new { message = $"There is no user with ID: [{AssigningId}]" });
             return Ok(fullTasks);
         }
         
         [HttpGet]
-        [Route("GetFullTaskById/{taskId:int}")]
+        [Route("GetFullTaskByIdAsync/{taskId:int}")]
         public async Task<IActionResult> GetFullTaskById(int taskId)
         {
-            var fullTask = await _taskService.GetFullTaskById(taskId);
+            var fullTask = await _taskService.GetFullTaskByIdAsync(taskId);
             if (fullTask == null)
                 return NotFound(new { message = $"Task with id: [{taskId}] not found" });
             return Ok(fullTask);
         }
         [HttpDelete]
-        [Route("Delete/{taskId:int}")]
+        [Route("DeleteAsync/{taskId:int}")]
         public async Task<IActionResult> Delete(int taskId)
         {
-            return await _taskService.Delete(taskId)
+            return await _taskService.DeleteAsync(taskId)
                 ? Ok(new { message = "Task deleted successfully" })
                 : NotFound(new { message = "Task not found." });
         }

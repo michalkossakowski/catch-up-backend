@@ -96,7 +96,7 @@ namespace catch_up_backend.Controllers
         /// <param name="fullSchoolingDto">The data transfer object containing the updated schooling and its parts.</param>
         /// <returns>Success or failure of the operation.</returns>
         [HttpPut]
-        [Route("Edit")]
+        [Route("EditAsync")]
         public async Task<IActionResult> Edit([FromBody] FullSchoolingDto fullSchoolingDto)
         {
             return await _schoolingService.Edit(fullSchoolingDto)

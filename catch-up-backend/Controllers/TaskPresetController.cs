@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
+        [Route("AddAsync")]
         public async Task<IActionResult> Add([FromBody] TaskPresetDto newTaskPreset)
         {
             var result = await _taskPresetService.Add(newTaskPreset);
@@ -26,7 +26,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("Edit/{taskPresetId:int}")]
+        [Route("EditAsync/{taskPresetId:int}")]
         public async Task<IActionResult> Edit(int taskPresetId, [FromBody] TaskPresetDto newTaskPreset)
         {
             return await _taskPresetService.Edit(taskPresetId, newTaskPreset)

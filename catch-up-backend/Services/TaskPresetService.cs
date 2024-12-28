@@ -28,7 +28,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Add taskPreset: " + ex);
+                throw new Exception("Error: AddAsync taskPreset: " + ex);
             }
             return newTaskPreset;
         }
@@ -51,7 +51,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Edit taskPreset:" + ex);
+                throw new Exception("Error: EditAsync taskPreset:" + ex);
             }
             return true;
         }
@@ -72,7 +72,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Delete taskPreset:" + ex);
+                throw new Exception("Error: DeleteAsync taskPreset:" + ex);
             }
             return true;
         }
@@ -198,7 +198,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Delete taskPreset:" + ex);
+                throw new Exception("Error: DeleteAsync taskPreset:" + ex);
             }
             return true;
         }

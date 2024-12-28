@@ -11,6 +11,8 @@ namespace catch_up_backend.Models
         public int Id { get; set; }
         [ForeignKey("NewbieId")]
         public Guid? NewbieId { get; set; }
+        [ForeignKey("AssigningId")]
+        public Guid? AssigningId { get; set; }
         [ForeignKey("TaskContentId")]
         public int TaskContentId { get; set; }
         [ForeignKey("RoadmapPointId")]

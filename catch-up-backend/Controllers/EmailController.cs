@@ -16,7 +16,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
+        [Route("AddAsync")]
         public async Task<IActionResult> SendEmail([FromQuery] string recipientEmail,[FromQuery] string subject,[FromQuery] string body,[FromQuery] List<string> attachments = null)
         {
             try
