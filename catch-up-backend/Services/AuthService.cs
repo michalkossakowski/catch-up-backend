@@ -35,30 +35,6 @@ namespace catch_up_backend.Services
             return new AuthResponseDto(accesToken, refreshToken);
         }
 
-        public async Task<AuthResponseDto> Register(RegisterRequestDto request){
-            var existingUser = await userRepository.GetByMail(request.Email);
-            if (existingUser != null){
-                throw new Exception("User with this email already exists");
-            }
-
-            var newUser = new UserDto{
-                Name = request.Name,
-                Surname = request.Surname,
-                Email = request.Email,
-                Password = request.Password,
-                Type = request.Type,
-                Position = request.Position
-            };
-
-            await userRepository.Add(newUser);
-            var user = await userRepository.GetByMail(request.Email);
-
-            var (accessToken, refreshToken) = GenerateTokens(user.Id);
-            await StoreRefreshToken(user.Id, refreshToken);
-
-            return new AuthResponseDto(accessToken, refreshToken);
-        }
-
         private (string accessToken, string refreshToken) GenerateTokens(Guid id){
             var accessToken = GenerateJwtToken(
                 id,

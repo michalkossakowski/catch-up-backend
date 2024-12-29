@@ -20,15 +20,6 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var response = await _authService.Login(request);
-            //SetTokenCookies(response.AccessToken, response.RefreshToken);
-            return Ok(response);
-        }
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterRequestDto request)
-        {
-            var response = await _authService.Register(request);
-            //SetTokenCookies(response.AccessToken, response.RefreshToken);
             return Ok(response);
         }
 
@@ -36,26 +27,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
             var response = await _authService.RefreshToken(refreshToken);
-            //SetTokenCookies(response.AccessToken, response.RefreshToken);
             return Ok(response);
-        }
-
-
-        private void SetTokenCookies(string accessToken, string refreshToken)
-        {
-            Response.Cookies.Append("accessToken", accessToken, new CookieOptions
-            {
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddSeconds(30) // Set expiration for access token
-            });
-
-            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
-            {
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(7) // Set longer expiration for refresh token
-            });
         }
     }
 }
