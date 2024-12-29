@@ -23,8 +23,9 @@ namespace catch_up_backend.Services
         public async Task<AuthResponseDto> Login(LoginRequestDto request){
             var user = await userRepository.GetByMail(request.Email);
 
-            if (user == null)
-                throw new Exception("No such user exists");
+            if (user == null){
+                return null;
+            }
             if (user.Password != request.Password){
                 throw new Exception("Wrong password");
             }
