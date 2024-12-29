@@ -20,10 +20,11 @@ namespace catch_up_backend.Services
             return await userRepository.Add(newUser);
         }
 
-        public async Task Edit(Guid userId, UserDto updatedUser){
-            await userRepository.Edit(userId, updatedUser);
+        public async Task<UserDto?> Edit(Guid userId, UserDto updatedUser)
+        {
+            return await userRepository.Edit(userId, updatedUser);
         }
-        
+
         public async Task Delete(Guid userId){
             await userRepository.Delete(userId);
         }

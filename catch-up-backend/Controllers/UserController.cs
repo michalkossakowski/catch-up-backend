@@ -28,8 +28,10 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{userId}")]
         public async Task<IActionResult> Edit(Guid userId, [FromBody] UserDto updatedUser)
         {
-            await _userService.Edit(userId, updatedUser);
-            return Ok(new { message = "User updated", user = updatedUser });
+            var user = await _userService.Edit(userId, updatedUser);
+            if (user == null)
+                return NotFound(new { message = $"User with id: [{userId}] not found" });
+            return Ok(new { message = "User updated", user });
         }
 
         [HttpDelete]

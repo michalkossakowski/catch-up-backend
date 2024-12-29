@@ -5,7 +5,7 @@ namespace catch_up_backend.Interfaces
 {
     public interface IUserService{
         Task<UserDto> Add(UserDto newUser);
-        Task Edit(Guid userId, UserDto updatedUser);
+        Task<UserDto> Edit(Guid userId, UserDto updatedUser);
         Task Delete(Guid userId);
         Task<UserDto> GetById(Guid userId);
         Task<List<UserModel>> GetAll();
