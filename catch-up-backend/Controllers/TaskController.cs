@@ -34,7 +34,7 @@ namespace catch_up_backend.Controllers
                 : StatusCode(500, new { message = "Task editing error", taskId = taskId });
         }
         [HttpPut]
-        [Route("EditFullTaskAsync/{taskId:int}/{userId:guid}")]
+        [Route("EditFullTask/{taskId:int}/{userId:guid}")]
         public async Task<IActionResult> EditFullTask(int taskId, FullTask fullTask,Guid userId)
         {
             var (task, taskContent) = await _taskService.EditFullTaskAsync(taskId, fullTask, userId);
@@ -43,7 +43,7 @@ namespace catch_up_backend.Controllers
             return Ok(new { message = $"FullTask edited", fullTask = fullTask, task = task, taskContent = taskContent });
         }
         [HttpGet]
-        [Route("GetAllTasksAsync")]
+        [Route("GetAllTasks")]
         public async Task<IActionResult> GetAllTasks()
         {
             var fullTasks = await _taskService.GetAllTasksAsync();
@@ -60,7 +60,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllTasksByNewbieIdAsync/{newbieID:guid}")]
+        [Route("GetAllTasksByNewbieId/{newbieID:guid}")]
         public async Task<IActionResult> GetAllTasksByNewbieId(Guid newbieID)
         {
             var fullTasks = await _taskService.GetAllTasksByNewbieIdAsync(newbieID);
@@ -70,7 +70,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllTaskByTaskContentIdAsync/{taskContentId:int}")]
+        [Route("GetAllTaskByTaskContentId/{taskContentId:int}")]
         public async Task<IActionResult> GetAllTaskByTaskContentId(int taskContentId)
         {
             var fullTasks = await _taskService.GetAllTaskByTaskContentIdAsync(taskContentId);
@@ -80,7 +80,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetTaskByIdAsync/{id:int}")]
+        [Route("GetTaskById/{id:int}")]
         public async Task<IActionResult> GetTaskById(int id)
         {
             var fullTask = await _taskService.GetTaskByIdAsync(id);
@@ -90,7 +90,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksAsync")]
+        [Route("GetAllFullTasks")]
         public async Task<IActionResult> GetAllFullTasks()
         {
             var fullTasks = await _taskService.GetAllFullTasksAsync();
@@ -98,7 +98,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksByNewbieIdAsync/{newbieID:guid}")]
+        [Route("GetAllFullTasksByNewbieId/{newbieID:guid}")]
         public async Task<IActionResult> GetAllFullTasksByNewbieId(Guid newbieID)
         {
             var fullTasks = await _taskService.GetAllFullTasksByNewbieIdAsync(newbieID);
@@ -108,7 +108,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFullTaskByTaskContentIdAsync/{taskContentId:int}")]
+        [Route("GetAllFullTaskByTaskContentId/{taskContentId:int}")]
         public async Task<IActionResult> GetAllFullTaskByTaskContentId(int taskContentId)
         {
             var fullTasks = await _taskService.GetAllFullTaskByTaskContentIdAsync(taskContentId);
@@ -118,7 +118,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksByAssigningIdAsync/{AssigningId:guid}")]
+        [Route("GetAllFullTasksByAssigningId/{AssigningId:guid}")]
         public async Task<IActionResult> GetAllFullTasksByAssigningId(Guid AssigningId)
         {
             var fullTasks = await _taskService.GetAllFullTasksByAssigningIdAsync(AssigningId);
@@ -128,7 +128,7 @@ namespace catch_up_backend.Controllers
         }
         
         [HttpGet]
-        [Route("GetFullTaskByIdAsync/{taskId:int}")]
+        [Route("GetFullTaskById/{taskId:int}")]
         public async Task<IActionResult> GetFullTaskById(int taskId)
         {
             var fullTask = await _taskService.GetFullTaskByIdAsync(taskId);
