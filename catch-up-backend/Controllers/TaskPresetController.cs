@@ -29,9 +29,10 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{taskPresetId:int}")]
         public async Task<IActionResult> Edit(int taskPresetId, [FromBody] TaskPresetDto newTaskPreset)
         {
-            return await _taskPresetService.Edit(taskPresetId, newTaskPreset)
-                ? Ok(new { message = "Task preset edited", taskPreset = newTaskPreset })
-                : NotFound(new { message = "Error: Task preset edit" });
+            var result = await _taskPresetService.Edit(taskPresetId, newTaskPreset);
+            return result != null
+                ? Ok(new { message = "Task preset edited", taskPreset = result })
+                : StatusCode(500, new { message = "Error: Task preset edit" });
         }
 
         [HttpDelete]
