@@ -11,6 +11,8 @@ namespace catch_up_backend.Models
         public int Id { get; set; }
         [ForeignKey("NewbieId")]
         public Guid? NewbieId { get; set; }
+        [ForeignKey("AssigningId")]
+        public Guid? AssigningId { get; set; }
         [ForeignKey("TaskContentId")]
         public int TaskContentId { get; set; }
         [ForeignKey("RoadmapPointId")]
@@ -19,20 +21,24 @@ namespace catch_up_backend.Models
         public DateTime AssignmentDate { get; set; }
         public DateTime? FinalizationDate { get; set; }
         public DateTime? Deadline { get; set; }
-        public int SpendTime { get; set; }
+        public double SpendTime { get; set; }
         public int Priority { get; set; }
         public int? Rate { get; set; }
         public StateEnum State { get; set; }
-        public TaskModel(Guid? newbieId, int taskContentId, int? roadMapPointId, StatusEnum status, DateTime? deadline, int priority)
+        public TaskModel() { }
+        public TaskModel(Guid? newbieId, Guid? assigningID, int taskContentId, int? roadMapPointId, DateTime? deadline, int priority)
         {
             NewbieId = newbieId;
+            AssigningId = assigningID;
             TaskContentId = taskContentId;
             RoadMapPointId = roadMapPointId;
-            Status = status;
+            Status = StatusEnum.ToDo;
             AssignmentDate = DateTime.Now;
+            FinalizationDate = null;
             Deadline = deadline;
             SpendTime = 0;
             Priority = priority;
+            Rate = null;
             State = StateEnum.Active;
         }
     }

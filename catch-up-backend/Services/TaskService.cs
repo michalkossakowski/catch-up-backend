@@ -20,15 +20,15 @@ namespace catch_up_backend.Services
             _context = context;
             _contentService = contentService;
         }
-        public async Task<TaskDto> Add(TaskDto newTask )
+        public async Task<TaskDto> AddAsync(TaskDto newTask )
         {
             try
             {
                 var task = new TaskModel(
                 newTask.NewbieId,
+                newTask.AssigningId,
                 newTask.TaskContentId,
                 newTask.RoadMapPointId,
-                newTask.Status,
                 newTask.Deadline,
                 newTask.Priority
                 );
@@ -43,7 +43,7 @@ namespace catch_up_backend.Services
             return newTask;
 
         }
-        public async Task<bool> Edit(int taskId, TaskDto newTask)
+        public async Task<bool> EditAsync(int taskId, TaskDto newTask)
         {
             var task = await _context.Tasks.FindAsync(taskId);
             if (task == null) return false;
@@ -54,6 +54,9 @@ namespace catch_up_backend.Services
                 task.Deadline = newTask.Deadline;
                 task.SpendTime = newTask.SpendTime;
                 task.Priority = newTask.Priority;
+                task.Rate = newTask.Rate;
+                task.AssigningId = newTask.AssigningId;
+                task.NewbieId = newTask.NewbieId;
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
             }
@@ -63,20 +66,26 @@ namespace catch_up_backend.Services
             }
             return true;
         }
-        public async Task<bool> EditFullTask(int id, FullTask fullTask, Guid userId)
+        public async Task<(TaskModel, TaskContentDto)> EditFullTaskAsync(int id, FullTask fullTask, Guid userId)
         {
             var task = await _context.Tasks.FindAsync(id);
-            if (task == null) return false;
+            if (task == null) return (null,null);
 
-            var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
-            if (taskContent == null) return false;
-
+            //var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
+            var taskContent = await _contentService.GetById(task.TaskContentId);
+            if (taskContent == null) return (null, null);
             try
             {
+                task.NewbieId = fullTask.NewbieId;
+                task.AssigningId = fullTask.AssigningId;
                 task.RoadMapPointId = fullTask.RoadMapPointId;
                 task.Status = fullTask.Status;
+                task.FinalizationDate = fullTask.FinalizationDate;
                 task.Deadline = fullTask.Deadline;
                 task.SpendTime = fullTask.SpendTime;
+                task.Priority = fullTask.Priority;
+                task.Rate = fullTask.Rate;
+
                 if (fullTask.CategoryId != taskContent.CategoryId 
                     || fullTask.MaterialsId != taskContent.MaterialsId 
                     || fullTask.Title != taskContent.Title 
@@ -84,8 +93,9 @@ namespace catch_up_backend.Services
                 {
                     var newTaskContent = new TaskContentDto(userId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title,fullTask.Description);
                     newTaskContent = await _contentService.Add(newTaskContent);
-                    if (newTaskContent == null) return false;
+                    if (newTaskContent == null) return (null, null);
                     task.TaskContentId = newTaskContent.Id;
+                    taskContent = newTaskContent;
                 }
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
@@ -93,14 +103,14 @@ namespace catch_up_backend.Services
             catch (Exception ex) {
                 throw new Exception("Error: Edit Task: " + ex);
             }
-            return true;
+            return (task, taskContent);
         }
-        public async Task<List<TaskDto>> GetAllTasks()
+        public async Task<List<TaskDto>> GetAllTasksAsync()
         {
             return await _context.Tasks.Where(p=>p.State == StateEnum.Active).Select(task => new TaskDto(task)).ToListAsync();
         }
 
-        public async Task<List<TaskDto>> GetAllTasksByNewbieId(Guid id)
+        public async Task<List<TaskDto>> GetAllTasksByNewbieIdAsync(Guid id)
         {
             if (_context.Users.Find(id) == null)
                 return null;
@@ -109,7 +119,7 @@ namespace catch_up_backend.Services
                 .ToListAsync();
         }
 
-        public async Task<List<TaskDto>> GetAllTaskByTaskContentId(int id)
+        public async Task<List<TaskDto>> GetAllTaskByTaskContentIdAsync(int id)
         {
             if (_context.TaskContents.Find(id) == null)
                 return null;
@@ -117,13 +127,13 @@ namespace catch_up_backend.Services
                 .Select(task => new TaskDto(task))
                 .ToListAsync();
         }
-        public async Task<TaskDto> GetTaskById(int id)
+        public async Task<TaskDto> GetTaskByIdAsync(int id)
         {
             return await _context.Tasks.Where(task => task.Id == id)
                 .Select(task => new TaskDto(task))
                 .FirstOrDefaultAsync();
         }
-        public async Task<List<FullTask>> GetAllFullTasks()
+        public async Task<List<FullTask>> GetAllFullTasksAsync()
         {
             return await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
                 _context.TaskContents,
@@ -131,7 +141,7 @@ namespace catch_up_backend.Services
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
         }
 
-        public async Task<List<FullTask>> GetAllFullTasksByNewbieId(Guid id)
+        public async Task<List<FullTask>> GetAllFullTasksByNewbieIdAsync(Guid id)
         {
             if (_context.Users.Find(id) == null)
                 return null;
@@ -141,7 +151,7 @@ namespace catch_up_backend.Services
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
         }
 
-        public async Task<List<FullTask>> GetAllFullTaskByTaskContentId(int id)
+        public async Task<List<FullTask>> GetAllFullTaskByTaskContentIdAsync(int id)
         {
             if (_context.TaskContents.Find(id) == null)
                 return null;
@@ -151,20 +161,19 @@ namespace catch_up_backend.Services
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
         }
 
-        public async Task<List<FullTask>> GetAllFullTasksByCreatorId(Guid id)
+        public async Task<List<FullTask>> GetAllFullTasksByAssigningIdAsync(Guid id)
         {
             if (_context.Users.Find(id) == null)
                 return null;
-            return await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
+            return await _context.Tasks.Where(p => p.State == StateEnum.Active && p.AssigningId == id).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new { task, taskContent })
-                .Where(joined => joined.taskContent.CreatorId == id)
                 .Select(joined => new FullTask(joined.task, joined.taskContent))
                 .ToListAsync();
         }
 
-        public async Task<FullTask> GetFullTaskById(int id)
+        public async Task<FullTask> GetFullTaskByIdAsync(int id)
         {
             var result = await _context.Tasks
             .Join(
@@ -182,7 +191,7 @@ namespace catch_up_backend.Services
 
             return new FullTask(result.Task, result.TaskContent);
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var task = _context.Tasks.Find(id);
             if (task == null)
