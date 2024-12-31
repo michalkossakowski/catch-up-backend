@@ -35,6 +35,7 @@ namespace catch_up_backend.Services
                 await _context.Tasks.AddAsync(task);
                 await _context.SaveChangesAsync();
                 newTask.Id = task.Id;
+                newTask.AssignmentDate = task.AssignmentDate;
             }
             catch(Exception ex)
             {

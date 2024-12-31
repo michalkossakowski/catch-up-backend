@@ -109,5 +109,62 @@ namespace catch_up_backend.Repositories
             .Where(a => a.State == StateEnum.Active && (a.Type == "Mentor" || a.Type == "Admin"))
             .ToListAsync();
         }
+
+        public async Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase)
+        {
+            if (string.IsNullOrWhiteSpace(searchPhrase))
+                return await _context.Users
+                    .Select(u => new UserDto
+                    {
+                        Id = u.Id,
+                        Name = u.Name,
+                        Surname = u.Surname,
+                        Email = u.Email,
+                        Type = u.Type,
+                        Position = u.Position
+                    })
+                    .ToListAsync();
+
+            searchPhrase = searchPhrase.ToLower();
+            return await _context.Users
+                .Where(u => u.Name.ToLower().Contains(searchPhrase) ||
+                            u.Surname.ToLower().Contains(searchPhrase) ||
+                            u.Email.ToLower().Contains(searchPhrase))
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    Type = u.Type,
+                    Position = u.Position
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null)
+        {
+            var query = _context.Users.Where(u => u.Type.ToLower() == role.ToLower());
+
+            if (!string.IsNullOrWhiteSpace(searchPhrase))
+            {
+                searchPhrase = searchPhrase.ToLower();
+                query = query.Where(u => u.Name.ToLower().Contains(searchPhrase) ||
+                                        u.Surname.ToLower().Contains(searchPhrase) ||
+                                        u.Email.ToLower().Contains(searchPhrase));
+            }
+
+            return await query
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    Type = u.Type,
+                    Position = u.Position
+                })
+                .ToListAsync();
+        }
     }
 }

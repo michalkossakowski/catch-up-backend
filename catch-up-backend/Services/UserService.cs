@@ -44,5 +44,15 @@ namespace catch_up_backend.Services
         {
             return await userRepository.GetMentorAdmin();
         }
+
+        public async Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase)
+        {
+            return await userRepository.SearchUsers(searchPhrase);
+        }
+
+        public async Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null)
+        {
+            return await userRepository.SearchUsersByRole(role, searchPhrase);
+        }
     }
 }
