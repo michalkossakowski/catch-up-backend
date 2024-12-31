@@ -26,9 +26,9 @@ namespace catch_up_backend.Services
             {
                 var task = new TaskModel(
                 newTask.NewbieId,
+                newTask.AssigningId,
                 newTask.TaskContentId,
                 newTask.RoadMapPointId,
-                newTask.Status,
                 newTask.Deadline,
                 newTask.Priority
                 );
@@ -54,6 +54,9 @@ namespace catch_up_backend.Services
                 task.Deadline = newTask.Deadline;
                 task.SpendTime = newTask.SpendTime;
                 task.Priority = newTask.Priority;
+                task.Rate = newTask.Rate;
+                task.AssigningId = newTask.AssigningId;
+                task.NewbieId = newTask.NewbieId;
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
             }
@@ -73,14 +76,15 @@ namespace catch_up_backend.Services
             if (taskContent == null) return (null, null);
             try
             {
+                task.NewbieId = fullTask.NewbieId;
+                task.AssigningId = fullTask.AssigningId;
                 task.RoadMapPointId = fullTask.RoadMapPointId;
                 task.Status = fullTask.Status;
-                task.Priority = fullTask.Priority;
+                task.FinalizationDate = fullTask.FinalizationDate;
                 task.Deadline = fullTask.Deadline;
                 task.SpendTime = fullTask.SpendTime;
+                task.Priority = fullTask.Priority;
                 task.Rate = fullTask.Rate;
-                task.AssigningId = fullTask.AssigningId;
-                task.NewbieId = fullTask.NewbieId;
 
                 if (fullTask.CategoryId != taskContent.CategoryId 
                     || fullTask.MaterialsId != taskContent.MaterialsId 

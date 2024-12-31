@@ -18,7 +18,7 @@ namespace catch_up_backend.Dtos
         public DateTime AssignmentDate { get; set; }
         public DateTime? FinalizationDate { get; set; }
         public DateTime? Deadline { get; set; }
-        public int SpendTime { get; set; }
+        public double SpendTime { get; set; }
         public int Priority { get; set; }
         public int? Rate { get; set; }
         public FullTask() { }
@@ -40,7 +40,7 @@ namespace catch_up_backend.Dtos
             Priority = task.Priority;
             Rate = task.Rate;
         }
-        public FullTask(int id, Guid? newbieId, int? materialsId, int? categoryId, string title, string description, int? roadMapPointId, StatusEnum status, DateTime assignmentDate, DateTime? finalizationDate, DateTime? deadline, int spendTime, int priority, int? rate)
+        public FullTask(int id, Guid? newbieId, int? materialsId, int? categoryId, string title, string description, int? roadMapPointId, StatusEnum status, DateTime assignmentDate, DateTime? finalizationDate, DateTime? deadline, double spendTime, int priority, int? rate)
         {
             Id = id;
             NewbieId = newbieId;

@@ -15,7 +15,7 @@ namespace catch_up_backend.Dtos
         public DateTime AssignmentDate { get; set; }
         public DateTime? FinalizationDate { get; set; }
         public DateTime? Deadline { get; set; }
-        public int SpendTime { get; set; }
+        public double SpendTime { get; set; }
         public int Priority { get; set; }
         public int? Rate { get; set; }
         public TaskDto() { }
