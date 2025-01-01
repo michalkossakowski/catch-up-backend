@@ -19,8 +19,9 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] CategoryDto newCategory)
         {
-            return await _categoryService.AddCategory(newCategory)
-                ? Ok(new { message = "Category added", category = newCategory })
+            var result = await _categoryService.AddCategory(newCategory);
+            return result != null
+                ? Ok(new { message = "Category added", category = result })
                 : StatusCode(500, new { message = "Error: Category add" });
         }
 
@@ -28,8 +29,9 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{categoryId:int}")]
         public async Task<IActionResult> Edit(int categoryId, [FromBody] CategoryDto newCategory)
         {
-            return await _categoryService.EditCategory(categoryId, newCategory)
-                ? Ok(new { message = "Category edited", category = newCategory })
+            var result = await _categoryService.EditCategory(categoryId, newCategory);
+            return result != null
+                ? Ok(new { message = "Category edited", category = result })
                 : StatusCode(500, new { message = "Error: Category edit" });
         }
 

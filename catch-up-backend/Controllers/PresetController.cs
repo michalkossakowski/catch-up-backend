@@ -38,11 +38,13 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromBody] PresetDto newPreset)
+        [Route("Edit/{presetId:int}")]
+        public async Task<IActionResult> Edit(int presetId, [FromBody] PresetDto newPreset)
         {
-            var result = await _presetService.Edit(newPreset);
-            return Ok(new { message = "Preset edited", preset = result });
+            var result = await _presetService.Edit(presetId, newPreset);
+            return result != null
+                ? Ok(new { message = "Preset edited", preset = result })
+                : StatusCode(500, new { message = "Error: Preset edit" });
         }
 
         [HttpDelete]

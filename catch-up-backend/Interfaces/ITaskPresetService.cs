@@ -6,7 +6,7 @@ namespace catch_up_backend.Services.Interfaces
     public interface ITaskPresetService
     {
         public Task<TaskPresetDto> Add(TaskPresetDto newTaskPreset);
-        public Task<bool> Edit(int taskPresetId, TaskPresetDto newTaskPreset);
+        public Task<TaskPresetDto> Edit(int taskPresetId, TaskPresetDto newTaskPreset);
         public Task<bool> DeleteByPresetId(int presetId);
         public Task<bool> RemoveTaskFromPreset(int presetId, int taskContentId);
         public Task<bool> RemoveTaskFromAllPresets(int taskContentId);
