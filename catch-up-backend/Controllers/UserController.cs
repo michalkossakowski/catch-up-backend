@@ -75,5 +75,25 @@ namespace catch_up_backend.Controllers
             var users = await _userService.GetMentorAdmin();
             return Ok(users);
         }
+
+        [HttpGet]
+        [Route("Search/{searchPhrase}")]
+        public async Task<IActionResult> SearchUsers(string searchPhrase)
+        {
+            var users = await _userService.SearchUsers(searchPhrase);
+            if (!users.Any())
+                return NotFound(new { message = $"No users found matching phrase: '{searchPhrase}'" });
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("SearchByRole/{role}/{searchPhrase?}")]
+        public async Task<IActionResult> SearchUsersByRole(string role, string? searchPhrase = null)
+        {
+            var users = await _userService.SearchUsersByRole(role, searchPhrase);
+            if (!users.Any())
+                return NotFound(new { message = $"No users found with role '{role}' matching phrase: '{searchPhrase}'" });
+            return Ok(users);
+        }
     }
 }
