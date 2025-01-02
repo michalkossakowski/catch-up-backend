@@ -30,8 +30,9 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{taskContentId:int}")]
         public async Task<IActionResult> Edit(int taskContentId, [FromBody] TaskContentDto newTaskContent)
         {
-            return await _taskContentService.Edit(taskContentId, newTaskContent)
-                ? Ok(new { message = "Task content edited", taskContent = newTaskContent })
+            var result = await _taskContentService.Edit(taskContentId, newTaskContent);
+            return result != null
+                ? Ok(new { message = "Task content edited", taskContent = result })
                 : StatusCode(500, new { message = "Error: Task content edit" });
         }
 
@@ -75,8 +76,17 @@ namespace catch_up_backend.Controllers
         [Route("GetByTitle/{title}")]
         public async Task<IActionResult> GetByTitle(string title)
         {
-            var taskContents = await _taskContentService.GetByTitle(title);
-            return Ok(taskContents);
+            try
+            {
+                var taskContents = await _taskContentService.GetByTitle(title);
+                if (!taskContents.Any())
+                    return NotFound(new { message = $"No task content found with title containing: {title}" });
+                return Ok(taskContents);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = $"Error retrieving task content with title: {title}" });
+            }
         }
 
         [HttpGet]

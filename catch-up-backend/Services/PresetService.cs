@@ -34,7 +34,6 @@ namespace catch_up_backend.Services
                 await _context.SaveChangesAsync();
                 
                 newPreset.Id = preset.Id;
-                return newPreset;
             }
             catch (FormatException ex)
             {
@@ -44,21 +43,21 @@ namespace catch_up_backend.Services
             {
                 throw new Exception($"Error adding preset: {ex.Message}", ex);
             }
+            return newPreset;
         }
 
-        public async Task<PresetDto> Edit(PresetDto newPreset)
+        public async Task<PresetDto> Edit(int presetId, PresetDto newPreset)
         {
-            var preset = await _context.Presets.FindAsync(newPreset.Id);
+            var preset = await _context.Presets.FindAsync(presetId);
             if (preset == null)
-            {
-                throw new Exception("Preset not found");
-            }
+                return null;
             try
             {
                 preset.CreatorId = Guid.Parse(newPreset.CreatorId);
                 preset.Name = newPreset.Name;
                 _context.Presets.Update(preset);
                 await _context.SaveChangesAsync();
+                newPreset.Id = preset.Id;
             }
             catch (Exception ex)
             {

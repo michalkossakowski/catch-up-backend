@@ -33,14 +33,12 @@ namespace catch_up_backend.Services
             return newTaskPreset;
         }
 
-        public async Task<bool> Edit(int taskPresetId, TaskPresetDto newTaskPreset)
+        public async Task<TaskPresetDto> Edit(int taskPresetId, TaskPresetDto newTaskPreset)
         {
             var taskPreset = await _context.TaskPresets
                 .FirstOrDefaultAsync(tp => tp.PresetId == taskPresetId);
             if (taskPreset == null)
-            {
-                return false;
-            }
+                return null;
             try
             {
                 taskPreset.PresetId = newTaskPreset.PresetId;
@@ -53,7 +51,7 @@ namespace catch_up_backend.Services
             {
                 throw new Exception("Error: Edit taskPreset:" + ex);
             }
-            return true;
+            return newTaskPreset;
         }
 
         public async Task<bool> Delete(int taskPresetId)

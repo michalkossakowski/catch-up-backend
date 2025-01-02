@@ -18,39 +18,39 @@ namespace catch_up_backend.Services
             _context = context;
         }
 
-        public async Task<bool> AddCategory(CategoryDto newCategory)
+        public async Task<CategoryDto> AddCategory(CategoryDto newCategory)
         {
             try
             {
                 var category = new CategoryModel(newCategory.Name ?? "");
                 await _context.AddAsync(category);
                 await _context.SaveChangesAsync();
+                newCategory.Id = category.Id;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Add category: " + ex);
             }
-            return true;
+            return newCategory;
         }
 
-        public async Task<bool> EditCategory(int categoryId, CategoryDto newCategory)
+        public async Task<CategoryDto> EditCategory(int categoryId, CategoryDto newCategory)
         {
             var category = await _context.Categories.FindAsync(categoryId);
             if (category == null)
-            {
-                return false;
-            }
+                return null;
             try
             {
                 category.Name = newCategory.Name;
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync();
+                newCategory.Id = category.Id;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Edit category: " + ex);
             }
-            return true;
+            return newCategory;
         }
 
         public async Task<bool> DeleteCategory(int categoryId)

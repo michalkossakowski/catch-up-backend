@@ -37,13 +37,11 @@ namespace catch_up_backend.Services
             return newTaskContent;
         }
 
-        public async Task<bool> Edit(int taskContentId, TaskContentDto newTaskContent)
+        public async Task<TaskContentDto> Edit(int taskContentId, TaskContentDto newTaskContent)
         {
             var taskContent = await _context.TaskContents.FindAsync(taskContentId);
             if (taskContent == null)
-            {
-                return false;
-            }
+                return null;
             try
             {
                 taskContent.CreatorId = newTaskContent.CreatorId;
@@ -53,12 +51,13 @@ namespace catch_up_backend.Services
                 taskContent.Description = newTaskContent.Description ?? "";
                 _context.TaskContents.Update(taskContent);
                 await _context.SaveChangesAsync();
+                newTaskContent.Id = taskContent.Id;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Edit taskContent:" + ex);
             }
-            return true;
+            return newTaskContent;
         }
 
         public async Task<bool> Delete(int taskContentId)
@@ -134,10 +133,6 @@ namespace catch_up_backend.Services
                     Description = tc.Description
                 }).ToListAsync();
 
-            if (taskContents == null || taskContents.Count == 0)
-            {
-                throw new Exception("No TaskContent found");
-            }
             return taskContents;
         }
 
