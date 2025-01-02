@@ -5,6 +5,8 @@ using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace catch_up_backend.Repositories
 {
@@ -12,17 +14,30 @@ namespace catch_up_backend.Repositories
     {
         private readonly CatchUpDbContext _context;
 
-        public UserRepository(CatchUpDbContext context){
+        public UserRepository(CatchUpDbContext context)
+        {
             _context = context;
+        }
+
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
 
         public async Task<UserDto> Add(UserDto newUser)
         {
+            var hashedPassword = HashPassword(newUser.Password);
+
             var user = new UserModel(
                 newUser.Name,
                 newUser.Surname,
                 newUser.Email,
-                newUser.Password,
+                hashedPassword,
                 newUser.Type,
                 newUser.Position);
 
@@ -34,7 +49,7 @@ namespace catch_up_backend.Repositories
                 Id = user.Id,
                 Name = user.Name,
                 Surname = user.Surname,
-                Password = user.Password,
+                Password = null,
                 Email = user.Email,
                 Type = user.Type,
                 Position = user.Position,
@@ -58,7 +73,7 @@ namespace catch_up_backend.Repositories
                 user.Email = updatedUser.Email;
 
             if (updatedUser.Password != null)
-                user.Password = updatedUser.Password;
+                user.Password = HashPassword(updatedUser.Password);
 
             if (updatedUser.Type != null)
                 user.Type = updatedUser.Type;
@@ -78,7 +93,7 @@ namespace catch_up_backend.Repositories
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email,
-                Password = user.Password,
+                Password = null,
                 Type = user.Type,
                 Position = user.Position,
                 AvatarId = user.AvatarId,
