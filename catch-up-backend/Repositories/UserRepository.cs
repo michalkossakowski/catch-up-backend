@@ -34,31 +34,59 @@ namespace catch_up_backend.Repositories
                 Id = user.Id,
                 Name = user.Name,
                 Surname = user.Surname,
+                Password = user.Password,
                 Email = user.Email,
                 Type = user.Type,
-                Position = user.Position
+                Position = user.Position,
+                Counters = user.Counters
             };
         }
 
-        public async Task Edit(Guid userId, UserDto updatedUser)
+        public async Task<UserDto> Edit(Guid userId, UserDto updatedUser)
         {
             var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return null;
 
-            user.Name = updatedUser.Name;
-            user.Surname = updatedUser.Surname;
-            user.Email = updatedUser.Email;
-            user.Password = updatedUser.Password;
-            user.Type = updatedUser.Type;
-            user.Position = updatedUser.Position;
+            if (updatedUser.Name != null)
+                user.Name = updatedUser.Name;
+
+            if (updatedUser.Surname != null)
+                user.Surname = updatedUser.Surname;
+
+            if (updatedUser.Email != null)
+                user.Email = updatedUser.Email;
+
+            if (updatedUser.Password != null)
+                user.Password = updatedUser.Password;
+
+            if (updatedUser.Type != null)
+                user.Type = updatedUser.Type;
+
+            if (updatedUser.Position != null)
+                user.Position = updatedUser.Position;
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Password = user.Password,
+                Type = user.Type,
+                Position = user.Position,
+                Counters = user.Counters
+            };
         }
 
         public async Task Delete(Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            _context.Users.Remove(user);
+            user.State = StateEnum.Deleted;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
