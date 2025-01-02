@@ -12,5 +12,7 @@ namespace catch_up_backend.Interfaces.RepositoryInterfaces
         Task<List<UserModel>> GetAll();
         Task<string> GetRole(Guid userId);
         Task<List<UserModel>> GetMentorAdmin();
+        Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase);
+        Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null);
     }
 }
