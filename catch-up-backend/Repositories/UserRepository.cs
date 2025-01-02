@@ -157,7 +157,7 @@ namespace catch_up_backend.Repositories
                         Position = u.Position
                     })
                     .ToListAsync();
-
+             
             searchPhrase = searchPhrase.ToLower();
             return await _context.Users
                 .Where(u => u.Name.ToLower().Contains(searchPhrase) ||
