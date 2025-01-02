@@ -173,7 +173,7 @@ namespace catch_up_backend.Repositories
                     Position = u.Position
                 })
                 .ToListAsync();
-        }
+        } 
 
         public async Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null)
         {
