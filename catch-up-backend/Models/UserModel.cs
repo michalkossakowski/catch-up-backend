@@ -14,6 +14,7 @@ namespace catch_up_backend.Models
         public string Password { get; set; }
         public string Type { get; set; }
         public string? Position { get; set; }
+        public int? AvatarId { get; set; }
         public Dictionary<BadgeTypeCountEnum, int>? Counters { get; set; }
         public StateEnum? State { get; set; }
 
@@ -25,6 +26,7 @@ namespace catch_up_backend.Models
             this.Password = password;
             this.Type = type;
             this.Position = position ?? string.Empty;
+            this.AvatarId = null;
             State = StateEnum.Active;
             Counters = InitializeCounters();
         }

@@ -66,6 +66,9 @@ namespace catch_up_backend.Repositories
             if (updatedUser.Position != null)
                 user.Position = updatedUser.Position;
 
+            if (updatedUser.AvatarId.HasValue)
+                user.AvatarId = updatedUser.AvatarId;
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
@@ -78,6 +81,7 @@ namespace catch_up_backend.Repositories
                 Password = user.Password,
                 Type = user.Type,
                 Position = user.Position,
+                AvatarId = user.AvatarId,
                 Counters = user.Counters
             };
         }
@@ -100,7 +104,8 @@ namespace catch_up_backend.Repositories
                     Name = u.Name,
                     Surname = u.Surname,
                     Email = u.Email,
-                    Position = u.Position
+                    Position = u.Position,
+                    AvatarId = u.AvatarId
                 })
                 .FirstOrDefaultAsync();
 
@@ -152,7 +157,7 @@ namespace catch_up_backend.Repositories
                         Position = u.Position
                     })
                     .ToListAsync();
-
+             
             searchPhrase = searchPhrase.ToLower();
             return await _context.Users
                 .Where(u => u.Name.ToLower().Contains(searchPhrase) ||
@@ -168,7 +173,7 @@ namespace catch_up_backend.Repositories
                     Position = u.Position
                 })
                 .ToListAsync();
-        }
+        } 
 
         public async Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null)
         {

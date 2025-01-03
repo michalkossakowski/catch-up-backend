@@ -11,6 +11,7 @@ namespace catch_up_backend.Dtos
         public string? Password { get; set; }
         public string? Type { get; set; }
         public string? Position { get; set; }
+        public int? AvatarId { get; set; }
         public Dictionary<BadgeTypeCountEnum, int>? Counters { get; set; }
     }
 }
