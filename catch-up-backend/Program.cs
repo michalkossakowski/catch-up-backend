@@ -9,6 +9,7 @@ using System.Text;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Repositories;
 using catch_up_backend.Services.Interfaces;
+using catch_up_backend.Models;
 
 
 namespace catch_up_backend
@@ -109,6 +110,32 @@ namespace catch_up_backend
 
             //----------- Custom Section Start -----------
             app.UseCors("AllowAllOrigins");
+
+            // create a default user if Users table is empty
+            void EnsureUserExists(IServiceProvider serviceProvider)
+            {
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<CatchUpDbContext>();
+
+                    if (!context.Users.Any())
+                    {
+                        var adminUser = new UserModel(
+                            name: "Admin",
+                            surname: "Admin",
+                            email: "admin@admin.com",
+                            password: "Admin",
+                            type: "Admin",
+                            position: "Admin"
+                        );
+
+                        context.Users.Add(adminUser);
+                        context.SaveChanges();
+                    }
+                }
+            }
+
+            EnsureUserExists(app.Services);
             // ----------- Custom Section End -----------
 
             app.UseAuthentication();
