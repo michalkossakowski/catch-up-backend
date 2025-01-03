@@ -130,7 +130,8 @@ namespace catch_up_backend.Repositories
         public async Task<UserModel> GetByMail(string email)
         {
             var user = await _context.Users
-                .Where(u => u.Email == email).FirstOrDefaultAsync();
+                .Where(u => u.Email.ToLower() == email.ToLower())
+                .FirstOrDefaultAsync();
 
             return user;
         }
