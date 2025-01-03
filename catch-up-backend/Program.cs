@@ -10,6 +10,7 @@ using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Repositories;
 using catch_up_backend.Services.Interfaces;
 using catch_up_backend.Models;
+using System.Security.Cryptography;
 
 
 namespace catch_up_backend
@@ -118,13 +119,25 @@ namespace catch_up_backend
                 {
                     var context = scope.ServiceProvider.GetRequiredService<CatchUpDbContext>();
 
+                    string HashPassword(string password)
+                    {
+                        using (var sha256 = SHA256.Create())
+                        {
+                            var bytes = Encoding.UTF8.GetBytes(password);
+                            var hash = sha256.ComputeHash(bytes);
+                            return Convert.ToBase64String(hash);
+                        }
+                    }
+
+                    var hashedPassword = HashPassword("Admin");
+
                     if (!context.Users.Any())
                     {
                         var adminUser = new UserModel(
                             name: "Admin",
                             surname: "Admin",
                             email: "admin@admin.com",
-                            password: "Admin",
+                            password: hashedPassword,
                             type: "Admin",
                             position: "Admin"
                         );
