@@ -60,7 +60,7 @@ namespace catch_up_backend.Database
                 .HasOne<UserModel>()
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
 
             /*//FileModel One To Many
             modelBuilder.Entity<FileModel>()
