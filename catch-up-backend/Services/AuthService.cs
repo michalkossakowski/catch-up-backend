@@ -29,7 +29,7 @@ namespace catch_up_backend.Services
                 return null;
 
             if (!VerifyPassword(request.Password, user.Password))
-                throw new Exception("Wrong password");
+                return null;
 
             var (accessToken, refreshToken) = GenerateTokens(user.Id);
             await StoreRefreshToken(user.Id, refreshToken);

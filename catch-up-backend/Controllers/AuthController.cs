@@ -21,7 +21,7 @@ namespace catch_up_backend.Controllers
         {
             var response = await _authService.Login(request);
             if (response == null)
-                return NotFound(new { message = $"User with email: [{request.Email}] not found" });
+                return NotFound(new { message = $"Invalid email or password" });
             return Ok(response);
         }
 
