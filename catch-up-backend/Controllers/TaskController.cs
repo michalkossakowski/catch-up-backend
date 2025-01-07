@@ -38,6 +38,7 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> EditFullTask(int taskId, FullTask fullTask,Guid userId)
         {
             var (task, taskContent) = await _taskService.EditFullTaskAsync(taskId, fullTask, userId);
+            fullTask.Id = taskId;
             if (task == null || taskContent == null)
                 return NotFound(new { message = $"Task with id: [{taskId}] not found" , fullTaskId = taskId });
             return Ok(new { message = $"FullTask edited", fullTask = fullTask, task = task, taskContent = taskContent });
