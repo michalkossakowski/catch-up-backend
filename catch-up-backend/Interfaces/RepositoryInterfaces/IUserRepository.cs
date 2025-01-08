@@ -5,12 +5,14 @@ namespace catch_up_backend.Interfaces.RepositoryInterfaces
 {
     public interface IUserRepository{
         Task<UserDto> Add(UserDto newUser);
-        Task Edit(Guid userId, UserDto updatedUser);
+        Task<UserDto> Edit(Guid userId, UserDto updatedUser);
         Task Delete(Guid userId);
         Task<UserDto> GetById(Guid userId);
         Task<UserModel> GetByMail(string email);
         Task<List<UserModel>> GetAll();
         Task<string> GetRole(Guid userId);
         Task<List<UserModel>> GetMentorAdmin();
+        Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase);
+        Task<IEnumerable<UserDto>> SearchUsersByRole(string role, string? searchPhrase = null);
     }
 }

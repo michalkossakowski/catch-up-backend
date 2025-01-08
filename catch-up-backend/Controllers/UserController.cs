@@ -28,8 +28,10 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{userId}")]
         public async Task<IActionResult> Edit(Guid userId, [FromBody] UserDto updatedUser)
         {
-            await _userService.Edit(userId, updatedUser);
-            return Ok(new { message = "User updated", user = updatedUser });
+            var user = await _userService.Edit(userId, updatedUser);
+            if (user == null)
+                return NotFound(new { message = $"User with id: [{userId}] not found" });
+            return Ok(new { message = "User updated", user });
         }
 
         [HttpDelete]
@@ -71,6 +73,26 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetMentorAdmin()
         {
             var users = await _userService.GetMentorAdmin();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("Search/{searchPhrase}")]
+        public async Task<IActionResult> SearchUsers(string searchPhrase)
+        {
+            var users = await _userService.SearchUsers(searchPhrase);
+            if (!users.Any())
+                return NotFound(new { message = $"No users found matching phrase: '{searchPhrase}'" });
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("SearchByRole/{role}/{searchPhrase?}")]
+        public async Task<IActionResult> SearchUsersByRole(string role, string? searchPhrase = null)
+        {
+            var users = await _userService.SearchUsersByRole(role, searchPhrase);
+            if (!users.Any())
+                return NotFound(new { message = $"No users found with role '{role}' matching phrase: '{searchPhrase}'" });
             return Ok(users);
         }
     }
