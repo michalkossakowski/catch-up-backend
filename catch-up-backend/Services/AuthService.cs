@@ -5,6 +5,7 @@ using catch_up_backend.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace catch_up_backend.Services
@@ -20,20 +21,32 @@ namespace catch_up_backend.Services
             this.refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<AuthResponseDto> Login(LoginRequestDto request){
+        public async Task<AuthResponseDto> Login(LoginRequestDto request)
+        {
             var user = await userRepository.GetByMail(request.Email);
 
-            if (user == null){
+            if (user == null)
                 return null;
-            }
-            if (user.Password != request.Password){
-                throw new Exception("Wrong password");
-            }
 
-            var (accesToken, refreshToken) = GenerateTokens(user.Id);
+            if (!VerifyPassword(request.Password, user.Password))
+                return null;
+
+            var (accessToken, refreshToken) = GenerateTokens(user.Id);
             await StoreRefreshToken(user.Id, refreshToken);
 
-            return new AuthResponseDto(accesToken, refreshToken);
+            return new AuthResponseDto(accessToken, refreshToken);
+        }
+
+        private bool VerifyPassword(string plainPassword, string hashedPassword)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(plainPassword);
+                var hash = sha256.ComputeHash(bytes);
+                var hashedInput = Convert.ToBase64String(hash);
+
+                return hashedPassword == hashedInput;
+            }
         }
 
         private (string accessToken, string refreshToken) GenerateTokens(Guid id){
