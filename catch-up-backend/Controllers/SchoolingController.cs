@@ -172,14 +172,16 @@ namespace catch_up_backend.Controllers
         /// </summary>
         /// <param name="schoolingId">The ID of the schooling to which the part will be added.</param>
         /// <param name="schoolingPartDto">The data transfer object containing the details of the schooling part to be added.</param>
-        /// <returns>If successful, returns an Ok response. Otherwise, returns a NotFound response.</returns>
+        /// <returns>If successful, returns a Created response with created schooling part. Otherwise, returns a NotFound response.</returns>
         [HttpPost]
         [Route("AddSchoolingPart/{schoolingId:int}")]
-        public async Task<IActionResult> AddSchoolingPart(int schoolingId, [FromBody] SchoolingPartDto schoolingPartDto)
+        public async Task<IActionResult> CreateSchoolingPart(int schoolingId, [FromBody] SchoolingPartDto schoolingPartDto)
         {
-            return await _schoolingService.AddSchoolingPart(schoolingPartDto, schoolingId)
-                ? Ok(new { message = "Schooling part added successfully." })
-                : NotFound(new { message = "Schooling not found or invalid data." });
+            var schoolingPart = await _schoolingService.CreateSchoolingPart(schoolingPartDto, schoolingId);
+
+            return schoolingPart != null && schoolingPart.Id != 0
+                ? CreatedAtAction("GetSchoolingPart", new { schoolingPartId = schoolingPart.Id }, schoolingPart)
+                : BadRequest(new { message = "Failed to create schooling part." });
         }
         /// <summary>
         /// Associates a schooling with a user. Adds the schooling to the user's list of schoolings.

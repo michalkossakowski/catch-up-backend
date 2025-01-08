@@ -19,15 +19,16 @@ namespace catch_up_backend.Services
             _schoolingPartService = schoolingPartService;
         }
 
-        public async Task<bool> AddSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
+        public async Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
         {
             if (schoolingPart == null || schoolingID <= 0)
-                return false;
+                return null;
 
             var schoolingPartModel = new SchoolingPartModel(schoolingID, schoolingPart.Name, schoolingPart.Content);
             _context.SchoolingParts.Add(schoolingPartModel);
-
             await _context.SaveChangesAsync();
+            schoolingPart.Id = schoolingPartModel.Id;
+
             if (schoolingPart.Materials != null && schoolingPart.Materials.Any())
             {
                 foreach (var materialDto in schoolingPart.Materials)
@@ -37,7 +38,7 @@ namespace catch_up_backend.Services
                 }
                 await _context.SaveChangesAsync();
             }
-            return true;
+            return schoolingPart;
         }
 
         public async Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto)
