@@ -363,3 +363,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /catch-up-backend/Database/CatchUpDbContext.cs
+
+# Local History for Visual Studio
+/catch-up-backend/Files
