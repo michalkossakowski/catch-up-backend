@@ -192,7 +192,7 @@ namespace catch_up_backend.Services
             schoolingPartModel.Content = schoolingPart.Content;
 
             var existingMaterials = await _context.MaterialsSchoolingParts
-                .Where(m => m.SchoolingPartId == schoolingPart.Id)
+                .Where(m => m.SchoolingPartId == schoolingPart.Id && m.State == StateEnum.Active)
                 .Select(m => m.MaterialsId)
                 .ToListAsync();
 
