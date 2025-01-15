@@ -13,6 +13,7 @@ namespace catch_up_backend.Dtos
         public string? Description { get; set; }
         public ResourceTypeEnum ResourceType { get; set; }
         public int ResourceId { get; set; }
+        public string ResourceName { get; set; }
         public DateTime createdDate { get; set; }
     }
 }

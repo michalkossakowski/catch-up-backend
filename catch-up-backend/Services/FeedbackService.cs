@@ -10,10 +10,16 @@ namespace catch_up_backend.Services
     public class FeedbackService : IFeedbackService
     {
         private readonly CatchUpDbContext _context;
+        private readonly IFaqService _faqService;
+        private readonly ITaskService _taskService;
+        private readonly ISchoolingService _schoolingService;
 
-        public FeedbackService(CatchUpDbContext context)
+        public FeedbackService(CatchUpDbContext context, ISchoolingService schoolingService, ITaskService taskService, IFaqService faqService)
         {
             _context = context;
+            _schoolingService = schoolingService;
+            _taskService = taskService;
+            _faqService = faqService;
         }
         public async Task<bool> Add(FeedbackDto newFeedback)
         {
@@ -91,42 +97,63 @@ namespace catch_up_backend.Services
 
             return feedback;
         }
-        public async Task<List<FeedbackDto>> GetBySenderId(Guid SenderId)
+        public async Task<List<FeedbackDto>> GetBySenderId(Guid senderId)
         {
             var feedbacks = await _context.Feedbacks
-                .Where(f => f.SenderId == SenderId && f.State != StateEnum.Deleted)
-                .Select(f => new FeedbackDto
-                {
-                    Id = f.Id,
-                    SenderId = f.SenderId,
-                    ReceiverId = f.ReceiverId,
-                    Title = f.Title,
-                    Description = f.Description,
-                    ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId,
-                    createdDate = f.createdDate
-                }).ToListAsync();
+                .Where(f => f.SenderId == senderId && f.State != StateEnum.Deleted)
+                .ToListAsync();
 
-            return feedbacks;
+            var feedbackDtos = new List<FeedbackDto>();
+
+            foreach (var feedback in feedbacks)
+            {
+                string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
+
+                feedbackDtos.Add(new FeedbackDto
+                {
+                    Id = feedback.Id,
+                    SenderId = feedback.SenderId,
+                    ReceiverId = feedback.ReceiverId,
+                    Title = feedback.Title,
+                    Description = feedback.Description,
+                    ResourceType = feedback.ResourceType,
+                    ResourceId = feedback.ResourceId,
+                    ResourceName = resourceName,
+                    createdDate = feedback.createdDate
+                });
+            }
+
+            return feedbackDtos;
         }
+
 
         public async Task<List<FeedbackDto>> GetByReceiverId(Guid ReceiverId)
         {
             var feedbacks = await _context.Feedbacks
                 .Where(f => f.ReceiverId == ReceiverId && f.State != StateEnum.Deleted)
-                .Select(f => new FeedbackDto
-                {
-                    Id = f.Id,
-                    SenderId = f.SenderId,
-                    ReceiverId = f.ReceiverId,
-                    Title = f.Title,
-                    Description = f.Description,
-                    ResourceType = f.ResourceType,
-                    ResourceId = f.ResourceId,
-                    createdDate = f.createdDate
-                }).ToListAsync();
+                .ToListAsync();
 
-            return feedbacks;
+            var feedbackDtos = new List<FeedbackDto>();
+
+            foreach (var feedback in feedbacks)
+            {
+                string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
+
+                feedbackDtos.Add(new FeedbackDto
+                {
+                    Id = feedback.Id,
+                    SenderId = feedback.SenderId,
+                    ReceiverId = feedback.ReceiverId,
+                    Title = feedback.Title,
+                    Description = feedback.Description,
+                    ResourceType = feedback.ResourceType,
+                    ResourceId = feedback.ResourceId,
+                    ResourceName = resourceName,
+                    createdDate = feedback.createdDate
+                });
+            }
+
+            return feedbackDtos;
         }
 
         public async Task<List<FeedbackDto>> GetAll()
@@ -170,5 +197,57 @@ namespace catch_up_backend.Services
 
             return feedbacks;
         }
+
+        private async Task<string> GetResourceNameAsync(ResourceTypeEnum resourceType, int? resourceId)
+        {
+            if (!resourceId.HasValue)
+                return "Removed";
+            try
+            {
+                switch (resourceType)
+                {
+                    case ResourceTypeEnum.Faq:
+                        Console.WriteLine("FaqCase");
+                        var faq = await _faqService.GetByIdAsync((int)resourceId);
+                        Console.WriteLine(faq == null ? $"Faq not found for ResourceId: {resourceId.Value}" : $"Faq found: {faq.Question}");
+                        if (faq == null)
+                        {
+                            Console.WriteLine($"Faq not found for ResourceId: {resourceId.Value}");
+                        }
+                        return faq?.Question ?? "Removed";
+
+                    case ResourceTypeEnum.Task:
+                        Console.WriteLine("TaskCase");
+                        var task = await _taskService.GetFullTaskByIdAsync((int)resourceId);
+                        Console.WriteLine(task == null ? $"Task not found for ResourceId: {resourceId.Value}" : $"Task found: {task.Title}");
+                        if (task == null)
+                        {
+                            Console.WriteLine($"Task not found for ResourceId: {resourceId.Value}");
+                        }
+                        return task?.Title ?? "Removed";
+
+                    case ResourceTypeEnum.Schooling:
+                        Console.WriteLine(resourceId.Value);
+                        var schooling = await _schoolingService.GetFull((int)resourceId);
+                        Console.WriteLine(schooling == null ? $"Schooling not found for ResourceId: {resourceId.Value}" : $"Schooling found: {schooling?.Schooling?.Title}");
+                        if (schooling == null)
+                        {
+                            Console.WriteLine($"Schooling not found for ResourceId: {resourceId.Value}");
+                        }
+                        return schooling?.Schooling?.Title ?? "Removed";
+
+                    default:
+                        return "Removed";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetResourceNameAsync: {ex.Message}");
+                return "Removed";
+            }
+        }
+
+
+
     }
 }
