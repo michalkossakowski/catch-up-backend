@@ -202,6 +202,26 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
             return true;
         }
-        
+
+        public async Task<bool> SetStatusAsync(int taskId, StatusEnum status)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null)
+                return false;
+            try
+            {
+                task.Status = status;
+                if (status == StatusEnum.Done)
+                    task.FinalizationDate = DateTime.Now;
+
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error: RoadMap SetStatus " + e);
+            }
+            return true;
+        }
     }
 }
