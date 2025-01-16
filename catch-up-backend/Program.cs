@@ -36,7 +36,7 @@ namespace catch_up_backend
             //Authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)   // this tells .NET to use JWT  bearer authentication as the default one
                 .AddJwtBearer(options => {                                               // comapnySettings fot the JWT bearer authentication
-                    options.TokenValidationParameters = new TokenValidationParameters    // this object contains all of the rules for validating
+                        options.TokenValidationParameters = new TokenValidationParameters    // this object contains all of the rules for validating
                     {
                         ValidateIssuerSigningKey = true,                                 // this tells .NET to validate the issuer signing key
                         IssuerSigningKey = new SymmetricSecurityKey(                     // this gets the secret key from the secret user config and converts it to a byte array
