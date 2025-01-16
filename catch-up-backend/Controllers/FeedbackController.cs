@@ -75,13 +75,6 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetByReceiverId(Guid receiverId)
         {
             var feedbacks = await _feedbackService.GetByReceiverId(receiverId);
-            if (!feedbacks.Any())
-            {
-                return NotFound(new
-                {
-                    message = $"Feedback with receiver id: {receiverId} not found"
-                });
-            }
             return Ok(feedbacks);
         }
 
@@ -90,14 +83,6 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetByResource(ResourceTypeEnum resourceType, int resourceId)
         {
             var feedbacks = await _feedbackService.GetFeedbacksByResource(resourceType, resourceId);
-
-            if (!feedbacks.Any())
-            {
-                return NotFound(new
-                {
-                    message = $"No feedbacks found for resource type {resourceType} with ID {resourceId}"
-                });
-            }
 
             return Ok(feedbacks);
         }
