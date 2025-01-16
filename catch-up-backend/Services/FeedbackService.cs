@@ -4,6 +4,7 @@ using catch_up_backend.Interfaces;
 using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
+using catch_up_backend.Interfaces.RepositoryInterfaces;
 
 namespace catch_up_backend.Services
 {
@@ -13,13 +14,15 @@ namespace catch_up_backend.Services
         private readonly IFaqService _faqService;
         private readonly ITaskService _taskService;
         private readonly ISchoolingService _schoolingService;
+        private readonly IUserRepository _userRepository;
 
-        public FeedbackService(CatchUpDbContext context, ISchoolingService schoolingService, ITaskService taskService, IFaqService faqService)
+        public FeedbackService(CatchUpDbContext context, ISchoolingService schoolingService, ITaskService taskService, IFaqService faqService, IUserRepository userRepository)
         {
             _context = context;
             _schoolingService = schoolingService;
             _taskService = taskService;
             _faqService = faqService;
+            _userRepository = userRepository;
         }
         public async Task<bool> Add(FeedbackDto newFeedback)
         {
@@ -108,7 +111,8 @@ namespace catch_up_backend.Services
             foreach (var feedback in feedbacks)
             {
                 string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
-
+                var user = await _userRepository.GetById(feedback.ReceiverId);
+                
                 feedbackDtos.Add(new FeedbackDto
                 {
                     Id = feedback.Id,
@@ -119,6 +123,7 @@ namespace catch_up_backend.Services
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
                     ResourceName = resourceName,
+                    UserName = $"{user.Name} {user.Surname}",
                     createdDate = feedback.createdDate
                 });
             }
@@ -138,6 +143,7 @@ namespace catch_up_backend.Services
             foreach (var feedback in feedbacks)
             {
                 string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
+                var user = await _userRepository.GetById(feedback.SenderId);
 
                 feedbackDtos.Add(new FeedbackDto
                 {
@@ -149,6 +155,7 @@ namespace catch_up_backend.Services
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
                     ResourceName = resourceName,
+                    UserName = $"{user.Name} {user.Surname}",
                     createdDate = feedback.createdDate
                 });
             }
