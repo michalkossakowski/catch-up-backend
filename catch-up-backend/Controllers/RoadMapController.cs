@@ -36,11 +36,11 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPatch]
-        [Route("SetStatus/{roadMapId:int}")]
+        [Route("SetStatus/{roadMapId:int}/{status:int}")]
         public async Task<IActionResult> SetStatusAsync(int roadMapId, int status)
         {
             return await _roadMapService.SetStatusAsync(roadMapId, (StatusEnum)status)
-                ? Ok(new { message = "RoadMap status setted", roadMap = roadMapId })
+                ? Ok(new { message = $"RoadMap status setted to {status}", roadMap = roadMapId })
                 : StatusCode(500, new { message = "RoadMap status set error", roadMap = roadMapId });
         }
 

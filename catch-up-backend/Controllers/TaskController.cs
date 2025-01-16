@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -144,6 +145,15 @@ namespace catch_up_backend.Controllers
             return await _taskService.DeleteAsync(taskId)
                 ? Ok(new { message = "Task deleted successfully" })
                 : NotFound(new { message = "Task not found." });
+        }
+
+        [HttpPatch]
+        [Route("SetStatus/{taskId:int}/{status:int}")]
+        public async Task<IActionResult> SetStatusAsync(int taskId, int status)
+        {
+            return await _taskService.SetStatusAsync(taskId, (StatusEnum)status)
+                ? Ok(new { message = $"Task status setted to {status}", task = taskId })
+                : StatusCode(500, new { message = "Task status set error", task = taskId });
         }
     }
 }

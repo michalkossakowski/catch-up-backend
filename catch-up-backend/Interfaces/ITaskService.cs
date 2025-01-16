@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using catch_up_backend.Models;
 
 namespace catch_up_backend.Interfaces
@@ -20,5 +21,6 @@ namespace catch_up_backend.Interfaces
         public Task<bool> DeleteAsync(int taskId);
 
         //public Task AsignTask(int taskId,Guid newbieID);
+        public Task<bool> SetStatusAsync(int taskId, StatusEnum status);
     }
 }
