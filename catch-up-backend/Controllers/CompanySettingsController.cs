@@ -40,5 +40,23 @@ namespace catch_up_backend.Controllers
             }
             return Ok(new { message = "Settings get successfully", settings });
         }
+        [HttpPatch]
+        [Route("Patch")]
+        public async Task<IActionResult> TurnOnOffLocalization()
+        {
+            bool result = await _companySettingsService.TurnOnOffLocalization();
+            if (result)
+            {
+                return Ok(new { message = "Localization turned on" });
+            }
+            else if(!result)
+            {
+                return Ok(new { message = "Localization turned off" });
+            }
+            else
+            {
+                return NotFound(new { message = "Failed to turn on/off localization" });
+            }
+        }
     }
 }

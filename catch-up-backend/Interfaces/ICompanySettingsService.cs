@@ -7,6 +7,8 @@ namespace catch_up_backend.Interfaces
     {
         Task<bool> UpdateSettings(Dictionary<string, bool> updatedSettings);
         Task<CompanySettingsDto> GetCompanySettings();
+        Task<bool> TurnOnOffLocalization();
 
     }
 }
+
