@@ -30,6 +30,17 @@ namespace catch_up_backend.Controllers
             return NotFound(new {message= "Failed to update settings"});
         }
         [HttpGet]
+        [Route("GetWithoutMessage")]
+        public async Task<IActionResult> GetCompanySettingsWithoutMessage()
+        {
+            var settings = await _companySettingsService.GetCompanySettings();
+            if (settings == null)
+            {
+                return NotFound(new { messege = "Settings not found" });
+            }
+            return Ok(settings);
+        }
+        [HttpGet]
         [Route("Get")]
         public async Task<IActionResult> GetCompanySettings()
         {
@@ -38,7 +49,7 @@ namespace catch_up_backend.Controllers
             {
                 return NotFound(new { messege = "Settings not found" });
             }
-            return Ok(settings);
+            return Ok(new { message = "Settings get successfully", settings });
         }
         [HttpPatch]
         [Route("TurnOnLocalization")]
