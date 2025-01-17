@@ -38,7 +38,7 @@ namespace catch_up_backend.Controllers
             {
                 return NotFound(new { messege = "Settings not found" });
             }
-            return Ok(new { message = "Settings get successfully", settings });
+            return Ok(settings);
         }
         [HttpPatch]
         [Route("TurnOnLocalization")]
