@@ -131,7 +131,7 @@ namespace catch_up_backend.Services
             return feedbackDtos;
         }
 
-
+        //zwraca id recivera
         public async Task<List<FeedbackDto>> GetByReceiverId(Guid ReceiverId)
         {
             var feedbacks = await _context.Feedbacks
