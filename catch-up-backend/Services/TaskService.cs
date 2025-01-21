@@ -209,6 +209,7 @@ namespace catch_up_backend.Services
                 (task, taskContent) => new { task, taskContent })
                 .Select(joined => new FullTask(joined.task, joined.taskContent))
                 .ToListAsync();
+            var users = await _userService.GetAll();
             foreach (var task in fullTasks)
             {
                 if (task.NewbieId.HasValue && task.AssigningId.HasValue)
