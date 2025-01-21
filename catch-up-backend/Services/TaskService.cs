@@ -15,10 +15,11 @@ namespace catch_up_backend.Services
         private readonly ITaskContentService _contentService;
         private readonly IUserService _userService;
 
-        public TaskService(CatchUpDbContext context, ITaskContentService contentService)
+        public TaskService(CatchUpDbContext context, ITaskContentService contentService, IUserService userService)
         {
             _context = context;
             _contentService = contentService;
+            _userService = userService;
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask )
         {
@@ -136,42 +137,90 @@ namespace catch_up_backend.Services
         }
         public async Task<List<FullTask>> GetAllFullTasksAsync()
         {
-            return await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
+            var fullTasks =  await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+            foreach(var task in fullTasks)
+            {
+                if(task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = await _userService.GetById(task.NewbieId.Value);
+                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+                    
+            }
+            return fullTasks;
         }
 
         public async Task<List<FullTask>> GetAllFullTasksByNewbieIdAsync(Guid id)
         {
             if (_context.Users.Find(id) == null)
                 return null;
-            return await _context.Tasks.Where(task => task.NewbieId == id && task.State == StateEnum.Active).Join(
+            var fullTasks = await _context.Tasks.Where(task => task.NewbieId == id && task.State == StateEnum.Active).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+            foreach (var task in fullTasks)
+            {
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = await _userService.GetById(task.NewbieId.Value);
+                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+
+            }
+            return fullTasks;
         }
 
         public async Task<List<FullTask>> GetAllFullTaskByTaskContentIdAsync(int id)
         {
             if (_context.TaskContents.Find(id) == null)
                 return null;
-            return await _context.Tasks.Where(task => task.TaskContentId == id && task.State == StateEnum.Active).Join(
+            var fullTasks = await _context.Tasks.Where(task => task.TaskContentId == id && task.State == StateEnum.Active).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+            foreach (var task in fullTasks)
+            {
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = await _userService.GetById(task.NewbieId.Value);
+                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+
+            }
+            return fullTasks;
         }
 
         public async Task<List<FullTask>> GetAllFullTasksByAssigningIdAsync(Guid id)
         {
             if (_context.Users.Find(id) == null)
                 return null;
-            return await _context.Tasks.Where(p => p.State == StateEnum.Active && p.AssigningId == id).Join(
+            var fullTasks = await _context.Tasks.Where(p => p.State == StateEnum.Active && p.AssigningId == id).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new { task, taskContent })
                 .Select(joined => new FullTask(joined.task, joined.taskContent))
                 .ToListAsync();
+            foreach (var task in fullTasks)
+            {
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = await _userService.GetById(task.NewbieId.Value);
+                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+
+            }
+            return fullTasks;
         }
 
         public async Task<FullTask> GetFullTaskByIdAsync(int id)
@@ -190,7 +239,15 @@ namespace catch_up_backend.Services
                 return null; 
             }
 
-            return new FullTask(result.Task, result.TaskContent);
+            var task = new FullTask(result.Task, result.TaskContent);
+            if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+            {
+                var newbie = await _userService.GetById(task.NewbieId.Value);
+                var assigning = await _userService.GetById(task.AssigningId.Value);
+                task.NewbieName = newbie.Name + " " + newbie.Surname;
+                task.AssigningName = assigning.Name + " " + assigning.Surname;
+            }
+            return task;
         }
         public async Task<bool> DeleteAsync(int id)
         {
