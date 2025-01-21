@@ -141,16 +141,17 @@ namespace catch_up_backend.Services
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
-            foreach(var task in fullTasks)
+            var users = await _userService.GetAll();
+            foreach (var task in fullTasks)
             {
-                if(task.NewbieId.HasValue && task.AssigningId.HasValue)
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
                 {
-                    var newbie = await _userService.GetById(task.NewbieId.Value);
-                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
                     task.NewbieName = newbie.Name + " " + newbie.Surname;
                     task.AssigningName = assigning.Name + " " + assigning.Surname;
                 }
-                    
+
             }
             return fullTasks;
         }
@@ -163,12 +164,13 @@ namespace catch_up_backend.Services
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+            var users = await _userService.GetAll();
             foreach (var task in fullTasks)
             {
                 if (task.NewbieId.HasValue && task.AssigningId.HasValue)
                 {
-                    var newbie = await _userService.GetById(task.NewbieId.Value);
-                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
                     task.NewbieName = newbie.Name + " " + newbie.Surname;
                     task.AssigningName = assigning.Name + " " + assigning.Surname;
                 }
@@ -185,12 +187,13 @@ namespace catch_up_backend.Services
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+            var users = await _userService.GetAll();
             foreach (var task in fullTasks)
             {
                 if (task.NewbieId.HasValue && task.AssigningId.HasValue)
                 {
-                    var newbie = await _userService.GetById(task.NewbieId.Value);
-                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
                     task.NewbieName = newbie.Name + " " + newbie.Surname;
                     task.AssigningName = assigning.Name + " " + assigning.Surname;
                 }
@@ -214,8 +217,8 @@ namespace catch_up_backend.Services
             {
                 if (task.NewbieId.HasValue && task.AssigningId.HasValue)
                 {
-                    var newbie = await _userService.GetById(task.NewbieId.Value);
-                    var assigning = await _userService.GetById(task.AssigningId.Value);
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
                     task.NewbieName = newbie.Name + " " + newbie.Surname;
                     task.AssigningName = assigning.Name + " " + assigning.Surname;
                 }
