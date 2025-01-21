@@ -57,5 +57,19 @@ namespace catch_up_backend.Services
             };
             return dto;
         }
+        public async Task<bool> TurnOnLocalization()
+        {
+            SettingModel companySetting = await _context.CompanySettings.FirstOrDefaultAsync(s => s.Name == "IsLocalizationRestricted");
+            companySetting.Value = true;
+            _context.SaveChanges();
+            return companySetting.Value;
+        }
+        public async Task<bool> TurnOffLocalization()
+        {
+            SettingModel companySetting = await _context.CompanySettings.FirstOrDefaultAsync(s => s.Name == "IsLocalizationRestricted");
+            companySetting.Value = false;
+            _context.SaveChanges();
+            return companySetting.Value;
+        }
     }
 }
