@@ -68,7 +68,7 @@ namespace catch_up_backend.Services
             }
             return true;
         }
-        public async Task<(TaskModel, TaskContentDto)> EditFullTaskAsync(int id, FullTask fullTask, Guid userId)
+        public async Task<(TaskDto, TaskContentDto)> EditFullTaskAsync(int id, FullTask fullTask, Guid userId)
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null) return (null,null);
@@ -105,7 +105,7 @@ namespace catch_up_backend.Services
             catch (Exception ex) {
                 throw new Exception("Error: Edit Task: " + ex);
             }
-            return (task, taskContent);
+            return (new TaskDto(task), taskContent);
         }
         public async Task<List<TaskDto>> GetAllTasksAsync()
         {
@@ -283,6 +283,63 @@ namespace catch_up_backend.Services
                 throw new Exception("Error: RoadMap SetStatus " + e);
             }
             return true;
+        }
+
+        public async Task<TaskDto> AddTimeAsync(int taskId, double time)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null)
+                return null;
+            try
+            {
+                task.SpendTime += time;
+
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error: Task AddTime " + e);
+            }
+            return new TaskDto(task);
+        }
+
+        public async Task<TaskDto> SetTimeAsync(int taskId, double time)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null)
+                return null;
+            try
+            {
+                task.SpendTime = time;
+
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error: Task SetTime " + e);
+            }
+            return new TaskDto(task);
+        }
+
+        public async Task<TaskDto> SetRateAsync(int taskId, int rate)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null)
+                return null;
+            try
+            {
+                task.Rate = rate;
+
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error: Task SetTime " + e);
+            }
+            return new TaskDto(task);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace catch_up_backend.Interfaces
     {
         public Task<TaskDto> AddAsync(TaskDto newTask);
         public Task<bool> EditAsync(int taskId, TaskDto taskDto);
-        public Task<(TaskModel, TaskContentDto)> EditFullTaskAsync(int taskId, FullTask fullTask, Guid userId);
+        public Task<(TaskDto, TaskContentDto)> EditFullTaskAsync(int taskId, FullTask fullTask, Guid userId);
         public Task<List<FullTask>> GetAllFullTasksAsync();
         public Task<FullTask> GetFullTaskByIdAsync(int id);
         public Task<List<FullTask>> GetAllFullTaskByTaskContentIdAsync(int taskContentId);
@@ -22,5 +22,8 @@ namespace catch_up_backend.Interfaces
 
         //public Task AsignTask(int taskId,Guid newbieID);
         public Task<bool> SetStatusAsync(int taskId, StatusEnum status);
+        public Task<TaskDto> AddTimeAsync(int taskId, double time);
+        public Task<TaskDto> SetTimeAsync(int taskId, double time);
+        public Task<TaskDto> SetRateAsync(int taskId, int rate);
     }
 }
