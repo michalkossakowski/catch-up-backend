@@ -1,11 +1,9 @@
-﻿using catch_up_backend.Controllers;
-using catch_up_backend.Database;
+﻿using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace catch_up_backend.Services
 {
@@ -14,14 +12,20 @@ namespace catch_up_backend.Services
         private readonly CatchUpDbContext _context;
         private readonly ITaskContentService _contentService;
         private readonly IUserService _userService;
-
-        public TaskService(CatchUpDbContext context, ITaskContentService contentService, IUserService userService)
+        private readonly INotificationService _notificationService;
+  
+        public TaskService(
+            CatchUpDbContext context,
+            ITaskContentService contentService,
+            IUserService userService,
+            INotificationService notificationService)
         {
             _context = context;
             _contentService = contentService;
             _userService = userService;
+            _notificationService = notificationService;
         }
-        public async Task<TaskDto> AddAsync(TaskDto newTask )
+        public async Task<TaskDto> AddAsync(TaskDto newTask)
         {
             try
             {
@@ -42,8 +46,20 @@ namespace catch_up_backend.Services
             {
                 throw new Exception("Error: Add taskContent: " + ex);
             }
-            return newTask;
 
+            var taskContent = _context.TaskContents.FirstOrDefault(tc => tc.Id == newTask.TaskContentId);
+            var sender = await _userService.GetById(newTask.AssigningId!.Value);
+
+            var notification = new NotificationModel(
+                sender.Id,
+                "You have received a new Task !",
+                $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
+                $"/tasks/{newTask.Id}"
+            );
+
+            await _notificationService.AddNotification(notification,newTask.NewbieId!.Value);
+
+            return newTask;
         }
         public async Task<bool> EditAsync(int taskId, TaskDto newTask)
         {
