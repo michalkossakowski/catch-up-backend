@@ -13,15 +13,15 @@ namespace catch_up_backend.Models
         public string Title { get; set; }
         public string Message { get; set; }
         public DateTime SendDate { get; set; }
-        public string? LinkedContent { get; set; }
+        public string? Source { get; set; }
         public StateEnum State { get; set; }
-        public NotificationModel(Guid senderId, string title, string message, string? linkedContent)
+        public NotificationModel(Guid senderId, string title, string message, string? source)
         {
             this.SenderId = senderId;
             this.Title = title;
             this.Message = message;
             this.SendDate = DateTime.Now;
-            this.LinkedContent = linkedContent;
+            this.Source = source;
             State = StateEnum.Active;
         }
     }

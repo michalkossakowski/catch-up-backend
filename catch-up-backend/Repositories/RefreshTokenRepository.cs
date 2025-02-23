@@ -30,5 +30,24 @@ namespace catch_up_backend.Repositories
         {
             return await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken && t.UserId == userId);
         }
+        public async Task<Guid> GetUserIdByRefreshToken(string refreshToken)
+        {
+            var userRefreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshToken);
+            if (userRefreshToken == null)
+            {
+                throw new Exception($"User with this token: [{refreshToken}] not exists");
+            }
+            return userRefreshToken.UserId;
+        }
+
+        public async Task<string> GetRefreshTokenByUserId(Guid userId)
+        {
+            var userRefreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.UserId == userId);
+            if (userRefreshToken == null)
+            {
+                throw new Exception($"Refresh token for user: [{userId}] not exists");
+            }
+            return userRefreshToken.Token;
+        }
     }
 }

@@ -11,6 +11,8 @@ using catch_up_backend.Repositories;
 using catch_up_backend.Services.Interfaces;
 using catch_up_backend.Models;
 using System.Security.Cryptography;
+using catch_up_backend.Hubs;
+using System.Text.Json;
 
 
 namespace catch_up_backend
@@ -78,6 +80,8 @@ namespace catch_up_backend
             builder.Services.AddScoped<ISchoolingPartService, SchoolingPartService>();
             builder.Services.AddScoped<IPresetService, PresetService>();
             builder.Services.AddScoped<ITaskPresetService, TaskPresetService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<INotificationHubService, NotificationHubService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -88,17 +92,22 @@ namespace catch_up_backend
             //CORS
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                                
-                    });
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.SetIsOriginAllowed(_ => true) 
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
             });
-            // ----------- Custom Section End -----------
 
+
+            // SignalR
+            builder.Services.AddSignalR().AddJsonProtocol(options => {
+                options.PayloadSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
+
+            // ----------- Custom Section End -----------
 
             var app = builder.Build();
 
@@ -110,7 +119,11 @@ namespace catch_up_backend
             app.UseHttpsRedirection();
 
             //----------- Custom Section Start -----------
+            // CORS
             app.UseCors("AllowAllOrigins");
+
+            // SignalR
+            app.MapHub<NotificationHub>("/notificationHub").RequireCors("AllowAllOrigins");
 
             // create a default user if Users table is empty
             void EnsureUserExists(IServiceProvider serviceProvider)
