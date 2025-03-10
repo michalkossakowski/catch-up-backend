@@ -2,6 +2,7 @@
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
+using catch_up_backend.Controllers;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ namespace catch_up_backend.Services
         private readonly ITaskContentService _contentService;
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
+        private readonly EmailController _emailController;
   
         public TaskService(
             CatchUpDbContext context,
@@ -24,40 +26,34 @@ namespace catch_up_backend.Services
             _contentService = contentService;
             _userService = userService;
             _notificationService = notificationService;
+            _emailController = new EmailController();
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask)
         {
+            TaskModel task = null;
             try
             {
-                var task = new TaskModel(
-                newTask.NewbieId,
-                newTask.AssigningId,
-                newTask.TaskContentId,
-                newTask.RoadMapPointId,
-                newTask.Deadline,
-                newTask.Priority
+                task = new TaskModel(
+                    newTask.NewbieId,
+                    newTask.AssigningId,
+                    newTask.TaskContentId,
+                    newTask.RoadMapPointId,
+                    newTask.Deadline,
+                    newTask.Priority
                 );
                 await _context.Tasks.AddAsync(task);
                 await _context.SaveChangesAsync();
+                
                 newTask.Id = task.Id;
                 newTask.AssignmentDate = task.AssignmentDate;
+
+                // Wysyłka emaili
+                await SendTaskAssignmentEmails(task);
             }
             catch(Exception ex)
             {
-                throw new Exception("Error: Add taskContent: " + ex);
+                throw new Exception($"Error creating task: {ex.Message}", ex);
             }
-
-            var taskContent = _context.TaskContents.FirstOrDefault(tc => tc.Id == newTask.TaskContentId);
-            var sender = await _userService.GetById(newTask.AssigningId!.Value);
-
-            var notification = new NotificationModel(
-                sender.Id,
-                "You have received a new Task !",
-                $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
-                $"/tasks/{newTask.Id}"
-            );
-
-            await _notificationService.AddNotification(notification,newTask.NewbieId!.Value);
 
             return newTask;
         }
@@ -285,6 +281,9 @@ namespace catch_up_backend.Services
             var task = await _context.Tasks.FindAsync(taskId);
             if (task == null)
                 return false;
+            
+            var previousStatus = task.Status;
+            
             try
             {
                 task.Status = status;
@@ -293,12 +292,104 @@ namespace catch_up_backend.Services
 
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
+                
+                if (previousStatus != status)
+                {
+                    await SendStatusChangeEmails(task, previousStatus);
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("Error: RoadMap SetStatus " + e);
+                throw new Exception($"Error updating task status: {ex.Message}", ex);
             }
             return true;
+        }
+
+        private async Task SendTaskAssignmentEmails(TaskModel task)
+        {
+            try
+            {
+                var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
+                var sender = await _userService.GetById(task.AssigningId!.Value);
+                var newbie = await _userService.GetById(task.NewbieId!.Value);
+
+                // Wysyłka do newbie
+                _ = Task.Run(() => _emailController.SendEmail(
+                    newbie.Email,
+                    "New Task Assigned",
+                    $"Hello {newbie.Name} {newbie.Surname}!\n\n" +
+                    $"You have been assigned a new task: \"{taskContent!.Title}\"\n\n" +
+                    $"Deadline: {task.Deadline?.ToString("yyyy-MM-dd") ?? "Not specified"}\n" +
+                    $"Priority: {task.Priority}\n\n" +
+                    $"Description: {taskContent.Description}"
+                ));
+
+                // Wysyłka do mentor/assignera
+                _ = Task.Run(() => _emailController.SendEmail(
+                    sender.Email,
+                    "Task Assignment Confirmation",
+                    $"Hello {sender.Name} {sender.Surname}!\n\n" +
+                    $"You have successfully assigned a task to {newbie.Name} {newbie.Surname}:\n\n" +
+                    $"Task: \"{taskContent.Title}\"\n" +
+                    $"Deadline: {task.Deadline?.ToString("yyyy-MM-dd") ?? "Not specified"}\n" +
+                    $"Priority: {task.Priority}"
+                ));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending task assignment emails: {ex.Message}");
+            }
+        }
+
+        private async Task SendStatusChangeEmails(TaskModel task, StatusEnum previousStatus)
+        {
+            try
+            {
+                if (!task.NewbieId.HasValue || !task.AssigningId.HasValue)
+                    return;
+                    
+                var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
+                var newbie = await _userService.GetById(task.NewbieId.Value);
+                var assigner = await _userService.GetById(task.AssigningId.Value);
+                
+                string previousStatusText = GetStatusDescription(previousStatus);
+                string newStatusText = GetStatusDescription(task.Status);
+                
+                // Wysyłka do newbie
+                _ = Task.Run(() => _emailController.SendEmail(
+                    newbie.Email,
+                    $"Task Status Updated: {taskContent.Title}",
+                    $"Hello {newbie.Name} {newbie.Surname}!\n\n" +
+                    $"The status of your task \"{taskContent.Title}\" has been updated " +
+                    $"from {previousStatusText} to {newStatusText}."
+                ));
+                
+                // Wysyłka do mentor/assignera
+                _ = Task.Run(() => _emailController.SendEmail(
+                    assigner.Email,
+                    $"Task Status Updated: {taskContent.Title}",
+                    $"Hello {assigner.Name} {assigner.Surname}!\n\n" +
+                    $"The status of the task \"{taskContent.Title}\" assigned to {newbie.Name} {newbie.Surname} " +
+                    $"has been updated from {previousStatusText} to {newStatusText}."
+                ));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending status change emails: {ex.Message}");
+            }
+        }
+
+        private string GetStatusDescription(StatusEnum status)
+        {
+            return status switch
+            {
+                StatusEnum.ToDo => "To Do",
+                StatusEnum.InProgress => "In Progress",
+                StatusEnum.ToReview => "To Review",
+                StatusEnum.ReOpen => "Reopened",
+                StatusEnum.Done => "Done",
+                _ => status.ToString()
+            };
         }
 
         public async Task<TaskDto> AddTimeAsync(int taskId, double time)
