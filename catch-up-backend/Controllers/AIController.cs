@@ -22,7 +22,7 @@ namespace catch_up_backend.Controllers
             var result = await _aiService.GenerateAIChatResponse(message);
 
             return string.IsNullOrEmpty(result)
-                ? StatusCode(500, new { message = "Chat response error, try again later" })
+                ? StatusCode(500, new { message = "Chat response error, try again later." })
                 : Ok(new { message = result });
         }
     }

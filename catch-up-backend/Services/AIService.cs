@@ -16,6 +16,11 @@ namespace catch_up_backend.Services
 
         public async Task<string> GenerateAIChatResponse(string message)
         {
+            if (string.IsNullOrEmpty(_geminiApiUrl))
+            {
+                return "AI integration is not configured ask admin for help.";
+            }
+
             try
             {
                 using (var client = new HttpClient())
@@ -45,7 +50,7 @@ namespace catch_up_backend.Services
             }
             catch (Exception ex)
             {
-                return "AI integration is configured, but cannot generate response, try again later";
+                return "AI generating response error please try again later.";
             }
         }
     }
