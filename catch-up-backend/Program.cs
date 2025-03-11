@@ -82,6 +82,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<ITaskPresetService, TaskPresetService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationHubService, NotificationHubService>();
+            builder.Services.AddScoped<IAIService, AIService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
