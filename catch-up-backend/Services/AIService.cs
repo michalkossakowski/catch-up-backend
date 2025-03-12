@@ -25,13 +25,16 @@ namespace catch_up_backend.Services
             {
                 using (var client = new HttpClient())
                 {
+                    var additionalPrompt = "Generate response in the same language as request. In response use cool young people language. The request: ";
+                    var requestText = additionalPrompt + message;
+
                     var requestBody = new
                     {
                         contents = new[]
                         {
                             new
                             {
-                                parts = new[] { new { text = message } }
+                                parts = new[] { new { text = requestText } }
                             }
                         }
                     };
