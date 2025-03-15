@@ -49,6 +49,19 @@ namespace catch_up_backend.Services
 
                 // Wysyłka emaili
                 await SendTaskAssignmentEmails(task);
+
+                // Sending notification
+                var taskContent = _context.TaskContents.FirstOrDefault(tc => tc.Id == newTask.TaskContentId);
+                var sender = await _userService.GetById(newTask.AssigningId!.Value);
+
+                var notification = new NotificationModel(
+                    sender.Id,
+                    "You have received a new Task !",
+                    $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
+                    $"/tasks/{newTask.Id}"
+                );
+
+                await _notificationService.AddNotification(notification, newTask.NewbieId!.Value);
             }
             catch(Exception ex)
             {
