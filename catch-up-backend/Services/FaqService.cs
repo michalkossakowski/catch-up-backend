@@ -22,7 +22,8 @@ namespace catch_up_backend.Services
                 var question = new FaqModel(
                     newFaq.Question ?? "",
                     newFaq.Answer ?? "",
-                    newFaq.MaterialId
+                    newFaq.MaterialId,
+                    newFaq.CreatorId
                 );
                 await _context.AddAsync(question);
                 await _context.SaveChangesAsync();
@@ -45,6 +46,7 @@ namespace catch_up_backend.Services
                 faq.Question = newFaq.Question ?? "";
                 faq.Answer = newFaq.Answer ?? "";
                 faq.MaterialId = newFaq.MaterialId;
+                faq.CreatorId = newFaq.CreatorId;
                 _context.Faqs.Update(faq);
                 await _context.SaveChangesAsync();
                 newFaq.Id = faq.Id;
@@ -81,7 +83,8 @@ namespace catch_up_backend.Services
                     Id = f.Id,
                     Question = f.Question,
                     Answer = f.Answer,
-                    MaterialId = f.MaterialId
+                    MaterialId = f.MaterialId,
+                    CreatorId = f.CreatorId
                 }).FirstOrDefaultAsync();
 
             return faq;
@@ -92,10 +95,11 @@ namespace catch_up_backend.Services
                 .Where(f => f.State == StateEnum.Active)
                 .Select(f => new FaqDto
                 { 
-                   Id = f.Id,
-                   Question = f.Question,
-                   Answer = f.Answer,
-                   MaterialId = f.MaterialId
+                    Id = f.Id,
+                    Question = f.Question,
+                    Answer = f.Answer,
+                    MaterialId = f.MaterialId,
+                    CreatorId = f.CreatorId
                 })
                .ToListAsync();
 
@@ -110,7 +114,8 @@ namespace catch_up_backend.Services
                     Id = f.Id,
                     Question = f.Question,
                     Answer = f.Answer,
-                    MaterialId = f.MaterialId
+                    MaterialId = f.MaterialId,
+                    CreatorId = f.CreatorId
                 })
                .ToListAsync();
 
