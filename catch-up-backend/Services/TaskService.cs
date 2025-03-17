@@ -1,10 +1,11 @@
-﻿using catch_up_backend.Database;
+﻿using catch_up_backend.Controllers;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
-using catch_up_backend.Controllers;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace catch_up_backend.Services
 {
@@ -15,7 +16,7 @@ namespace catch_up_backend.Services
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
         private readonly EmailController _emailController;
-  
+
         public TaskService(
             CatchUpDbContext context,
             ITaskContentService contentService,
@@ -30,24 +31,21 @@ namespace catch_up_backend.Services
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask)
         {
-            TaskModel task = null;
             try
             {
-                task = new TaskModel(
-                    newTask.NewbieId,
-                    newTask.AssigningId,
-                    newTask.TaskContentId,
-                    newTask.RoadMapPointId,
-                    newTask.Deadline,
-                    newTask.Priority
+                var task = new TaskModel(
+                newTask.NewbieId,
+                newTask.AssigningId,
+                newTask.TaskContentId,
+                newTask.RoadMapPointId,
+                newTask.Deadline,
+                newTask.Priority
                 );
                 await _context.Tasks.AddAsync(task);
                 await _context.SaveChangesAsync();
-                
                 newTask.Id = task.Id;
                 newTask.AssignmentDate = task.AssignmentDate;
 
-                // Wysyłka emaili
                 await SendTaskAssignmentEmails(task);
 
                 // Sending notification
@@ -63,10 +61,22 @@ namespace catch_up_backend.Services
 
                 await _notificationService.AddNotification(notification, newTask.NewbieId!.Value);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception($"Error creating task: {ex.Message}", ex);
+                throw new Exception("Error: Add taskContent: " + ex);
             }
+
+            var taskContent = _context.TaskContents.FirstOrDefault(tc => tc.Id == newTask.TaskContentId);
+            var sender = await _userService.GetById(newTask.AssigningId!.Value);
+
+            var notification = new NotificationModel(
+                sender.Id,
+                "You have received a new Task !",
+                $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
+                $"/tasks/{newTask.Id}"
+            );
+
+            await _notificationService.AddNotification(notification, newTask.NewbieId!.Value);
 
             return newTask;
         }
@@ -96,7 +106,7 @@ namespace catch_up_backend.Services
         public async Task<(TaskDto, TaskContentDto)> EditFullTaskAsync(int id, FullTask fullTask, Guid userId)
         {
             var task = await _context.Tasks.FindAsync(id);
-            if (task == null) return (null,null);
+            if (task == null) return (null, null);
 
             //var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
             var taskContent = await _contentService.GetById(task.TaskContentId);
@@ -113,12 +123,12 @@ namespace catch_up_backend.Services
                 task.Priority = fullTask.Priority;
                 task.Rate = fullTask.Rate;
 
-                if (fullTask.CategoryId != taskContent.CategoryId 
-                    || fullTask.MaterialsId != taskContent.MaterialsId 
-                    || fullTask.Title != taskContent.Title 
+                if (fullTask.CategoryId != taskContent.CategoryId
+                    || fullTask.MaterialsId != taskContent.MaterialsId
+                    || fullTask.Title != taskContent.Title
                     || fullTask.Description != taskContent.Description)
                 {
-                    var newTaskContent = new TaskContentDto(userId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title,fullTask.Description);
+                    var newTaskContent = new TaskContentDto(userId, fullTask.CategoryId, fullTask.MaterialsId, fullTask.Title, fullTask.Description);
                     newTaskContent = await _contentService.Add(newTaskContent);
                     if (newTaskContent == null) return (null, null);
                     task.TaskContentId = newTaskContent.Id;
@@ -127,14 +137,15 @@ namespace catch_up_backend.Services
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception("Error: Edit Task: " + ex);
             }
             return (new TaskDto(task), taskContent);
         }
         public async Task<List<TaskDto>> GetAllTasksAsync()
         {
-            return await _context.Tasks.Where(p=>p.State == StateEnum.Active).Select(task => new TaskDto(task)).ToListAsync();
+            return await _context.Tasks.Where(p => p.State == StateEnum.Active).Select(task => new TaskDto(task)).ToListAsync();
         }
 
         public async Task<List<TaskDto>> GetAllTasksByNewbieIdAsync(Guid id)
@@ -162,7 +173,7 @@ namespace catch_up_backend.Services
         }
         public async Task<List<FullTask>> GetAllFullTasksAsync()
         {
-            var fullTasks =  await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
+            var fullTasks = await _context.Tasks.Where(p => p.State == StateEnum.Active).Join(
                 _context.TaskContents,
                 task => task.TaskContentId, taskContent => taskContent.Id,
                 (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
@@ -261,11 +272,11 @@ namespace catch_up_backend.Services
                 taskContent => taskContent.Id,
                 (task, taskContent) => new { Task = task, TaskContent = taskContent }
             )
-            .FirstOrDefaultAsync(joined => joined.Task.Id == id); 
+            .FirstOrDefaultAsync(joined => joined.Task.Id == id);
 
             if (result == null)
             {
-                return null; 
+                return null;
             }
 
             var task = new FullTask(result.Task, result.TaskContent);
@@ -294,9 +305,9 @@ namespace catch_up_backend.Services
             var task = await _context.Tasks.FindAsync(taskId);
             if (task == null)
                 return false;
-            
+
             var previousStatus = task.Status;
-            
+
             try
             {
                 task.Status = status;
@@ -305,15 +316,15 @@ namespace catch_up_backend.Services
 
                 _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
-                
+
                 if (previousStatus != status)
                 {
                     await SendStatusChangeEmails(task, previousStatus);
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new Exception($"Error updating task status: {ex.Message}", ex);
+                throw new Exception("Error: RoadMap SetStatus " + e);
             }
             return true;
         }
@@ -326,7 +337,7 @@ namespace catch_up_backend.Services
                 var sender = await _userService.GetById(task.AssigningId!.Value);
                 var newbie = await _userService.GetById(task.NewbieId!.Value);
 
-                // Wysyłka do newbie
+                // Sent to Newbie
                 _ = Task.Run(() => _emailController.SendEmail(
                     newbie.Email,
                     "New Task Assigned",
@@ -337,7 +348,7 @@ namespace catch_up_backend.Services
                     $"Description: {taskContent.Description}"
                 ));
 
-                // Wysyłka do mentor/assignera
+                // Sent to Mentor / Assigner
                 _ = Task.Run(() => _emailController.SendEmail(
                     sender.Email,
                     "Task Assignment Confirmation",
@@ -360,15 +371,15 @@ namespace catch_up_backend.Services
             {
                 if (!task.NewbieId.HasValue || !task.AssigningId.HasValue)
                     return;
-                    
+
                 var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
                 var newbie = await _userService.GetById(task.NewbieId.Value);
                 var assigner = await _userService.GetById(task.AssigningId.Value);
-                
+
                 string previousStatusText = GetStatusDescription(previousStatus);
                 string newStatusText = GetStatusDescription(task.Status);
-                
-                // Wysyłka do newbie
+
+                // Sent to Newbie
                 _ = Task.Run(() => _emailController.SendEmail(
                     newbie.Email,
                     $"Task Status Updated: {taskContent.Title}",
@@ -376,8 +387,8 @@ namespace catch_up_backend.Services
                     $"The status of your task \"{taskContent.Title}\" has been updated " +
                     $"from {previousStatusText} to {newStatusText}."
                 ));
-                
-                // Wysyłka do mentor/assignera
+
+                // Sent to Mentor / Assigner
                 _ = Task.Run(() => _emailController.SendEmail(
                     assigner.Email,
                     $"Task Status Updated: {taskContent.Title}",
