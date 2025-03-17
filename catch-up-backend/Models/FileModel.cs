@@ -12,12 +12,17 @@ namespace catch_up_backend.Models
         public string Type { get; set; }
         public string Source { get; set; }
         public StateEnum State { get; set; }
-        public FileModel(string name, string type, string source)
+        public DateTime DateOfUpload { get; set; }
+        public Guid? Owner { get; set; }
+        public long SizeInBytes { get; set; }
+        public FileModel(string name, string type, string source, long sizeInBytes)
         {
             Name = name;
             Type = type;
             Source = source;
             State = StateEnum.Active;
+            DateOfUpload = DateTime.Now;
+            SizeInBytes = sizeInBytes;
         }
     }
 }

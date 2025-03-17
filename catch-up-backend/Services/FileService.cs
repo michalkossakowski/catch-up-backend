@@ -18,13 +18,17 @@ namespace catch_up_backend.Services
             _fileStorage = fileStorageFactory.CreateFileStorage();
         }
 
-        public async Task<FileDto> UploadFile(IFormFile newFile, int? materialID)
+        public async Task<FileDto> UploadFile(IFormFile newFile, int? materialID, Guid? owner, DateTime? uploadDate)
         {
-            var uniqueFileName = $"{Guid.NewGuid()}_{newFile.FileName}";
+            string uniqueFileName = $"{Guid.NewGuid()}_{newFile.FileName}";
             using Stream fileStream = newFile.OpenReadStream();
-            var fileSource = await _fileStorage.UploadFile(uniqueFileName, fileStream);
+            string fileSource = await _fileStorage.UploadFile(uniqueFileName, fileStream);
+            long lenghtInBytes = fileStream.Length;
 
-            FileModel fileModel = new FileModel(newFile.FileName, newFile.ContentType, fileSource);
+            FileModel fileModel = new FileModel(newFile.FileName, newFile.ContentType, fileSource, lenghtInBytes);
+            if (owner != null)
+                fileModel.Owner = (Guid)owner;
+
             await _context.Files.AddAsync(fileModel);
             await _context.SaveChangesAsync();
 
@@ -38,7 +42,8 @@ namespace catch_up_backend.Services
                 Id = fileModel.Id,
                 Name = fileModel.Name,
                 Type = fileModel.Type,
-                Source = fileModel.Source
+                Source = fileModel.Source,
+                DateOfUpload = fileModel.DateOfUpload,
             };
         }
 
@@ -70,9 +75,8 @@ namespace catch_up_backend.Services
             if (file == null || file.State != StateEnum.Active)
                 return null;
 
-            return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type, Source = file.Source };
+            return new FileDto { Id = file.Id, Name = file.Name, Type = file.Type, Source = file.Source, DateOfUpload = file.DateOfUpload };
         }
-
         public async Task<Stream> DownloadFile(int fileId)
         {
             var file = await _context.Files.FindAsync(fileId);
@@ -103,6 +107,43 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> AddFilesToMaterial(List<int> fileIds, int materialId)
+        {
+            var material = await _context.Materials.FindAsync(materialId);
+            if (material == null)
+                return false;
+
+            var activeFiles = await _context.Files
+                .Where(f => fileIds.Contains(f.Id) && f.State == StateEnum.Active)
+                .ToListAsync();
+
+            if (!activeFiles.Any())
+                return false;
+
+            var existingFileIds = await _context.FileInMaterials
+                .Where(fim => fim.MaterialId == materialId && fileIds.Contains(fim.FileId))
+                .Select(fim => fim.FileId)
+                .ToListAsync();
+
+            var newFileMaterials = activeFiles
+                .Where(f => !existingFileIds.Contains(f.Id))
+                .Select(f => new FileInMaterial(materialId, f.Id))
+                .ToList();
+
+            var filesToReactivate = await _context.FileInMaterials
+                .Where(fim => fim.MaterialId == materialId && existingFileIds.Contains(fim.FileId))
+                .ToListAsync();
+
+            foreach (var fim in filesToReactivate)
+            {
+                fim.State = StateEnum.Active;
+            }
+
+            await _context.AddRangeAsync(newFileMaterials);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<List<FileDto>> GetFiles(int materialId)
         {
@@ -118,6 +159,7 @@ namespace catch_up_backend.Services
                         Name = file.Name,
                         Type = file.Type,
                         Source = file.Source,
+                        DateOfUpload = file.DateOfUpload
                     })
                 .ToListAsync();
         }
@@ -132,12 +174,15 @@ namespace catch_up_backend.Services
                     {
                         Id = file.Id,
                         Name = file.Name,
-                        Type = file.Type
+                        Type = file.Type,
+                        DateOfUpload = file.DateOfUpload,                                                                                                   
                     })
                     .ToListAsync();
             }
 
             return new List<FileDto>();
         }
+
+
     }
 }

@@ -23,9 +23,9 @@ namespace catch_up_backend.Controllers
         /// <returns>A response containing the file details (FileDto) and the associated material ID, if any.</returns>
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, int? materialId)
+        public async Task<IActionResult> Upload(IFormFile file, int? materialId, Guid? ownerId, DateTime? uploadDate)
         {
-            var fileDto = await _fileService.UploadFile(file, materialId);
+            var fileDto = await _fileService.UploadFile(file, materialId, ownerId, uploadDate);
             if (fileDto == null)
                 return NotFound(new { message = $"File not found" });
             return Ok(new { fileDto, materialId });
