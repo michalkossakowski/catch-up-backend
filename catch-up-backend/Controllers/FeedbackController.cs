@@ -87,6 +87,15 @@ namespace catch_up_backend.Controllers
             return Ok(feedbacks);
         }
 
+        [HttpPut]
+        [Route("ChangeDoneStatus/{feedbackId:int}")]
+        public async Task<IActionResult> ChangeDoneStatus(int feedbackId)
+        {
+            return await _feedbackService.ChangeDoneStatus(feedbackId)
+                ? Ok(new { message = "Feedback status changed" })
+                : StatusCode(500, new { message = "Error: Feedback status change" });
+        }
+
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()

@@ -13,5 +13,6 @@ namespace catch_up_backend.Interfaces
         public Task<List<FeedbackDto>> GetByReceiverId(Guid receiverId);
         public Task<List<FeedbackDto>> GetFeedbacksByResource(ResourceTypeEnum resourceType, int resourceId);
         public Task<List<FeedbackDto>> GetAll();
+        public Task<bool> ChangeDoneStatus(int feedbackId);
     }
 }
