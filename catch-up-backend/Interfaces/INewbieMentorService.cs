@@ -23,5 +23,6 @@ namespace catch_up_backend.Interfaces
         Task<IEnumerable<UserModel>> GetAllUnassignedMentors(Guid newbieId);
         Task<string> GetDateStart(Guid newbieId, Guid mentorId);
         Task<string> GetDateEnd(Guid newbieId, Guid mentorId);
+        Task<IEnumerable<UserModel>> GetAllUnassignedNewbies();
     }
 }
