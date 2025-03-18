@@ -369,24 +369,24 @@ VALUES
 -- FEEDBACKS
 SET IDENTITY_INSERT [Feedbacks] ON
 INSERT INTO [Feedbacks] 
-    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [CreatedDate], [State])
+    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsDone], [CreatedDate], [State])
 VALUES 
-    (1, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Dobra robota', N'Szkolenie było bardzo pomocne i szczegółowe.', 20, 2, '2025-01-13T18:56:13', 0),
-    (2, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Przydatny materiał', N'Materiał zawierał wszystkie potrzebne informacje.', 20, 3, '2025-01-13T18:57:13', 0),
-    (3, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Doskonałe szkolenie', N'To szkolenie było bardzo pomocne dla całego zespołu.', 20, 6, '2025-01-13T19:00:13', 0),
-    (4, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Świetny kurs', N'Szkolenie dostarczyło pełnych i szczegółowych informacji.', 20, 9, '2025-01-13T19:03:13', 0),
-    (5, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Kompletny materiał', N'Szkolenie pokrywa wszystkie niezbędne aspekty tematu.', 20, 2, '2025-01-13T19:06:13', 0),
-    (6, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Inspirujące szkolenie', N'Materiał był bardzo inspirujący i dobrze opracowany.', 20, 5, '2025-01-13T19:09:13', 0),
-    (7, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niedokładne wyjaśnienie', N'Temat został przedstawiony, ale brakowało szczegółów.', 30, 1, '2025-01-13T18:55:13', 0),
-    (8, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Wysoka jakość', N'Odpowiedź przedstawiona została na bardzo wysokim poziomie.', 30, 4, '2025-01-13T18:58:13', 0),
-    (9, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niewystarczające szczegóły', N'FAQ powinno zawierać więcej przykładów praktycznych.', 30, 7, '2025-01-13T19:01:13', 0),
-    (10, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niejasne odpowiedzi', N'Niektóre odpowiedzi w FAQ są nieprecyzyjne.', 30, 10, '2025-01-13T19:04:13', 0),
-    (11, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'FAQ do poprawy', N'Kilka pytań w FAQ jest nieaktualnych lub mylących.', 30, 13, '2025-01-13T19:07:13', 0),
-    (12, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'FAQ pomocne', N'FAQ było pomocne, ale brakuje bardziej zaawansowanych tematów.', 30, 16, '2025-01-13T19:10:13', 0),
-    (13, N'abcdef01-2345-6789-0123-456789abcdef', N'78901234-5678-9012-cdef-0123456789ab', N'Brak przykładów', N'Brakuje konkretnych przykładów w treści zadania.', 40, 8, '2025-01-13T19:02:13', 0),
-    (14, N'abcdef01-2345-6789-0123-456789abcdef', N'78901234-5678-9012-cdef-0123456789ab', N'Dobry start', N'Task dobrze wprowadza do tematu, ale wymaga rozbudowy.', 40, 11, '2025-01-13T19:05:13', 0),
-    (15, N'67890123-4567-8901-bcde-f0123456789a', N'45678901-2345-6789-0abc-def123456789', N'Niekompletne informacje', N'Task powinien zawierać więcej szczegółowych wskazówek.', 40, 14, '2025-01-13T19:08:13', 0),
-    (16, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'45678901-2345-6789-0abc-def123456789', N'Zadanie z wyzwaniem', N'Task był wymagający, ale dobrze uczył praktyki.', 40, 17, '2025-01-13T19:11:13', 0);
+    (1, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Dobra robota', N'Szkolenie było bardzo pomocne i szczegółowe.', 20, 2, 1, '2025-01-13T18:56:13', 0),
+    (2, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Przydatny materiał', N'Materiał zawierał wszystkie potrzebne informacje.', 20, 3, 0, '2025-01-13T18:57:13', 0),
+    (3, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Doskonałe szkolenie', N'To szkolenie było bardzo pomocne dla całego zespołu.', 20, 6, 0, '2025-01-13T19:00:13', 0),
+    (4, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Świetny kurs', N'Szkolenie dostarczyło pełnych i szczegółowych informacji.', 20, 9, 0, '2025-01-13T19:03:13', 0),
+    (5, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Kompletny materiał', N'Szkolenie pokrywa wszystkie niezbędne aspekty tematu.', 20, 2, 0, '2025-01-13T19:06:13', 0),
+    (6, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Inspirujące szkolenie', N'Materiał był bardzo inspirujący i dobrze opracowany.', 20, 5, 0, '2025-01-13T19:09:13', 0),
+    (7, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niedokładne wyjaśnienie', N'Temat został przedstawiony, ale brakowało szczegółów.', 30, 1, 0, '2025-01-13T18:55:13', 0),
+    (8, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Wysoka jakość', N'Odpowiedź przedstawiona została na bardzo wysokim poziomie.', 30, 4, 0, '2025-01-13T18:58:13', 0),
+    (9, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niewystarczające szczegóły', N'FAQ powinno zawierać więcej przykładów praktycznych.', 30, 7, 0, '2025-01-13T19:01:13', 0),
+    (10, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Niejasne odpowiedzi', N'Niektóre odpowiedzi w FAQ są nieprecyzyjne.', 30, 10, 0, '2025-01-13T19:04:13', 0),
+    (11, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'FAQ do poprawy', N'Kilka pytań w FAQ jest nieaktualnych lub mylących.', 30, 13, 0, '2025-01-13T19:07:13', 0),
+    (12, N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'FAQ pomocne', N'FAQ było pomocne, ale brakuje bardziej zaawansowanych tematów.', 30, 16, 0, '2025-01-13T19:10:13', 0),
+    (13, N'abcdef01-2345-6789-0123-456789abcdef', N'78901234-5678-9012-cdef-0123456789ab', N'Brak przykładów', N'Brakuje konkretnych przykładów w treści zadania.', 40, 8, 0, '2025-01-13T19:02:13', 0),
+    (14, N'abcdef01-2345-6789-0123-456789abcdef', N'78901234-5678-9012-cdef-0123456789ab', N'Dobry start', N'Task dobrze wprowadza do tematu, ale wymaga rozbudowy.', 40, 11, 0, '2025-01-13T19:05:13', 0),
+    (15, N'67890123-4567-8901-bcde-f0123456789a', N'45678901-2345-6789-0abc-def123456789', N'Niekompletne informacje', N'Task powinien zawierać więcej szczegółowych wskazówek.', 40, 14, 0, '2025-01-13T19:08:13', 0),
+    (16, N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'45678901-2345-6789-0abc-def123456789', N'Zadanie z wyzwaniem', N'Task był wymagający, ale dobrze uczył praktyki.', 40, 17, 0, '2025-01-13T19:11:13', 0);
 SET IDENTITY_INSERT [Feedbacks] OFF
 
 -- NEWBIE MENTORS
