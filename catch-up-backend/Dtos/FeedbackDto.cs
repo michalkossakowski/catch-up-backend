@@ -16,6 +16,6 @@ namespace catch_up_backend.Dtos
         public string? ResourceName { get; set; }
         public string? UserName { get; set; }
         public DateTime createdDate { get; set; }
-        public bool IsDone { get; internal set; }
+        public bool IsResolved { get; set; }
     }
 }

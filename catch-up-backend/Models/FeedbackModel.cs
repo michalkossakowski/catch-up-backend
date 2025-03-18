@@ -17,9 +17,9 @@ namespace catch_up_backend.Models
         public ResourceTypeEnum ResourceType { get; set; }
         public int ResourceId { get; set; }
         public DateTime createdDate { get; set; }
-        public bool IsDone { get; set; }
+        public bool IsResolved { get; set; }
         public StateEnum State { get; set; }
-        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, ResourceTypeEnum resourceType, int resourceId, bool isDone)
+        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, ResourceTypeEnum resourceType, int resourceId)
         {
             SenderId = senderId;
             ReceiverId = receiverId;
@@ -27,7 +27,7 @@ namespace catch_up_backend.Models
             Description = description;
             ResourceType = resourceType;
             ResourceId = resourceId;
-            IsDone = isDone;
+            IsResolved = false;
             createdDate = DateTime.Now;
             State = StateEnum.Active;
         }
