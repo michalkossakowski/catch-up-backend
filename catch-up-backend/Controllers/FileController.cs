@@ -81,7 +81,6 @@ namespace catch_up_backend.Controllers
         /// </summary>
         /// <returns>A list of FileDto objects representing all active files.</returns>
         [HttpGet]
-        [HttpGet]
         [Route("GetAllFiles")]
         public async Task<IActionResult> GetAllFiles()
         {
@@ -89,6 +88,13 @@ namespace catch_up_backend.Controllers
             return Ok(filesDto);
         }
 
+        [HttpGet]
+        [Route("GetAllFiles/{userdId:guid}")]
+        public async Task<IActionResult> GetAllFiles(Guid userdId)
+        {
+            var filesDto = await _fileService.GetAllFiles(userdId);
+            return Ok(filesDto);
+        }
         /// <summary>
         /// Downloads a file by its ID, returning the file's stream from storage.
         /// The file must be in an "Active" state to be downloaded.

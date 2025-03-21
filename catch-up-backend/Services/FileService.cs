@@ -182,7 +182,26 @@ namespace catch_up_backend.Services
 
             return new List<FileDto>();
         }
+        public async Task<List<FileDto>> GetAllFiles(Guid userId)
+        {
+            if (await _context.Files.AnyAsync())
+            {
+                return await _context.Files
+                    .Where(file => file.State == StateEnum.Active && file.Owner == userId)
+                    .Select(file => new FileDto
+                    {
 
+                        Id = file.Id,
+                        Name = file.Name,
+                        Type = file.Type,
+                        Source = file.Source,
+                        DateOfUpload = file.DateOfUpload,
+                        SizeInBytes = file.SizeInBytes
+                    })
+                    .ToListAsync();
+            }
 
+            return new List<FileDto>();
+        }
     }
 }
