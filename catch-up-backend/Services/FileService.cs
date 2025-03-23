@@ -20,6 +20,8 @@ namespace catch_up_backend.Services
 
         public async Task<FileDto> UploadFile(IFormFile newFile, int? materialID, Guid? owner, DateTime? uploadDate)
         {
+            //string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFile.FileName);
+
             string uniqueFileName = $"{Guid.NewGuid()}_{newFile.FileName}";
             using Stream fileStream = newFile.OpenReadStream();
             string fileSource = await _fileStorage.UploadFile(uniqueFileName, fileStream);
@@ -43,7 +45,9 @@ namespace catch_up_backend.Services
                 Name = fileModel.Name,
                 Type = fileModel.Type,
                 Source = fileModel.Source,
+                SizeInBytes = fileModel.SizeInBytes,
                 DateOfUpload = fileModel.DateOfUpload,
+                Owner = fileModel.Owner
             };
         }
 
@@ -159,7 +163,9 @@ namespace catch_up_backend.Services
                         Name = file.Name,
                         Type = file.Type,
                         Source = file.Source,
-                        DateOfUpload = file.DateOfUpload
+                        DateOfUpload = file.DateOfUpload,
+                        SizeInBytes = file.SizeInBytes,
+                        Owner = file.Owner
                     })
                 .ToListAsync();
         }
@@ -175,7 +181,10 @@ namespace catch_up_backend.Services
                         Id = file.Id,
                         Name = file.Name,
                         Type = file.Type,
-                        DateOfUpload = file.DateOfUpload,                                                                                                   
+                        Source = file.Source,
+                        DateOfUpload = file.DateOfUpload,
+                        SizeInBytes = file.SizeInBytes,
+                        Owner = file.Owner
                     })
                     .ToListAsync();
             }
@@ -190,13 +199,13 @@ namespace catch_up_backend.Services
                     .Where(file => file.State == StateEnum.Active && file.Owner == userId)
                     .Select(file => new FileDto
                     {
-
                         Id = file.Id,
                         Name = file.Name,
                         Type = file.Type,
                         Source = file.Source,
                         DateOfUpload = file.DateOfUpload,
-                        SizeInBytes = file.SizeInBytes
+                        SizeInBytes = file.SizeInBytes,
+                        Owner = file.Owner
                     })
                     .ToListAsync();
             }
