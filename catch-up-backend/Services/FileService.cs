@@ -212,5 +212,20 @@ namespace catch_up_backend.Services
 
             return new List<FileDto>();
         }
+        public async Task<bool> ChangeFile(FileDto fileDto) 
+        {
+            var file = await _context.Files.FindAsync(fileDto.Id);
+            if (file == null)
+                return false;
+            file.Name = fileDto.Name;
+            file.Type = fileDto.Type;
+            file.Source = fileDto.Source;
+            file.DateOfUpload = (DateTime)fileDto.DateOfUpload;
+            file.SizeInBytes = (long)fileDto.SizeInBytes;
+            file.Owner = fileDto.Owner;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

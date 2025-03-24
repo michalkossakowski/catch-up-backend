@@ -14,6 +14,7 @@ namespace catch_up_backend.Interfaces
         public Task<bool> ArchiveFile(int fileId);
         public Task<List<FileDto>> GetAllFiles();
         public Task<List<FileDto>> GetAllFiles(Guid userId);
+        public Task<bool> ChangeFile(FileDto fileDto);
 
     }
 }

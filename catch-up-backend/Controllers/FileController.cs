@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Interfaces;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
@@ -60,7 +61,14 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = "File archived successfully." })
                 : NotFound(new { message = "File not found." });
         }
-
+        [HttpPut]
+        [Route("ChangeFile")]
+        public async Task<IActionResult> ChangeFile(FileDto fileDto)
+        {
+            return await _fileService.ChangeFile(fileDto)
+                ? Ok(new { message = "File changed successfully." })
+                : NotFound(new { message = "File not found." });
+        }
         /// <summary>
         /// Retrieves the details of a file by its ID, only if the file is in an "Active" state.
         /// </summary>
