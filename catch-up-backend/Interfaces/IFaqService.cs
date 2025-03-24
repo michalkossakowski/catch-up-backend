@@ -8,7 +8,7 @@ namespace catch_up_backend.Interfaces
         public Task<FaqDto> EditAsync(int faqId, FaqDto newFaq);
         public Task<bool> DeleteAsync(int faqId);
         public Task<FaqDto> GetByIdAsync(int faqId);
-        public Task<List<FaqDto>> GetAllAsync();
+        Task<(List<FaqDto> faqs, int totalCount)> GetAllAsync(int page, int pageSize);
         public Task<List<FaqDto>> GetByQuestionAsync(string searchingQuestion);
     }
 }

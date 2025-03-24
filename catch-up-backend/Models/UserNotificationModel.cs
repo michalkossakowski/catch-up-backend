@@ -11,11 +11,13 @@ namespace catch_up_backend.Models
         [ForeignKey("ReceiverId")]
         public Guid ReceiverId { get; set; }
         public StateEnum State { get; set; }
+        public bool IsRead { get; set; }
         public UserNotificationModel(int notificationId, Guid receiverId)
         {
             NotificationId = notificationId;
             ReceiverId = receiverId;
             State = StateEnum.Active;
+            IsRead = false;
         }
     }
 }

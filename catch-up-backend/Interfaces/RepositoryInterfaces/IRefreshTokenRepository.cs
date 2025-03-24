@@ -6,5 +6,6 @@ namespace catch_up_backend.Interfaces.RepositoryInterfaces
         Task Add(RefreshTokenModel refreshToken);
         Task<RefreshTokenModel> GetByUserId(string refreshToken, Guid userId);
         Task Delete(RefreshTokenModel refreshToken);
+        Task<Guid> GetUserIdByRefreshToken(string refreshToken);
     }
 }

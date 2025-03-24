@@ -57,12 +57,13 @@ namespace catch_up_backend.Services
                 feedback.Description = newFeedback.Description;
                 feedback.ResourceType = newFeedback.ResourceType;
                 feedback.ResourceId = newFeedback.ResourceId;
+                feedback.IsResolved = newFeedback.IsResolved;
                 _context.Feedbacks.Update(feedback);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error: Edit badge:" + ex);
+                throw new Exception("Error: Edit feedback:" + ex);
             }
             return true;
         }
@@ -95,6 +96,7 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId,
+                    IsResolved = f.IsResolved,
                     createdDate = f.createdDate
                 }).FirstOrDefaultAsync();
 
@@ -122,6 +124,7 @@ namespace catch_up_backend.Services
                     Description = feedback.Description,
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
+                    IsResolved = feedback.IsResolved,
                     ResourceName = resourceName,
                     UserName = $"{user.Name} {user.Surname}",
                     createdDate = feedback.createdDate
@@ -131,7 +134,7 @@ namespace catch_up_backend.Services
             return feedbackDtos;
         }
 
-
+        //zwraca id recivera
         public async Task<List<FeedbackDto>> GetByReceiverId(Guid ReceiverId)
         {
             var feedbacks = await _context.Feedbacks
@@ -154,6 +157,7 @@ namespace catch_up_backend.Services
                     Description = feedback.Description,
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
+                    IsResolved = feedback.IsResolved,
                     ResourceName = resourceName,
                     UserName = $"{user.Name} {user.Surname}",
                     createdDate = feedback.createdDate
@@ -176,6 +180,7 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId,
+                    IsResolved = f.IsResolved,
                     createdDate = f.createdDate
 
                 }).ToListAsync();
@@ -198,11 +203,30 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId,
+                    IsResolved = f.IsResolved,
                     createdDate = f.createdDate
                 })
                 .ToListAsync();
 
             return feedbacks;
+        }
+
+        public async Task<bool> ChangeDoneStatus(int feedbackId)
+        {
+            var feedback = await _context.Feedbacks.FindAsync(feedbackId);
+            if (feedback == null)
+                return false;
+            try
+            {
+                feedback.IsResolved = !feedback.IsResolved;
+                _context.Feedbacks.Update(feedback);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error: Change feedback status:" + ex);
+            }
+            return true;
         }
 
         private async Task<string> GetResourceNameAsync(ResourceTypeEnum resourceType, int? resourceId)
@@ -253,8 +277,5 @@ namespace catch_up_backend.Services
                 return "Removed";
             }
         }
-
-
-
     }
 }

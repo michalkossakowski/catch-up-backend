@@ -12,13 +12,16 @@ namespace catch_up_backend.Models
         public string Answer { get; set; }
         [ForeignKey("MaterialsId")]
         public int? MaterialId { get; set; }
+        [ForeignKey("CreatorId")]
+        public Guid CreatorId { get; set; }
         public StateEnum State { get; set; }
-        public FaqModel(string question, string answer, int? materialId)
+        public FaqModel(string question, string answer, int? materialId, Guid creatorId)
         {
             this.Question = question;
             this.Answer = answer;
             this.MaterialId = materialId;
             State = StateEnum.Active;
+            CreatorId = creatorId;
         }
     }
 }

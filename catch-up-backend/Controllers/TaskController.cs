@@ -155,5 +155,36 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = $"Task status setted to {status}", task = taskId })
                 : StatusCode(500, new { message = "Task status set error", task = taskId });
         }
+        [HttpPatch]
+        [Route("AddTime/{taskId:int}/{time:double}")]
+        public async Task<IActionResult> AddTimeAsync(int taskId, double time)
+        {
+            var task = await _taskService.AddTimeAsync(taskId, time);
+            return task != null
+                ? Ok(new { message = $"Task time added. Current time: {task.SpendTime}", task = task })
+                : StatusCode(500, new { message = "Task status adding error", taskId = taskId });
+        }
+        [HttpPatch]
+        [Route("SetTime/{taskId:int}/{time:double}")]
+        public async Task<IActionResult> SetTimeAsync(int taskId, double time)
+        {
+            if (time < 0)
+                return StatusCode(400, new { message = "Time can't be negative", taskId = taskId });
+            var task = await _taskService.SetTimeAsync(taskId, time);
+            return task != null
+                ? Ok(new { message = $"Task time setted to {task.SpendTime}", task = task })
+                : StatusCode(500, new { message = "Task status set error", taskId = taskId });
+        }
+        [HttpPatch]
+        [Route("SetRate/{taskId:int}/{rate:int}")]
+        public async Task<IActionResult> SetTimeAsync(int taskId, int rate)
+        {
+            if (rate < 0)
+                return StatusCode(400, new { message = "Rate can't be negative", taskId = taskId });
+            var task = await _taskService.SetRateAsync(taskId, rate);
+            return task != null
+                ? Ok(new { message = $"Task rate setted to {task.SpendTime}", task = task })
+                : StatusCode(500, new { message = "Task rate set error", taskId = taskId });
+        }
     }
 }
