@@ -89,21 +89,26 @@ namespace catch_up_backend.Services
 
             return faq;
         }
-        public async Task<List<FaqDto>> GetAllAsync()
+        public async Task<(List<FaqDto> faqs, int totalCount)> GetAllAsync(int page, int pageSize)
         {
-            var faqs = await _context.Faqs
-                .Where(f => f.State == StateEnum.Active)
+            var query = _context.Faqs.Where(f => f.State == StateEnum.Active);
+
+            var totalCount = await query.CountAsync();
+
+            var faqs = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(f => new FaqDto
-                { 
+                {
                     Id = f.Id,
                     Question = f.Question,
                     Answer = f.Answer,
                     MaterialId = f.MaterialId,
                     CreatorId = f.CreatorId
                 })
-               .ToListAsync();
+                .ToListAsync();
 
-            return faqs;
+            return (faqs, totalCount);
         }
         public async Task<List<FaqDto>> GetByQuestionAsync(string title)
         {
