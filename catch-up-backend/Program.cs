@@ -78,6 +78,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<ISchoolingPartService, SchoolingPartService>();
             builder.Services.AddScoped<IPresetService, PresetService>();
             builder.Services.AddScoped<ITaskPresetService, TaskPresetService>();
+            builder.Services.AddScoped<IEventService, EventService>(); 
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
