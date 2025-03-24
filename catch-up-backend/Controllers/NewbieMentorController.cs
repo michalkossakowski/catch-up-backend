@@ -196,19 +196,6 @@ namespace catch_up_backend.Controllers
 
             return Ok(unassigned);
         }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do nikogo
-        [HttpGet]
-        [Route("GetAllUnassignedNewbies")]
-        public async Task<IActionResult> GetAllUnassignedNewbies()
-        {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
-            if (unassigned == null)
-            {
-                return NotFound(new { message = $"No unassigned newbies found. " });
-            }
-
-            return Ok(unassigned);
-        }
         // Zwraca datę rozpoczęcia szkolenia
         [HttpGet]
         [Route("GetDateStart/{newbieId:guid}/{mentorId:guid}")]
