@@ -27,7 +27,7 @@ public class EventService : IEventService
         return await _context.Events.ToListAsync();
     }
 
-    public async Task AddEventByPosition(Guid ownerId, string title, string position, DateTime startDate, DateTime endDate)
+    public async Task AddEventByPosition(Guid ownerId, string title, string description, string position, DateTime startDate, DateTime endDate)
     {
         var receivers = await _context.Users
             .Where(u => u.Position == position)
@@ -37,6 +37,7 @@ public class EventService : IEventService
         var eventEntry = new Event
         {
             Title = title,
+            Description = description,
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,
@@ -47,7 +48,7 @@ public class EventService : IEventService
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddEventByType(Guid ownerId, string title, string type, DateTime startDate, DateTime endDate)
+    public async Task AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate)
     {
         var receivers = await _context.Users
             .Where(u => u.Type == type)
@@ -57,6 +58,7 @@ public class EventService : IEventService
         var eventEntry = new Event
         {
             Title = title,
+            Description = description,
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,
@@ -67,7 +69,7 @@ public class EventService : IEventService
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddEventForAllGroups(Guid ownerId, string title, DateTime startDate, DateTime endDate)
+    public async Task AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate)
     {
         var receivers = await _context.Users
             .Select(u => u.Id)
@@ -76,6 +78,7 @@ public class EventService : IEventService
         var eventEntry = new Event
         {
             Title = title,
+            Description = description,
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,

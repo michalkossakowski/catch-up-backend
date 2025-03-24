@@ -30,23 +30,23 @@ public class EventController : ControllerBase
     }
 
     [HttpPost("AddEventByPosition")]
-    public async Task<ActionResult> AddEventByPosition(Guid ownerId, string title, string position, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventByPosition(Guid ownerId, string title, string description, string position, DateTime startDate, DateTime endDate)
     {
-        await _eventService.AddEventByPosition(ownerId, title, position, startDate, endDate);
+        await _eventService.AddEventByPosition(ownerId, title, description, position, startDate, endDate);
         return Ok();
     }
 
     [HttpPost("AddEventByType")]
-    public async Task<ActionResult> AddEventByType(Guid ownerId, string title, string type, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate)
     {
-        await _eventService.AddEventByType(ownerId, title, type, startDate, endDate);
+        await _eventService.AddEventByType(ownerId, title, description, type, startDate, endDate);
         return Ok();
     }
 
     [HttpPost("AddEventForAllGroups")]
-    public async Task<ActionResult> AddEventForAllGroups(Guid ownerId, string title, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate)
     {
-        await _eventService.AddEventForAllGroups(ownerId, title, startDate, endDate);
+        await _eventService.AddEventForAllGroups(ownerId, title, description, startDate, endDate);
         return Ok();
     }
 }
