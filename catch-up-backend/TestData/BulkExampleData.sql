@@ -370,7 +370,7 @@ VALUES
 -- FEEDBACKS
 SET IDENTITY_INSERT [Feedbacks] ON
 INSERT INTO [Feedbacks] 
-    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsDone], [CreatedDate], [State])
+    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsResolved], [CreatedDate], [State])
 VALUES 
     (1, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Dobra robota', N'Szkolenie było bardzo pomocne i szczegółowe.', 20, 2, 1, '2025-01-13T18:56:13', 0),
     (2, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Przydatny materiał', N'Materiał zawierał wszystkie potrzebne informacje.', 20, 3, 0, '2025-01-13T18:57:13', 0),
