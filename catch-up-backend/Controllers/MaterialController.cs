@@ -87,7 +87,14 @@ namespace catch_up_backend.Controllers
             return await _materialService.AddFile(materialId, fileId)
                 ? Ok(new { message = "File added to material." })
                 : NotFound(new { message = "File or Material not found." });
-
+        }
+        [HttpPost]
+        [Route("AddFiles/{materialId:int}")]
+        public async Task<IActionResult> AddFiles(int materialId, [FromBody] List<int> fileIds)
+        {
+            return await _materialService.AddFilesToMaterial(materialId, fileIds)
+                ? Ok(new { message = "Files added to material." })
+                : NotFound(new { message = "Some files or the material were not found." });
         }
 
         /// <summary>
@@ -103,6 +110,14 @@ namespace catch_up_backend.Controllers
             return await _materialService.RemoveFile(materialId, fileId)
                 ? Ok(new { message = "File removed from material successfully." })
                 : NotFound(new { message = "File or material not found." });
+        }
+        [HttpPost]
+        [Route("RemoveFiles/{materialId:int}")]
+        public async Task<IActionResult> RemoveFiles(int materialId, [FromBody] List<int> fileIds)
+        {
+            return await _materialService.RemoveFilesFromMaterial(materialId, fileIds)
+                ? Ok(new { message = "Files removed from material." })
+                : NotFound(new { message = "Some files or the material were not found." });
         }
 
         /// <summary>
