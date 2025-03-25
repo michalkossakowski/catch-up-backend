@@ -50,7 +50,7 @@ public class EventService : IEventService
         {
             var newbie = await _context.Users.FindAsync(receiver);
             var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
-            "Nowe Wydarzenie", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie zosta³o do Ciebie przydzielone nowe wydarzenie {title} maj¹ce miejsce w dniu {endDate.ToString()}. Koniecznie sprawdŸ szczegó³y wydarzenia na swoim profilu!"
+            "Nowe Wydarzenie", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie zosta³o do Ciebie przydzielone nowe wydarzenie {title} maj¹ce miejsce w dniu {startDate.ToString()}. Koniecznie sprawdŸ szczegó³y wydarzenia na swoim profilu!"
             ));
         }
         _context.Events.Add(eventEntry);
