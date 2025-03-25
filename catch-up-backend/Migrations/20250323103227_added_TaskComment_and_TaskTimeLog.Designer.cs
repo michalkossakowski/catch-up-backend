@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323103227_added_TaskComment_and_TaskTimeLog")]
+    partial class added_TaskComment_and_TaskTimeLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -660,17 +663,14 @@ namespace catch_up_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("MaterialId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -679,12 +679,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.HasIndex("TaskId");
 
                     b.ToTable("TaskComments");
                 });
@@ -809,7 +803,7 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -821,9 +815,6 @@ namespace catch_up_backend.Migrations
                     b.Property<int?>("Minutes")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("State")
                         .HasColumnType("int");
 
@@ -831,8 +822,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
 
                     b.ToTable("TaskTimeLog");
                 });
@@ -1082,26 +1071,6 @@ namespace catch_up_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.TaskCommentModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("catch_up_backend.Models.MaterialsModel", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("catch_up_backend.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("catch_up_backend.Models.TaskContentModel", b =>
                 {
                     b.HasOne("catch_up_backend.Models.CategoryModel", null)
@@ -1147,15 +1116,6 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.TaskContentModel", null)
                         .WithMany()
                         .HasForeignKey("TaskContentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("catch_up_backend.Models.TaskTimeLogModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });

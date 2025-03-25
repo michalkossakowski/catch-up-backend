@@ -89,6 +89,7 @@ namespace catch_up_backend
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
             builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();
+            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
 
             //CORS
             builder.Services.AddCors(options =>
