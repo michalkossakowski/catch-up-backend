@@ -5,14 +5,17 @@ using System.Threading.Tasks;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Database;
+using catch_up_backend.Controllers;
 
 public class EventService : IEventService
 {
     private readonly CatchUpDbContext _context;
+    private readonly EmailController emailController;
 
     public EventService(CatchUpDbContext context)
     {
         _context = context;
+        emailController = new EmailController();
     }
 
     public async Task<IEnumerable<Event>> GetUserEvents(Guid userId)
@@ -43,7 +46,13 @@ public class EventService : IEventService
             OwnerId = ownerId,
             ReceiverIds = receivers
         };
-
+        foreach(var receiver in receivers)
+        {
+            var newbie = await _context.Users.FindAsync(receiver);
+            var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
+            "Nowe Wydarzenie", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie zosta³o do Ciebie przydzielone nowe wydarzenie {title} maj¹ce miejsce w dniu {endDate.ToString()}. Koniecznie sprawdŸ szczegó³y wydarzenia na swoim profilu!"
+            ));
+        }
         _context.Events.Add(eventEntry);
         await _context.SaveChangesAsync();
     }
