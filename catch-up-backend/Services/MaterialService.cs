@@ -21,7 +21,11 @@ namespace catch_up_backend.Services
             await _fileService.AddToMaterial(fileId, materialId);
             return true;
         }
-
+        public async Task<bool> AddFilesToMaterial(int materialId, List<int> fileIds)
+        {
+            await _fileService.AddFilesToMaterial(fileIds, materialId);
+            return true;
+        }
         public async Task<MaterialDto> CreateMaterial(MaterialDto materialDto)
         {
             var material = new MaterialsModel(materialDto.Name);
@@ -136,5 +140,27 @@ namespace catch_up_backend.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> RemoveFilesFromMaterial(int materialId, List<int> fileIds)
+        {
+            var files = await _fileService.GetFiles(materialId);
+            if (files == null || !files.Any())
+                return false;
+
+            var filesInMaterial = await _context.FileInMaterials
+                .Where(fim => fim.MaterialId == materialId && fileIds.Contains(fim.FileId) && fim.State == StateEnum.Active)
+                .ToListAsync();
+
+            if (!filesInMaterial.Any())
+                return false;
+
+            foreach (var fim in filesInMaterial)
+            {
+                fim.State = StateEnum.Archived;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
