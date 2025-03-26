@@ -14,7 +14,7 @@ public class EventService : IEventService
 
     public EventService(CatchUpDbContext context)
     {
-        _context = context;
+        _context = context; 
         emailController = new EmailController();
     }
 
