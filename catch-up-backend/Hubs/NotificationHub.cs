@@ -1,5 +1,7 @@
-﻿using catch_up_backend.Interfaces.RepositoryInterfaces;
+﻿using Azure.Core;
+using catch_up_backend.Interfaces.RepositoryInterfaces;
 using Microsoft.AspNetCore.SignalR;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace catch_up_backend.Hubs
 {
@@ -14,13 +16,11 @@ namespace catch_up_backend.Hubs
 
         public override async Task OnConnectedAsync() 
         {
-            var token = Context.GetHttpContext()?.Request?.Query["access_token"].ToString();
+            var accessToken = Context.GetHttpContext()?.Request?.Query["access_token"].ToString();
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+            var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
 
-            if (!string.IsNullOrEmpty(token))
-            {
-                var userId = await _refreshTokenRepository.GetUserIdByRefreshToken(token);
-                await Groups.AddToGroupAsync(Context.ConnectionId, userId.ToString());
-            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, userId.ToString());
 
             await base.OnConnectedAsync();
         }
