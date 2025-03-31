@@ -95,6 +95,20 @@ namespace catch_up_backend.Controllers
             var filesDto = await _fileService.GetAllFiles();
             return Ok(filesDto);
         }
+        [HttpGet]
+        [Route("GetAllFiles/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetAllFiles(int page, int pageSize)
+        {
+            var result = await _fileService.GetAllFiles(page, pageSize);
+            return Ok(new { result.files, result.totalCount });
+        }
+        [HttpGet]
+        [Route("GetAllFiles/{userdId:guid}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetAllFiles(Guid userdId, int page, int pageSize)
+        {
+            var result = await _fileService.GetAllFiles(userdId, page, pageSize);
+            return Ok(new { result.files, result.totalCount });
+        }
 
         [HttpGet]
         [Route("GetAllFiles/{userdId:guid}")]

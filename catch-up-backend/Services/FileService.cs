@@ -5,6 +5,7 @@ using catch_up_backend.FileManagers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace catch_up_backend.Services
 {
@@ -191,6 +192,30 @@ namespace catch_up_backend.Services
 
             return new List<FileDto>();
         }
+
+        public async Task<(List<FileDto> files, int totalCount)> GetAllFiles(int page, int pagesize)
+        {
+            var query = _context.Files.Where(file => file.State == StateEnum.Active).OrderBy(file => file.Id);
+
+            var totalCount = await query.CountAsync();
+
+            var files = await query
+                .Skip((page - 1) * pagesize)
+                .Take(pagesize)
+                .Select(file => new FileDto
+                {
+                    Id = file.Id,
+                    Name = file.Name,
+                    Type = file.Type,
+                    Source = file.Source,
+                    DateOfUpload = file.DateOfUpload,
+                    SizeInBytes = file.SizeInBytes,
+                    Owner = file.Owner
+                })
+                .ToListAsync();
+
+            return (files, totalCount);
+        }
         public async Task<List<FileDto>> GetAllFiles(Guid userId)
         {
             if (await _context.Files.AnyAsync())
@@ -211,6 +236,30 @@ namespace catch_up_backend.Services
             }
 
             return new List<FileDto>();
+        }
+
+        public async Task<(List<FileDto> files, int totalCount)> GetAllFiles(Guid userId, int page, int pagesize)
+        {
+            var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId).OrderBy(file => file.Id);
+
+            var totalCount = await query.CountAsync();
+
+            var files = await query
+                .Skip((page - 1) * pagesize)
+                .Take(pagesize)
+                .Select(file => new FileDto
+                {
+                    Id = file.Id,
+                    Name = file.Name,
+                    Type = file.Type,
+                    Source = file.Source,
+                    DateOfUpload = file.DateOfUpload,
+                    SizeInBytes = file.SizeInBytes,
+                    Owner = file.Owner
+                })
+                .ToListAsync();
+
+            return (files, totalCount);
         }
         public async Task<bool> ChangeFile(FileDto fileDto) 
         {
