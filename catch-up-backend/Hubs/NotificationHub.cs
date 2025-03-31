@@ -27,6 +27,12 @@ namespace catch_up_backend.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            var accessToken = Context.GetHttpContext()?.Request?.Query["access_token"].ToString();
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+            var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, userId.ToString());
+
             await base.OnDisconnectedAsync(exception);
         }
     }
