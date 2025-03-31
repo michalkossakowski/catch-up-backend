@@ -117,6 +117,21 @@ namespace catch_up_backend.Controllers
             var filesDto = await _fileService.GetAllFiles(userdId);
             return Ok(filesDto);
         }
+
+        [HttpGet]
+        [Route("GetByQuestion/{userdId:guid}/{searchingQuestion}")]        
+        public async Task<IActionResult> GetByQuestion(Guid userdId,string searchingQuestion)
+        {
+            var result = await _fileService.GetByQuestion(userdId, searchingQuestion);
+            return Ok(new { result.files, result.totalCount });
+        }
+        [HttpGet]
+        [Route("GetByQuestion/{userdId:guid}/{searchingQuestion}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetByQuestion(Guid userdId, string searchingQuestion, int page, int pageSize)
+        {
+            var result = await _fileService.GetByQuestion(userdId, searchingQuestion, page, pageSize);
+            return Ok(new { result.files, result.totalCount });
+        }
         /// <summary>
         /// Downloads a file by its ID, returning the file's stream from storage.
         /// The file must be in an "Active" state to be downloaded.

@@ -276,5 +276,45 @@ namespace catch_up_backend.Services
             return true;
         }
 
+        public async Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question)
+        {
+            var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId && file.Name.Contains(question)).OrderBy(file => file.Id);
+            var totalCount = await query.CountAsync();
+            var files = await query
+                .Select(file => new FileDto
+                {
+                    Id = file.Id,
+                    Name = file.Name,
+                    Type = file.Type,
+                    Source = file.Source,
+                    DateOfUpload = file.DateOfUpload,
+                    SizeInBytes = file.SizeInBytes,
+                    Owner = file.Owner
+                })
+                .ToListAsync();
+            return (files, totalCount);
+        }
+
+        public async Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question, int page, int pageSize)
+        {
+            var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId && file.Name.Contains(question)).OrderBy(file => file.Id);
+            var totalCount = await query.CountAsync();
+            var files = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(file => new FileDto
+                {
+                    Id = file.Id,
+                    Name = file.Name,
+                    Type = file.Type,
+                    Source = file.Source,
+                    DateOfUpload = file.DateOfUpload,
+                    SizeInBytes = file.SizeInBytes,
+                    Owner = file.Owner
+                })
+                .ToListAsync();
+            return (files, totalCount);
+        }
+
     }
 }

@@ -17,6 +17,9 @@ namespace catch_up_backend.Interfaces
         public Task<List<FileDto>> GetAllFiles(Guid userId);
         public Task<(List<FileDto> files, int totalCount)> GetAllFiles(Guid userId, int page, int pagesize);
         public Task<bool> ChangeFile(FileDto fileDto);
+        public Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question);
+        public Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question, int page, int pageSize);
+
 
     }
 }
