@@ -16,14 +16,14 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("GetUserEvents/{id}")]
-    public async Task<ActionResult<IEnumerable<Event>>> GetUserEvents(Guid id)
+    public async Task<ActionResult<IEnumerable<EventModel>>> GetUserEvents(Guid id)
     {
         var events = await _eventService.GetUserEvents(id);
         return Ok(events);
     }
 
     [HttpGet("GetFullEvents")]
-    public async Task<ActionResult<IEnumerable<Event>>> GetFullEvents()
+    public async Task<ActionResult<IEnumerable<EventModel>>> GetFullEvents()
     {
         var events = await _eventService.GetFullEvents();
         return Ok(events);

@@ -40,7 +40,7 @@ namespace catch_up_backend.Database
         public DbSet<UserNotificationModel> UsersNotifications { get; set; }
         public DbSet<SettingModel> CompanySettings { get; set; }
         public DbSet<CompanyCity> CompanyCities { get; set; }
-        public DbSet<Event> Events { get; set; }
+        public DbSet<EventModel> Events { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //FaqModel One To Many
@@ -263,6 +263,27 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<EventModel>()
+            .HasOne<UserModel>()
+            .WithMany()
+            .HasForeignKey(x => x.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<EventModel>()
+            .HasMany<UserModel>()
+            .WithMany("Events")
+            .UsingEntity<Dictionary<string, object>>(
+            "EventReceivers",
+            j => j
+            .HasOne<UserModel>()
+            .WithMany()
+            .HasForeignKey("ReceiverId")
+            .OnDelete(DeleteBehavior.NoAction),
+            j => j
+            .HasOne<EventModel>()
+            .WithMany()
+            .HasForeignKey("EventId")
+            .OnDelete(DeleteBehavior.NoAction)
+            );
 
             modelBuilder.Entity<UserModel>()
                 .Property(u => u.Counters)

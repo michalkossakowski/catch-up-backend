@@ -18,14 +18,14 @@ public class EventService : IEventService
         emailController = new EmailController();
     }
 
-    public async Task<IEnumerable<Event>> GetUserEvents(Guid userId)
+    public async Task<IEnumerable<EventModel>> GetUserEvents(Guid userId)
     {
         return await _context.Events
             .Where(e => e.OwnerId == userId || e.ReceiverIds.Contains(userId))
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Event>> GetFullEvents()
+    public async Task<IEnumerable<EventModel>> GetFullEvents()
     {
         return await _context.Events.ToListAsync();
     }
@@ -37,7 +37,7 @@ public class EventService : IEventService
             .Select(u => u.Id)
             .ToListAsync();
 
-        var eventEntry = new Event
+        var eventEntry = new EventModel
         {
             Title = title,
             Description = description,
@@ -64,7 +64,7 @@ public class EventService : IEventService
             .Select(u => u.Id)
             .ToListAsync();
 
-        var eventEntry = new Event
+        var eventEntry = new EventModel
         {
             Title = title,
             Description = description,
@@ -84,7 +84,7 @@ public class EventService : IEventService
             .Select(u => u.Id)
             .ToListAsync();
 
-        var eventEntry = new Event
+        var eventEntry = new EventModel
         {
             Title = title,
             Description = description,

@@ -1,6 +1,6 @@
 ﻿namespace catch_up_backend.Models
 {
-    public class Event
+    public class EventModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -10,7 +10,7 @@
         public Guid OwnerId { get; set; }
         public List<Guid> ReceiverIds { get; set; } 
 
-        public Event()
+        public EventModel()
         {
             ReceiverIds = new List<Guid>();
         }
