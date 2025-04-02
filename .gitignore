@@ -366,3 +366,4 @@ FodyWeavers.xsd
 
 # Local History for Visual Studio
 /catch-up-backend/Files
+/catch-up-backend/Config/catch-up-onboarding-firebase.json
