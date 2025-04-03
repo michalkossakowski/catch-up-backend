@@ -113,10 +113,18 @@ namespace catch_up_backend
             });
 
             // Firebase
-            FirebaseApp.Create(new AppOptions()
+            try
             {
-                Credential = GoogleCredential.FromFile("Config/catch-up-onboarding-firebase.json")
-            });
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile("catch-up-onboarding-firebase.json")
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Firebase configuration file is missing");
+            }
+
 
             //Logging
             builder.Logging.AddConsole();
