@@ -2,6 +2,7 @@
 using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace catch_up_backend.Controllers
 {
@@ -10,9 +11,12 @@ namespace catch_up_backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IFirebaseService _firebaseService;
 
-        public AuthController(IAuthService authService){
+        public AuthController(IAuthService authService, IFirebaseService firebaseService)
+        {
             _authService = authService;
+            _firebaseService = firebaseService;
         }
 
         [HttpPost]
@@ -30,6 +34,44 @@ namespace catch_up_backend.Controllers
         {
             var response = await _authService.RefreshToken(refreshToken);
             return Ok(response);
+        }
+
+        [HttpPost("RegisterFirebaseToken")]
+        public async Task<IActionResult> RegisterFirebaseToken([FromBody] RegisterFirebaseTokenRequest request)
+        {
+            try
+            {
+                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
+                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
+                );
+                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+
+                await _firebaseService.RegisterAsync(userId, request.FirebaseToken, request.DeviceName);
+                return Ok("Firebase token sucessfully registered");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Firebase token registeration error");
+            }
+        }
+
+        [HttpPost("UnregisterFirebaseToken")]
+        public async Task<IActionResult> UnregisterFirebaseToken([FromBody] string firebaseToken)
+        {
+            try
+            {
+                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
+                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
+                );
+                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+
+                await _firebaseService.UnregisterAsync(userId, firebaseToken);
+                return Ok("Firebase token sucessfully unregistered");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Firebase token unregisteration error");
+            }
         }
     }
 }

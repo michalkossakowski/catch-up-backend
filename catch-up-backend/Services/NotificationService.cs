@@ -12,11 +12,15 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
         private readonly INotificationHubService _notificationHubService;
+        private readonly IFirebaseService _firebaseService;
 
-        public NotificationService(CatchUpDbContext context, INotificationHubService notificationHubService)
+        public NotificationService(CatchUpDbContext context,
+            INotificationHubService notificationHubService,
+            IFirebaseService firebaseService)
         {
             _context = context;
             _notificationHubService = notificationHubService;
+            _firebaseService = firebaseService;
         }
         public async Task<List<NotificationDto>> GetByUserId(Guid userId)
         {
@@ -81,7 +85,27 @@ namespace catch_up_backend.Services
                 await _context.AddAsync(userNotification);
 
                 notificationDto.ReceiverId = receiverId;
-                await _notificationHubService.SendNotification(receiverId, notificationDto);
+                try
+                {
+                    await _firebaseService.SendNotificationToUserAsync(
+                        receiverId,
+                        notificationDto.Title,
+                        notificationDto.Message
+                    );
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Cannot send firebase notificaiton");
+                }
+
+                try
+                {
+                    await _notificationHubService.SendNotification(receiverId, notificationDto);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Cannot send singalR notificaiton");
+                }
 
                 await _context.SaveChangesAsync();
             }
@@ -119,7 +143,28 @@ namespace catch_up_backend.Services
                     userNotifications.Add(userNotification);
 
                     notificationDto.ReceiverId = receiverId;
-                    await _notificationHubService.SendNotification(receiverId, notificationDto);
+
+                    try
+                    {
+                        await _firebaseService.SendNotificationToUserAsync(
+                            receiverId,
+                            notificationDto.Title,
+                            notificationDto.Message
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Cannot send firebase notificaiton");
+                    }
+
+                    try
+                    {
+                        await _notificationHubService.SendNotification(receiverId, notificationDto);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Cannot send singalR notificaiton");
+                    }
                 }
 
                 await _context.AddRangeAsync(userNotifications);
