@@ -93,6 +93,16 @@ namespace catch_up_backend.Services
                 {
                     Title = title,
                     Body = body
+                },
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High,
+                    Notification = new AndroidNotification
+                    {
+                        ChannelId = "com.unhandledexception.catchupmobile.general",
+                        Sound = "default",
+                        Priority = NotificationPriority.HIGH 
+                    }
                 }
             };
 
