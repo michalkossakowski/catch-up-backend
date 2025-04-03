@@ -101,7 +101,8 @@ namespace catch_up_backend.Services
                     {
                         ChannelId = "com.unhandledexception.catchupmobile.general",
                         Sound = "default",
-                        Priority = NotificationPriority.HIGH 
+                        Priority = NotificationPriority.MAX,
+                        Visibility = NotificationVisibility.PUBLIC,
                     }
                 }
             };
