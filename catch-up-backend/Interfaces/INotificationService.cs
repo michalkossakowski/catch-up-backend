@@ -5,7 +5,7 @@ namespace catch_up_backend.Interfaces
 {
     public interface INotificationService
     {
-        Task<List<NotificationDto>> GetByUserId(Guid userId);
+        Task<(List<NotificationDto>,int totalCount)> GetByUserId(Guid userId, int pageNumber, int pageSize);
         Task ReadNotifications(Guid userId);
         Task<bool> HasUnreadNotifications(Guid userId);
         Task AddNotification(NotificationModel notification, List<Guid> receiverId);
