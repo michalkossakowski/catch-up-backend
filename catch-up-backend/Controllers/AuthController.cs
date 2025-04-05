@@ -1,8 +1,7 @@
-﻿using Azure;
-using catch_up_backend.Dtos;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace catch_up_backend.Controllers
 {
@@ -41,10 +40,7 @@ namespace catch_up_backend.Controllers
         {
             try
             {
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
-                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
-                );
-                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
                 await _firebaseService.RegisterAsync(userId, request.FirebaseToken, request.DeviceName);
                 return Ok("Firebase token sucessfully registered");
@@ -60,10 +56,7 @@ namespace catch_up_backend.Controllers
         {
             try
             {
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
-                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
-                );
-                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
                 await _firebaseService.UnregisterAsync(userId, firebaseToken);
                 return Ok("Firebase token sucessfully unregistered");

@@ -1,8 +1,7 @@
-﻿using catch_up_backend.Interfaces;
+﻿using catch_up_backend.Helpers;
+using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-
 namespace catch_up_backend.Controllers
 {
     [ApiController]
@@ -17,18 +16,15 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByUserToken")]
-        public async Task<IActionResult> GetByUserToken()
+        public async Task<IActionResult> GetByUserToken([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
-                Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
-            );
-            var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
-            var notifications = await _notificationService.GetByUserId(userId);
+            var (notifications, totalCount) = await _notificationService.GetByUserId(userId, pageNumber, pageSize);
 
             if (!notifications.Any())
                 return NotFound(new { notifications = "No Notifications found" });
-            return Ok(notifications);
+            return Ok(new { notifications, totalCount });
         }
 
         [HttpGet]
@@ -37,10 +33,7 @@ namespace catch_up_backend.Controllers
         {
             try
             {
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
-                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
-                );
-                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
                 await _notificationService.ReadNotifications(userId);
                 return Ok("Notifications read successfully");
@@ -57,10 +50,7 @@ namespace catch_up_backend.Controllers
         {
             try
             {
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(
-                    Request.Headers["Authorization"].ToString().Substring("Bearer ".Length).Trim()
-                );
-                var userId = Guid.Parse(jwtToken.Claims.First(c => c.Type == "nameid").Value);
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
                 var hasUnreadNotifications = await _notificationService.HasUnreadNotifications(userId);
                 
