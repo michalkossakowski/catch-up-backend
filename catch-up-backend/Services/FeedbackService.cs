@@ -166,7 +166,68 @@ namespace catch_up_backend.Services
 
             return feedbackDtos;
         }
+        public async Task<List<FeedbackDto>> GetByReceiverTitleAsync(string title, Guid ReceiverId)
+        {
+            var feedbacks = await _context.Feedbacks
+                .Where(f => f.ReceiverId == ReceiverId && f.State != StateEnum.Deleted && f.Title.ToLower().Contains(title.ToLower()))
+                .ToListAsync();
 
+            var feedbackDtos = new List<FeedbackDto>();
+
+            foreach (var feedback in feedbacks)
+            {
+                string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
+                var user = await _userRepository.GetById(feedback.SenderId);
+
+                feedbackDtos.Add(new FeedbackDto
+                {
+                    Id = feedback.Id,
+                    SenderId = feedback.SenderId,
+                    ReceiverId = feedback.ReceiverId,
+                    Title = feedback.Title,
+                    Description = feedback.Description,
+                    ResourceType = feedback.ResourceType,
+                    ResourceId = feedback.ResourceId,
+                    IsResolved = feedback.IsResolved,
+                    ResourceName = resourceName,
+                    UserName = $"{user.Name} {user.Surname}",
+                    createdDate = feedback.createdDate
+                });
+            }
+
+            return feedbackDtos;
+        }
+        public async Task<List<FeedbackDto>> GetBySenderTitleAsync(string title, Guid SenderId)
+        {
+            var feedbacks = await _context.Feedbacks
+                .Where(f => f.SenderId == SenderId && f.State != StateEnum.Deleted && f.Title.ToLower().Contains(title.ToLower()))
+                .ToListAsync();
+
+            var feedbackDtos = new List<FeedbackDto>();
+
+            foreach (var feedback in feedbacks)
+            {
+                string resourceName = await GetResourceNameAsync(feedback.ResourceType, feedback.ResourceId);
+                var user = await _userRepository.GetById(feedback.ReceiverId);
+
+                feedbackDtos.Add(new FeedbackDto
+                {
+                    Id = feedback.Id,
+                    SenderId = feedback.SenderId,
+                    ReceiverId = feedback.ReceiverId,
+                    Title = feedback.Title,
+                    Description = feedback.Description,
+                    ResourceType = feedback.ResourceType,
+                    ResourceId = feedback.ResourceId,
+                    IsResolved = feedback.IsResolved,
+                    ResourceName = resourceName,
+                    UserName = $"{user.Name} {user.Surname}",
+                    createdDate = feedback.createdDate
+                });
+            }
+
+            return feedbackDtos;
+        }
         public async Task<List<FeedbackDto>> GetAll()
         {
             var feedback = await _context.Feedbacks

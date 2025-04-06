@@ -87,6 +87,22 @@ namespace catch_up_backend.Controllers
             return Ok(feedbacks);
         }
 
+        [HttpGet]
+        [Route("GetByReceiverTitle/{searchingTitle}/{receiverId:Guid}")]
+        public async Task<IActionResult> GetByTitle(string searchingTitle, Guid receiverId)
+        {
+            var feedbacks = await _feedbackService.GetByReceiverTitleAsync(searchingTitle, receiverId);
+            return Ok(feedbacks);
+        }
+
+        [HttpGet]
+        [Route("GetBySenderTitle/{searchingTitle}/{senderId:Guid}")]
+        public async Task<IActionResult> GetBySender(string searchingTitle, Guid senderId)
+        {
+            var feedbacks = await _feedbackService.GetBySenderTitleAsync(searchingTitle, senderId);
+            return Ok(feedbacks);
+        }
+
         [HttpPut]
         [Route("ChangeDoneStatus/{feedbackId:int}")]
         public async Task<IActionResult> ChangeDoneStatus(int feedbackId)
