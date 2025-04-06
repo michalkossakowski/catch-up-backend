@@ -26,7 +26,7 @@ namespace catch_up_backend.Controllers
             if(result != null)
             {
                 var newFullTask = await _taskService.GetFullTaskByIdAsync(result.Id);
-                Ok(new { message = "Task added", task = result, fullTask = newFullTask });
+                return Ok(new { message = "Task added", task = result, fullTask = newFullTask });
             }
                 
             return StatusCode(500, new { message = "Error: Task add" });
