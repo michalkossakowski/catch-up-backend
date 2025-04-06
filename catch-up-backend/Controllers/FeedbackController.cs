@@ -22,7 +22,7 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] FeedbackDto newFeedback)
         {
-            return await _feedbackService.Add(newFeedback)
+            return await _feedbackService.AddAsync(newFeedback)
                 ? Ok(new { message = "Feedback added", feedback = newFeedback })
                 : StatusCode(500, new { message = "Error: Feedback add" });
         }
@@ -31,7 +31,7 @@ namespace catch_up_backend.Controllers
         [Route("Edit/{feedbackId:int}")]
         public async Task<IActionResult> Edit(int feedbackId, [FromBody] FeedbackDto newFeedback)
         {
-            return await _feedbackService.Edit(feedbackId, newFeedback)
+            return await _feedbackService.EditAsync(feedbackId, newFeedback)
                 ? Ok(new { message = "Feedback edited", feedback = newFeedback })
                 : StatusCode(500, new { message = "Error: Feedback edit" });
         }
@@ -40,7 +40,7 @@ namespace catch_up_backend.Controllers
         [Route("Delete/{feedbackId:int}")]
         public async Task<IActionResult> Delete(int feedbackId)
         {
-            return await _feedbackService.Delete(feedbackId)
+            return await _feedbackService.DeleteAsync(feedbackId)
                 ? Ok(new { message = "Feedback deleted", feedback = feedbackId })
                 : NotFound(new { message = "Error: Feedback delete", feedback = feedbackId });
         }
@@ -49,57 +49,26 @@ namespace catch_up_backend.Controllers
         [Route("GetById/{feedbackId:int}")]
         public async Task<IActionResult> GetById(int feedbackId)
         {
-            var feedback = await _feedbackService.GetById(feedbackId);
+            var feedback = await _feedbackService.GetByIdAsync(feedbackId);
             if (feedback == null)
                 return NotFound(new { message = $"Feedback with id: {feedbackId} not found" });
             return Ok(feedback);
         }
 
         [HttpGet]
-        [Route("GetBySenderId/{senderId:Guid}")]
-        public async Task<IActionResult> GetBySenderId(Guid senderId)
-        {
-            var feedbacks = await _feedbackService.GetBySenderId(senderId);
-            if (!feedbacks.Any())
-            {
-                return NotFound(new
-                {
-                    message = $"Feedback with sender id: {senderId} not found"
-                });
-            }
-            return Ok(feedbacks);
-        }
-
-        [HttpGet]
-        [Route("GetByReceiverId/{receiverId:Guid}")]
-        public async Task<IActionResult> GetByReceiverId(Guid receiverId)
-        {
-            var feedbacks = await _feedbackService.GetByReceiverId(receiverId);
-            return Ok(feedbacks);
-        }
-
-        [HttpGet]
         [Route("GetByResource/{resourceType:int}/{resourceId:int}")]
         public async Task<IActionResult> GetByResource(ResourceTypeEnum resourceType, int resourceId)
         {
-            var feedbacks = await _feedbackService.GetFeedbacksByResource(resourceType, resourceId);
+            var feedbacks = await _feedbackService.GetFeedbacksByResourceAsync(resourceType, resourceId);
 
             return Ok(feedbacks);
         }
 
         [HttpGet]
-        [Route("GetByReceiverTitle/{searchingTitle}/{receiverId:Guid}")]
-        public async Task<IActionResult> GetByTitle(string searchingTitle, Guid receiverId)
+        [Route("GetByTitle/{searchingTitle}")]
+        public async Task<IActionResult> GetByTitle(string searchingTitle)
         {
-            var feedbacks = await _feedbackService.GetByReceiverTitleAsync(searchingTitle, receiverId);
-            return Ok(feedbacks);
-        }
-
-        [HttpGet]
-        [Route("GetBySenderTitle/{searchingTitle}/{senderId:Guid}")]
-        public async Task<IActionResult> GetBySender(string searchingTitle, Guid senderId)
-        {
-            var feedbacks = await _feedbackService.GetBySenderTitleAsync(searchingTitle, senderId);
+            var feedbacks = await _feedbackService.GetByTitleAsync(searchingTitle);
             return Ok(feedbacks);
         }
 
@@ -107,7 +76,7 @@ namespace catch_up_backend.Controllers
         [Route("ChangeDoneStatus/{feedbackId:int}")]
         public async Task<IActionResult> ChangeDoneStatus(int feedbackId)
         {
-            return await _feedbackService.ChangeDoneStatus(feedbackId)
+            return await _feedbackService.ChangeDoneStatusAsync(feedbackId)
                 ? Ok(new { message = "Feedback status changed" })
                 : StatusCode(500, new { message = "Error: Feedback status change" });
         }
@@ -116,7 +85,7 @@ namespace catch_up_backend.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var feedback = await _feedbackService.GetAll();
+            var feedback = await _feedbackService.GetAllAsync();
             if (!feedback.Any())
                 return NotFound(new { message = "No feedbacks found" });
             return Ok(feedback);
