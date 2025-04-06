@@ -14,7 +14,8 @@ namespace catch_up_backend.Dtos
         public ResourceTypeEnum ResourceType { get; set; }
         public int ResourceId { get; set; }
         public string? ResourceName { get; set; }
-        public string? UserName { get; set; }
+        public string? UserSend { get; set; }
+        public string? UserReceive { get; set; }
         public DateTime createdDate { get; set; }
         public bool IsResolved { get; set; }
     }
