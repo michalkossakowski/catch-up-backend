@@ -103,33 +103,33 @@ namespace catch_up_backend.Controllers
             return Ok(new { result.files, result.totalCount });
         }
         [HttpGet]
-        [Route("GetAllFiles/{userdId:guid}/{page:int}/{pageSize:int}")]
-        public async Task<IActionResult> GetAllFiles(Guid userdId, int page, int pageSize)
+        [Route("GetAllUserFiles/{userdId:guid}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetAllUserFiles(Guid userdId, int page, int pageSize)
         {
-            var result = await _fileService.GetAllFiles(userdId, page, pageSize);
+            var result = await _fileService.GetAllUserFiles(userdId, page, pageSize);
             return Ok(new { result.files, result.totalCount });
         }
 
         [HttpGet]
-        [Route("GetAllFiles/{userdId:guid}")]
-        public async Task<IActionResult> GetAllFiles(Guid userdId)
+        [Route("GetAllUserFiles/{userdId:guid}")]
+        public async Task<IActionResult> GetAllUserFiles(Guid userdId)
         {
-            var filesDto = await _fileService.GetAllFiles(userdId);
+            var filesDto = await _fileService.GetAllUserFiles(userdId);
             return Ok(filesDto);
         }
 
         [HttpGet]
-        [Route("GetByQuestion/{userdId:guid}/{searchingQuestion}")]        
-        public async Task<IActionResult> GetByQuestion(Guid userdId,string searchingQuestion)
+        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}")]        
+        public async Task<IActionResult> GetBySearchTag(Guid userdId,string searchingQuestion)
         {
-            var result = await _fileService.GetByQuestion(userdId, searchingQuestion);
+            var result = await _fileService.GetBySearchTag(userdId, searchingQuestion);
             return Ok(new { result.files, result.totalCount });
         }
         [HttpGet]
-        [Route("GetByQuestion/{userdId:guid}/{searchingQuestion}/{page:int}/{pageSize:int}")]
-        public async Task<IActionResult> GetByQuestion(Guid userdId, string searchingQuestion, int page, int pageSize)
+        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetBySearchTag(Guid userdId, string searchingQuestion, int page, int pageSize)
         {
-            var result = await _fileService.GetByQuestion(userdId, searchingQuestion, page, pageSize);
+            var result = await _fileService.GetBySearchTag(userdId, searchingQuestion, page, pageSize);
             return Ok(new { result.files, result.totalCount });
         }
         /// <summary>

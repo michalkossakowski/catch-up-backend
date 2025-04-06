@@ -216,7 +216,7 @@ namespace catch_up_backend.Services
 
             return (files, totalCount);
         }
-        public async Task<List<FileDto>> GetAllFiles(Guid userId)
+        public async Task<List<FileDto>> GetAllUserFiles(Guid userId)
         {
             if (await _context.Files.AnyAsync())
             {
@@ -238,7 +238,7 @@ namespace catch_up_backend.Services
             return new List<FileDto>();
         }
 
-        public async Task<(List<FileDto> files, int totalCount)> GetAllFiles(Guid userId, int page, int pagesize)
+        public async Task<(List<FileDto> files, int totalCount)> GetAllUserFiles(Guid userId, int page, int pagesize)
         {
             var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId).OrderBy(file => file.Id);
 
@@ -276,7 +276,7 @@ namespace catch_up_backend.Services
             return true;
         }
 
-        public async Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question)
+        public async Task<(List<FileDto> files, int totalCount)> GetBySearchTag(Guid userId, string question)
         {
             var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId && file.Name.Contains(question)).OrderBy(file => file.Id);
             var totalCount = await query.CountAsync();
@@ -295,7 +295,7 @@ namespace catch_up_backend.Services
             return (files, totalCount);
         }
 
-        public async Task<(List<FileDto> files, int totalCount)> GetByQuestion(Guid userId, string question, int page, int pageSize)
+        public async Task<(List<FileDto> files, int totalCount)> GetBySearchTag(Guid userId, string question, int page, int pageSize)
         {
             var query = _context.Files.Where(file => file.State == StateEnum.Active && file.Owner == userId && file.Name.Contains(question)).OrderBy(file => file.Id);
             var totalCount = await query.CountAsync();
