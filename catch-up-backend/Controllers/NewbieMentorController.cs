@@ -170,12 +170,12 @@ namespace catch_up_backend.Controllers
 
             return Ok(unassigned);
         }
-        // Pobieranie wszystkich mentorów jeszcze nie przypisanych do konretnego nowego pracownika
+        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do nikogo
         [HttpGet]
-        [Route("GetAllUnassignedMentors/{newbieId:guid}")]
-        public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
+        [Route("GetAllUnassignedNewbies")]
+        public async Task<IActionResult> GetAllUnassignedNewbies()
         {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedMentors(newbieId);
+            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
             if (unassigned == null)
             {
                 return NotFound(new { message = $"No unassigned newbies found. " });
@@ -183,12 +183,12 @@ namespace catch_up_backend.Controllers
 
             return Ok(unassigned);
         }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do nikogo
+        // Pobieranie wszystkich mentorów jeszcze nie przypisanych do konretnego nowego pracownika
         [HttpGet]
-        [Route("GetAllUnassignedNewbies")]
-        public async Task<IActionResult> GetAllUnassignedNewbies()
+        [Route("GetAllUnassignedMentors/{newbieId:guid}")]
+        public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
         {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
+            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedMentors(newbieId);
             if (unassigned == null)
             {
                 return NotFound(new { message = $"No unassigned newbies found. " });

@@ -71,5 +71,6 @@ namespace catch_up_backend.Services
             _context.SaveChanges();
             return companySetting.Value;
         }
+
     }
 }

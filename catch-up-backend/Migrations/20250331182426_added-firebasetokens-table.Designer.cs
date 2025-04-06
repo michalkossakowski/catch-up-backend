@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331182426_added-firebasetokens-table")]
+    partial class addedfirebasetokenstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace catch_up_backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EventReceivers", b =>
-                {
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("EventId", "ReceiverId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.ToTable("EventReceivers");
-                });
 
             modelBuilder.Entity("catch_up_backend.Models.BadgeModel", b =>
                 {
@@ -150,7 +138,7 @@ namespace catch_up_backend.Migrations
                     b.ToTable("EmployeeCards");
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.EventModel", b =>
+            modelBuilder.Entity("catch_up_backend.Models.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,8 +168,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Events");
                 });
@@ -326,10 +312,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DeviceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirebaseToken")
                         .IsRequired()
@@ -732,47 +714,6 @@ namespace catch_up_backend.Migrations
                     b.ToTable("CompanySettings");
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.TaskCommentModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskComments");
-                });
-
             modelBuilder.Entity("catch_up_backend.Models.TaskContentModel", b =>
                 {
                     b.Property<int>("Id")
@@ -885,42 +826,6 @@ namespace catch_up_backend.Migrations
                     b.ToTable("TaskPresets");
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.TaskTimeLogModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Hours")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Minutes")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskTimeLogs");
-                });
-
             modelBuilder.Entity("catch_up_backend.Models.UserModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -983,30 +888,6 @@ namespace catch_up_backend.Migrations
                     b.HasIndex("ReceiverId");
 
                     b.ToTable("UsersNotifications");
-                });
-
-            modelBuilder.Entity("EventReceivers", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.EventModel", null)
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("catch_up_backend.Models.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("catch_up_backend.Models.EventModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.FaqModel", b =>
@@ -1190,26 +1071,6 @@ namespace catch_up_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.TaskCommentModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("catch_up_backend.Models.MaterialsModel", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("catch_up_backend.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("catch_up_backend.Models.TaskContentModel", b =>
                 {
                     b.HasOne("catch_up_backend.Models.CategoryModel", null)
@@ -1255,15 +1116,6 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.TaskContentModel", null)
                         .WithMany()
                         .HasForeignKey("TaskContentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("catch_up_backend.Models.TaskTimeLogModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });

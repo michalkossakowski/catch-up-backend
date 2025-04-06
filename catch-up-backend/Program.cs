@@ -13,6 +13,8 @@ using catch_up_backend.Models;
 using System.Security.Cryptography;
 using catch_up_backend.Hubs;
 using System.Text.Json;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 
 namespace catch_up_backend
@@ -80,16 +82,20 @@ namespace catch_up_backend
             builder.Services.AddScoped<ISchoolingPartService, SchoolingPartService>();
             builder.Services.AddScoped<IPresetService, PresetService>();
             builder.Services.AddScoped<ITaskPresetService, TaskPresetService>();
+            builder.Services.AddScoped<IEventService, EventService>(); 
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationHubService, NotificationHubService>();
             builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddScoped<IFirebaseService, FirebaseService>();
+            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
+            builder.Services.AddScoped<ITaskTimeLogService, TaskTimeLogService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
             builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();
-            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
+            
 
             //CORS
             builder.Services.AddCors(options =>
@@ -108,6 +114,24 @@ namespace catch_up_backend
             builder.Services.AddSignalR().AddJsonProtocol(options => {
                 options.PayloadSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             });
+
+            // Firebase
+            try
+            {
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile("catch-up-onboarding-firebase.json")
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Firebase configuration file is missing");
+            }
+
+
+            //Logging
+            builder.Logging.AddConsole();
+            builder.Logging.AddFilter("System.Net.Http", LogLevel.Debug);
 
             // ----------- Custom Section End -----------
 

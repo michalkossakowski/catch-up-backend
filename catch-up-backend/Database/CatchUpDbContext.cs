@@ -37,11 +37,13 @@ namespace catch_up_backend.Database
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
+        public DbSet<FirebaseTokenModel> FirebaseTokens { get; set; }
         public DbSet<UserNotificationModel> UsersNotifications { get; set; }
         public DbSet<SettingModel> CompanySettings { get; set; }
         public DbSet<CompanyCity> CompanyCities { get; set; }
+        public DbSet<EventModel> Events { get; set; }
         public DbSet<TaskCommentModel> TaskComments { get; set; }
-        public DbSet<TaskTimeLogModel> TaskTimeLog { get; set; }
+        public DbSet<TaskTimeLogModel> TaskTimeLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -265,6 +267,27 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<EventModel>()
+            .HasOne<UserModel>()
+            .WithMany()
+            .HasForeignKey(x => x.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<EventModel>()
+            .HasMany<UserModel>()
+            .WithMany("Events")
+            .UsingEntity<Dictionary<string, object>>(
+            "EventReceivers",
+            j => j
+            .HasOne<UserModel>()
+            .WithMany()
+            .HasForeignKey("ReceiverId")
+            .OnDelete(DeleteBehavior.NoAction),
+            j => j
+            .HasOne<EventModel>()
+            .WithMany()
+            .HasForeignKey("EventId")
+            .OnDelete(DeleteBehavior.NoAction)
+            );
 
             //TaskCommentModel One To Many
             modelBuilder.Entity<TaskCommentModel>()

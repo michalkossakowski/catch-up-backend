@@ -1,5 +1,5 @@
-﻿using Azure;
-using catch_up_backend.Dtos;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +10,12 @@ namespace catch_up_backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IFirebaseService _firebaseService;
 
-        public AuthController(IAuthService authService){
+        public AuthController(IAuthService authService, IFirebaseService firebaseService)
+        {
             _authService = authService;
+            _firebaseService = firebaseService;
         }
 
         [HttpPost]
@@ -30,6 +33,38 @@ namespace catch_up_backend.Controllers
         {
             var response = await _authService.RefreshToken(refreshToken);
             return Ok(response);
+        }
+
+        [HttpPost("RegisterFirebaseToken")]
+        public async Task<IActionResult> RegisterFirebaseToken([FromBody] RegisterFirebaseTokenRequest request)
+        {
+            try
+            {
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+
+                await _firebaseService.RegisterAsync(userId, request.FirebaseToken, request.DeviceName);
+                return Ok("Firebase token sucessfully registered");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Firebase token registeration error");
+            }
+        }
+
+        [HttpPost("UnregisterFirebaseToken")]
+        public async Task<IActionResult> UnregisterFirebaseToken([FromBody] string firebaseToken)
+        {
+            try
+            {
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+
+                await _firebaseService.UnregisterAsync(userId, firebaseToken);
+                return Ok("Firebase token sucessfully unregistered");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Firebase token unregisteration error");
+            }
         }
     }
 }

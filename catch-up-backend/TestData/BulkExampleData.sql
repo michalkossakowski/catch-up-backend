@@ -4,7 +4,8 @@ INSERT INTO [Users] ([Id], [Name], [Surname], [Email], [Password], [Type], [Posi
 VALUES 
 (N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Admin', N'Adminski', N'admin@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Admin', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
 (N'04D68924-791D-4022-F2E3-08DD33FC8FD5', N'Mentor', N'Mentorski', N'mentor@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Mentor', 0, N'{"AssignNewbiesCount":1,"CheckedTasksCount":2,"CreatedTasksCount":3,"CreatedSchoolingsCount":4}', NULL),
-(N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'Newbie', N'Newbieski', N'newbie@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Newbie', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL);
+(N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'Newbie', N'Newbieski', N'newbie@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Newbie', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
+(N'8d2d867e-a31c-4bef-827a-75c9c1703a23', N'HRek', N'HRowski', N'hr@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'HR', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL);
 
 -- OTHER USERS
 INSERT INTO [Users] 
@@ -341,8 +342,8 @@ VALUES
     (13, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Work Alert', 'Plan sprint', '2025-03-10 08:59:32', '/Tasks/38', 0),
     (14, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Added', 'Design UI', '2025-03-15 11:44:15', '/Tasks/39', 0),
     (15, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Item', 'Check logs', '2025-03-20 13:27:58', '/Tasks/40', 0),
-    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-25 16:09:41', '/Tasks/41', 0),
-    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-30 10:36:24', '/Tasks/42', 0);
+    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-22 16:09:41', '/Tasks/41', 0),
+    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-23 01:06:24', '/Tasks/42', 0);
 SET IDENTITY_INSERT [Notifications] OFF
 
 -- USERS NOTIFICATIONS
@@ -369,7 +370,7 @@ VALUES
 -- FEEDBACKS
 SET IDENTITY_INSERT [Feedbacks] ON
 INSERT INTO [Feedbacks] 
-    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsDone], [CreatedDate], [State])
+    ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsResolved], [CreatedDate], [State])
 VALUES 
     (1, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Dobra robota', N'Szkolenie było bardzo pomocne i szczegółowe.', 20, 2, 1, '2025-01-13T18:56:13', 0),
     (2, N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Przydatny materiał', N'Materiał zawierał wszystkie potrzebne informacje.', 20, 3, 0, '2025-01-13T18:57:13', 0),
@@ -428,3 +429,10 @@ VALUES
     -- Newbie 34567890-1234-5678-2345-6789abcdef01
     ('34567890-1234-5678-2345-6789abcdef01', '23456789-0123-4567-1234-56789abcdef0', 0, NULL, GETDATE()),
     ('34567890-1234-5678-2345-6789abcdef01', '56789012-3456-7890-4567-89abcdef0123', 0, NULL, GETDATE());
+
+    -- COMPANY SETTINGS
+    SET IDENTITY_INSERT [CompanySettings] ON
+    INSERT INTO [CompanySettings] ([Name],[Value])
+    -- Enables logging of task time
+    VALUES ('EnableTaskTimeLog','true');
+    SET IDENTITY_INSERT [CompanySettings] OFF

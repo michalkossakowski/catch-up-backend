@@ -13,7 +13,7 @@ namespace catch_up_backend.Controllers
 
         public UserController(IUserService userService)
         {
-            _userService = userService;
+            _userService = userService; //przypisanie obiektu serwisu do pola prywatnego
         }
 
         [HttpPost]

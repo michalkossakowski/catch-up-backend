@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Enums;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,9 @@ namespace catch_up_backend.Models
         public DateTime CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public StateEnum State { get; set; }
+        public TaskTimeLogModel()
+        {
+        }
         public TaskTimeLogModel(int taskId, int hours, int minutes, string description)
         {
             TaskId = taskId;
@@ -25,8 +29,15 @@ namespace catch_up_backend.Models
             CreationDate = DateTime.Now;
             State = StateEnum.Active;
         }
-        public TaskTimeLogModel()
+        public TaskTimeLogModel(TaskTimeLogDto TimeLogDto)
         {
+            TaskId = TimeLogDto.TaskId;
+            Hours = TimeLogDto.Hours;
+            Minutes = TimeLogDto.Minutes;
+            Description = TimeLogDto.Description;
+            CreationDate = TimeLogDto.CreationDate;
+            ModificationDate = TimeLogDto.ModificationDate;
+            State = StateEnum.Active;
         }
     }
 }

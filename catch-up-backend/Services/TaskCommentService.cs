@@ -22,6 +22,7 @@ namespace catch_up_backend.Services
             {
                 var comment = new TaskCommentModel(newTaskComment);
                 comment.CreationDate = DateTime.Now;
+                comment.ModificationDate = null;
                 comment.State = StateEnum.Active;
                 _context.TaskComments.Add(comment);
                 _context.SaveChanges();
@@ -92,11 +93,19 @@ namespace catch_up_backend.Services
                 .Select(x => new TaskCommentDto(x)).FirstOrDefaultAsync();
         }
 
-        public async Task<List<TaskCommentDto>> GetByTaskIdAsync(int taskId)
+        public async Task<(List<TaskCommentDto> comments, int totalCount)> GetByTaskIdAsync(int taskId, int page, int pageSize)
         {
-            return await _context.TaskComments
+            var totalCount = await _context.TaskComments
                 .Where(x => x.TaskId == taskId && x.State == StateEnum.Active)
-                .Select(x => new TaskCommentDto(x)).ToListAsync();
+                .CountAsync();
+            var commments = await _context.TaskComments
+                .Where(x => x.TaskId == taskId && x.State == StateEnum.Active)
+                .OrderByDescending(x=>x.CreationDate)
+                .Take(pageSize)
+                .Skip((page - 1) * pageSize)
+                .Select(x => new TaskCommentDto(x))
+                .ToListAsync();
+            return (commments, totalCount);
         }
     }
 }

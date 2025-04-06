@@ -58,13 +58,13 @@ namespace catch_up_backend.Controllers
             return Ok(taskComment);
         }
         [HttpGet]
-        [Route("GetTaskCommentsByTaskId/{taskId:int}")]
-        public async Task<IActionResult> GetTaskCommentsByTaskId(int taskId)
+        [Route("GetTaskCommentsByTaskId/{taskId:int}/{page:int}/{pagesize:int}")]
+        public async Task<IActionResult> GetTaskCommentsByTaskId(int taskId, int page = 1, int pagesize = 5)
         {
-            var taskComment = await _taskCommentService.GetByTaskIdAsync(taskId);
-            if (taskComment == null)
+            var result = await _taskCommentService.GetByTaskIdAsync(taskId, page, pagesize);
+            if (!result.comments.Any())
                 return NotFound(new { message = $"There is no task comments with Task ID: [{taskId}]" });
-            return Ok(taskComment);
+            return Ok(new { result.comments, result.totalCount });
         }
     }
 
