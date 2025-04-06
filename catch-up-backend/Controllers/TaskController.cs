@@ -3,6 +3,7 @@ using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace catch_up_backend.Controllers
 {
@@ -21,10 +22,16 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
             var result = await _taskService.AddAsync(newTask);
-            return result != null
-                ? Ok(new { message = "Task added", task = result })
-                : StatusCode(500, new { message = "Error: Task add" });
+
+            if(result != null)
+            {
+                var newFullTask = await _taskService.GetFullTaskByIdAsync(result.Id);
+                Ok(new { message = "Task added", task = result, fullTask = newFullTask });
+            }
+                
+            return StatusCode(500, new { message = "Error: Task add" });
         }
+
         [HttpPut]
         [Route("EditTask/{taskId:int}")]
         public async Task<IActionResult> Edit(int taskId, TaskDto newTask)
