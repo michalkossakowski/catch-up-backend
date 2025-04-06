@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Helpers;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace catch_up_backend.Controllers
             var (notifications, totalCount) = await _notificationService.GetByUserId(userId, pageNumber, pageSize);
 
             if (!notifications.Any())
-                return NotFound(new { notifications = "No Notifications found" });
+                return Ok(new { notifications = new List<NotificationDto>() , totalCount = 0 });
             return Ok(new { notifications, totalCount });
         }
 

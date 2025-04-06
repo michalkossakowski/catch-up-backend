@@ -95,13 +95,42 @@ namespace catch_up_backend.Controllers
             var filesDto = await _fileService.GetAllFiles();
             return Ok(filesDto);
         }
+        [HttpGet]
+        [Route("GetAllFiles/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetAllFiles(int page, int pageSize)
+        {
+            var result = await _fileService.GetAllFiles(page, pageSize);
+            return Ok(new { result.files, result.totalCount });
+        }
+        [HttpGet]
+        [Route("GetAllUserFiles/{userdId:guid}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetAllUserFiles(Guid userdId, int page, int pageSize)
+        {
+            var result = await _fileService.GetAllUserFiles(userdId, page, pageSize);
+            return Ok(new { result.files, result.totalCount });
+        }
 
         [HttpGet]
-        [Route("GetAllFiles/{userdId:guid}")]
-        public async Task<IActionResult> GetAllFiles(Guid userdId)
+        [Route("GetAllUserFiles/{userdId:guid}")]
+        public async Task<IActionResult> GetAllUserFiles(Guid userdId)
         {
-            var filesDto = await _fileService.GetAllFiles(userdId);
+            var filesDto = await _fileService.GetAllUserFiles(userdId);
             return Ok(filesDto);
+        }
+
+        [HttpGet]
+        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}")]        
+        public async Task<IActionResult> GetBySearchTag(Guid userdId,string searchingQuestion)
+        {
+            var result = await _fileService.GetBySearchTag(userdId, searchingQuestion);
+            return Ok(new { result.files, result.totalCount });
+        }
+        [HttpGet]
+        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}/{page:int}/{pageSize:int}")]
+        public async Task<IActionResult> GetBySearchTag(Guid userdId, string searchingQuestion, int page, int pageSize)
+        {
+            var result = await _fileService.GetBySearchTag(userdId, searchingQuestion, page, pageSize);
+            return Ok(new { result.files, result.totalCount });
         }
         /// <summary>
         /// Downloads a file by its ID, returning the file's stream from storage.

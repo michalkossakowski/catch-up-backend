@@ -65,12 +65,12 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetByQuestion/{searchingQuestion}")]
-        public async Task<IActionResult> GetByQuestion(string searchingQuestion)
+        [Route("Search/{searchPhrase}")]
+        public async Task<IActionResult> Search(string searchPhrase)
         {
-            var faqs = await _faqService.GetByQuestionAsync(searchingQuestion);
+            var faqs = await _faqService.Search(searchPhrase);
             if (!faqs.Any())
-                return NotFound(new { message = $"No FAQs found with: '{searchingQuestion}' in question" });
+                return Ok(new List<FaqDto>());
             return Ok(faqs);
         }
     }

@@ -110,10 +110,12 @@ namespace catch_up_backend.Services
 
             return (faqs, totalCount);
         }
-        public async Task<List<FaqDto>> GetByQuestionAsync(string title)
+        public async Task<List<FaqDto>> Search(string searchPhrase)
         {
             var faqs = await _context.Faqs
-                .Where(f => f.State == StateEnum.Active && f.Question.ToLower().Contains(title.ToLower()))
+                .Where(f => f.State == StateEnum.Active 
+                && (f.Question.ToLower().Contains(searchPhrase.ToLower())
+                || f.Answer.ToLower().Contains(searchPhrase.ToLower())))
                 .Select(f => new FaqDto
                 { 
                     Id = f.Id,

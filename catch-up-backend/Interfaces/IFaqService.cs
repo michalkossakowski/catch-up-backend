@@ -9,6 +9,6 @@ namespace catch_up_backend.Interfaces
         public Task<bool> DeleteAsync(int faqId);
         public Task<FaqDto> GetByIdAsync(int faqId);
         Task<(List<FaqDto> faqs, int totalCount)> GetAllAsync(int page, int pageSize);
-        public Task<List<FaqDto>> GetByQuestionAsync(string searchingQuestion);
+        public Task<List<FaqDto>> Search(string searchPhrase);
     }
 }
