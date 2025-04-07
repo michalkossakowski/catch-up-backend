@@ -65,6 +65,8 @@ namespace catch_up_backend.Services
                 {
                     return null;
                 }
+                newTimeLog.Hours = newTimeLog.Hours + (newTimeLog.Minutes / 60);
+                newTimeLog.Minutes = newTimeLog.Minutes % 60;
                 timeLog.Description = newTimeLog.Description;
                 timeLog.Hours = newTimeLog.Hours;
                 timeLog.Minutes = newTimeLog.Minutes;

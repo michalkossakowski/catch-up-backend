@@ -18,7 +18,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPost]
         [Route("AddTaskTimeLog")]
-        public async Task<IActionResult> AddTaskComment([FromBody] TaskTimeLogDto newTaskTimeLog)
+        public async Task<IActionResult> AddTaskTimeLog([FromBody] TaskTimeLogDto newTaskTimeLog)
         {
             var settings = await _companySettingsService.GetCompanySettings();
             if(settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
@@ -27,12 +27,12 @@ namespace catch_up_backend.Controllers
             }
             var result = await _taskTimeLogService.AddAsync(newTaskTimeLog);
             return result != null
-                ? Ok(new { message = "Task time log added", TaskTimeLog = result })
+                ? Ok(new { message = "Task time log added", taskTimeLog = result })
                 : StatusCode(500, new { message = "Error: Task time log add" });
         }
         [HttpPatch]
         [Route("EditTaskTimeLog/{taskTimeLogId:int}")]
-        public async Task<IActionResult> EditTaskComment(int taskTimeLogId, TaskTimeLogDto newTaskTimeLog)
+        public async Task<IActionResult> EditTaskTaskTimeLog(int taskTimeLogId, TaskTimeLogDto newTaskTimeLog)
         {
             var settings = await _companySettingsService.GetCompanySettings();
             if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
@@ -41,12 +41,12 @@ namespace catch_up_backend.Controllers
             }
             newTaskTimeLog = await _taskTimeLogService.EditAsync(taskTimeLogId, newTaskTimeLog);
             return newTaskTimeLog != null
-                ? Ok(new { message = $"Task time log edited", taskComment = newTaskTimeLog })
-                : StatusCode(500, new { message = "Task time log editing error", commentId = taskTimeLogId });
+                ? Ok(new { message = $"Task time log edited", taskTimeLog = newTaskTimeLog })
+                : StatusCode(500, new { message = "Task time log editing error", taskTimeLogId = taskTimeLogId });
         }
         [HttpDelete]
         [Route("DeleteTaskTimeLog/{taskTimeLogId:int}")]
-        public async Task<IActionResult> DeleteTaskComment(int taskTimeLogId)
+        public async Task<IActionResult> DeleteTaskTaskTimeLog(int taskTimeLogId)
         {
             var settings = await _companySettingsService.GetCompanySettings();
             if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
@@ -54,8 +54,8 @@ namespace catch_up_backend.Controllers
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
             return await _taskTimeLogService.DeleteAsync(taskTimeLogId)
-                ? Ok(new { message = $"Task time log deleted", commentId = taskTimeLogId })
-                : StatusCode(500, new { message = "Task time log deleting error", commentId = taskTimeLogId });
+                ? Ok(new { message = $"Task time log deleted", taskTimeLogId = taskTimeLogId })
+                : StatusCode(500, new { message = "Task time log deleting error", taskTimeLogId = taskTimeLogId });
         }
         [HttpGet]
         [Route("GetAllTaskTimeLogs")]
