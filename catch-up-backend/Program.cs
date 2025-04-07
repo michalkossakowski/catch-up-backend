@@ -87,12 +87,15 @@ namespace catch_up_backend
             builder.Services.AddScoped<INotificationHubService, NotificationHubService>();
             builder.Services.AddScoped<IAIService, AIService>();
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
+            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
+            builder.Services.AddScoped<ITaskTimeLogService, TaskTimeLogService>();
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
             builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();
+            
 
             //CORS
             builder.Services.AddCors(options =>

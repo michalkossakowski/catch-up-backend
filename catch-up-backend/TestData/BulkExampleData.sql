@@ -429,3 +429,10 @@ VALUES
     -- Newbie 34567890-1234-5678-2345-6789abcdef01
     ('34567890-1234-5678-2345-6789abcdef01', '23456789-0123-4567-1234-56789abcdef0', 0, NULL, GETDATE()),
     ('34567890-1234-5678-2345-6789abcdef01', '56789012-3456-7890-4567-89abcdef0123', 0, NULL, GETDATE());
+
+    -- COMPANY SETTINGS
+    SET IDENTITY_INSERT [CompanySettings] ON
+    INSERT INTO [CompanySettings] ([Name],[Value])
+    -- Enables logging of task time
+    VALUES ('EnableTaskTimeLog','true');
+    SET IDENTITY_INSERT [CompanySettings] OFF

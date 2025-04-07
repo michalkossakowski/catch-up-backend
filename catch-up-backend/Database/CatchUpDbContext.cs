@@ -42,6 +42,9 @@ namespace catch_up_backend.Database
         public DbSet<SettingModel> CompanySettings { get; set; }
         public DbSet<CompanyCity> CompanyCities { get; set; }
         public DbSet<EventModel> Events { get; set; }
+        public DbSet<TaskCommentModel> TaskComments { get; set; }
+        public DbSet<TaskTimeLogModel> TaskTimeLogs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //FaqModel One To Many
@@ -285,6 +288,32 @@ namespace catch_up_backend.Database
             .HasForeignKey("EventId")
             .OnDelete(DeleteBehavior.NoAction)
             );
+
+            //TaskCommentModel One To Many
+            modelBuilder.Entity<TaskCommentModel>()
+                .HasOne<TaskModel>()
+                .WithMany()
+                .HasForeignKey(x => x.TaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //TaskCommentModel One To Many
+            modelBuilder.Entity<TaskCommentModel>()
+                .HasOne<UserModel>()
+                .WithMany()
+                .HasForeignKey(x => x.CreatorId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //TaskCommentModel One To Many
+            modelBuilder.Entity<TaskCommentModel>()
+                .HasOne<MaterialsModel>()
+                .WithMany()
+                .HasForeignKey(x => x.MaterialId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //TaskTimeLogModel One To Many
+            modelBuilder.Entity<TaskTimeLogModel>()
+                .HasOne<TaskModel>()
+                .WithMany()
+                .HasForeignKey(x => x.TaskId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>()
                 .Property(u => u.Counters)
