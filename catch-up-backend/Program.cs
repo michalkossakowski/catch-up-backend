@@ -148,43 +148,6 @@ namespace catch_up_backend
             // SignalR
             app.MapHub<NotificationHub>("/notificationHub").RequireCors("AllowAllOrigins");
 
-            // create a default user if Users table is empty
-            void EnsureUserExists(IServiceProvider serviceProvider)
-            {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<CatchUpDbContext>();
-
-                    string HashPassword(string password)
-                    {
-                        using (var sha256 = SHA256.Create())
-                        {
-                            var bytes = Encoding.UTF8.GetBytes(password);
-                            var hash = sha256.ComputeHash(bytes);
-                            return Convert.ToBase64String(hash);
-                        }
-                    }
-
-                    var hashedPassword = HashPassword("Admin");
-
-                    if (!context.Users.Any())
-                    {
-                        var adminUser = new UserModel(
-                            name: "Admin",
-                            surname: "Admin",
-                            email: "admin@admin.com",
-                            password: hashedPassword,
-                            type: "Admin",
-                            position: "Admin"
-                        );
-
-                        context.Users.Add(adminUser);
-                        context.SaveChanges();
-                    }
-                }
-            }
-
-            EnsureUserExists(app.Services);
             // ----------- Custom Section End -----------
 
             app.UseAuthentication();
