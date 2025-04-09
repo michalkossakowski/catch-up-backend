@@ -58,6 +58,15 @@ namespace catch_up_backend.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task ReadNotification(Guid userId,int notificaitonId)
+        {
+            await _context.UsersNotifications
+                .Where(un => un.State == StateEnum.Active && un.ReceiverId == userId && un.NotificationId == notificaitonId)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(un => un.IsRead, true));
+
+            await _context.SaveChangesAsync();
+        }
         public async Task<bool> HasUnreadNotifications(Guid userId)
         {
             var userNotifications = await _context.UsersNotifications

@@ -46,6 +46,23 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
+        [Route("ReadNotification/{notificationId:int}")]
+        public async Task<IActionResult> ReadNotification(int notificationId)
+        {
+            try
+            {
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+
+                await _notificationService.ReadNotification(userId, notificationId);
+                return Ok("Notifications read successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Notifications read error: {ex}");
+            }
+        }
+
+        [HttpGet]
         [Route("HasUnreadNotifications")]
         public async Task<IActionResult> HasUnreadNotifications()
         {
