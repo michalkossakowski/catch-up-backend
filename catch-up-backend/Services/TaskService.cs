@@ -460,5 +460,33 @@ namespace catch_up_backend.Services
             }
             return new TaskDto(task);
         }
+
+
+        public async Task<List<FullTask>> GetAllFullTasksByRoadMapPointIdAsync(int roadMapPointId)
+        {
+            var fullTasks = await _context.Tasks
+                .Where(task => task.State == StateEnum.Active 
+                    && task.RoadMapPointId == roadMapPointId)
+                .Join(
+                _context.TaskContents,
+                task => task.TaskContentId, taskContent => taskContent.Id,
+                (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+
+            var users = await _userService.GetAll();
+
+            foreach (var task in fullTasks)
+            {
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+
+            }
+
+            return fullTasks;
+        }
     }
 }

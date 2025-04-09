@@ -1,5 +1,4 @@
-﻿using catch_up_backend.Controllers;
-using catch_up_backend.Database;
+﻿using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
@@ -58,27 +57,6 @@ namespace catch_up_backend.Services
             return newRoadMapPoint;
         }
 
-        public async Task<bool> SetStatusAsync(int roadMapPointId, StatusEnum status)
-        {
-            var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
-            if (roadMapPoint == null)
-                return false;
-            try
-            {
-                roadMapPoint.Status = status;
-                if(status == StatusEnum.ToReview)
-                    roadMapPoint.FinishDate = DateTime.Now;
-                _context.RoadMapPoints.Update(roadMapPoint);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error: RoadMap Finish " + e);
-            }
-            return true;
-
-        }
-
         public async Task<bool> DeleteAsync(int roadMapPointId)
         {
             var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
@@ -110,8 +88,34 @@ namespace catch_up_backend.Services
                     StartDate = rmp.StartDate,
                     FinishDate = rmp.FinishDate,
                     Deadline = rmp.Deadline,
-                    Status = rmp.Status
                 }).ToListAsync();
+
+            foreach (var roadMapPoint in roadMapPoints)
+            {
+                var allTasksCount = await _context.Tasks
+                    .Where(t => t.State == StateEnum.Active
+                        && t.RoadMapPointId == roadMapPoint.Id)
+                    .CountAsync();
+
+                var finishedTasksCount = await _context.Tasks
+                    .Where(t => t.State == StateEnum.Active
+                        && t.Status == StatusEnum.Done
+                        && t.RoadMapPointId == roadMapPoint.Id)
+                    .CountAsync();
+
+                if(finishedTasksCount == 0)
+                {
+                    roadMapPoint.Status = StatusEnum.ToDo;
+                }
+                else if (allTasksCount == finishedTasksCount)
+                {
+                    roadMapPoint.Status = StatusEnum.Done;
+                }
+                else
+                {
+                    roadMapPoint.Status = StatusEnum.InProgress;
+                }
+            }
 
             return roadMapPoints;
         }

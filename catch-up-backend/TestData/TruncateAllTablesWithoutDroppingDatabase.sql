@@ -1,6 +1,6 @@
 DECLARE @sql NVARCHAR(MAX) = '';
 
--- Wy³¹czanie i usuniêcie kluczy obcych
+-- Wyï¿½ï¿½czanie i usuniï¿½cie kluczy obcych
 SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(fk.parent_object_id)) 
                + ' DROP CONSTRAINT ' + QUOTENAME(fk.name) + ';' + CHAR(13)
 FROM sys.foreign_keys fk;
@@ -17,7 +17,7 @@ WHERE TABLE_TYPE = 'BASE TABLE';
 PRINT @sql;  -- Sprawdzenie SQL przed wykonaniem
 EXEC sp_executesql @sql;
 
--- Przywrócenie usuniêtych kluczy obcych
+-- Przywrï¿½cenie usuniï¿½tych kluczy obcych
 SET @sql = '';
 SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(fk.parent_object_id)) 
                + ' ADD CONSTRAINT ' + QUOTENAME(fk.name) 

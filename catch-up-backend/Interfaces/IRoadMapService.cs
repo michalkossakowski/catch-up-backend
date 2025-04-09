@@ -7,7 +7,6 @@ namespace catch_up_backend.Interfaces
     {
         public Task<RoadMapDto> AddAsync(RoadMapDto newRoadMap);
         public Task<RoadMapDto> EditAsync(int roadMapId, RoadMapDto newRoadMap);
-        public Task<bool> SetStatusAsync(int roadMapId, StatusEnum status);
         public Task<bool> DeleteAsync(int roadMapId);
         public Task<List<RoadMapDto>> GetAllAsync();
         public Task<RoadMapDto> GetByIdAsync(int roadMapId);

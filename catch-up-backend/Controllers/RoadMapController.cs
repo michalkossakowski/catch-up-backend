@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,8 @@ namespace catch_up_backend.Controllers
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] RoadMapDto newRoadMap)
         {
+            var creatorId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+            newRoadMap.CreatorId = creatorId;
             var result = await _roadMapService.AddAsync(newRoadMap);
             return result != null
                 ? Ok(new { message = "RoadMap added", roadMap = result })
@@ -33,15 +36,6 @@ namespace catch_up_backend.Controllers
             return result != null
                 ? Ok(new { message = "RoadMap added", roadMap = result })
                 : StatusCode(500, new { message = "RoadMap adding error" });
-        }
-
-        [HttpPatch]
-        [Route("SetStatus/{roadMapId:int}/{status:int}")]
-        public async Task<IActionResult> SetStatusAsync(int roadMapId, int status)
-        {
-            return await _roadMapService.SetStatusAsync(roadMapId, (StatusEnum)status)
-                ? Ok(new { message = $"RoadMap status setted to {status}", roadMap = roadMapId })
-                : StatusCode(500, new { message = "RoadMap status set error", roadMap = roadMapId });
         }
 
         [HttpDelete]
@@ -59,7 +53,7 @@ namespace catch_up_backend.Controllers
         {
             var roadMaps = await _roadMapService.GetAllAsync();
             if (!roadMaps.Any())
-                return NotFound(new { message = "No RoadMaps found" });
+                return Ok(new { message = "No RoadMaps found" });
             return Ok(roadMaps);
         }
 
@@ -70,6 +64,18 @@ namespace catch_up_backend.Controllers
             var roadMaps = await _roadMapService.GetByNewbieIdAsync(newbieId);
             if (!roadMaps.Any())
                 return NotFound(new { message = $"There is no any RoadMaps for Newbie: '{newbieId}'" });
+            return Ok(roadMaps);
+        }
+
+        [HttpGet]
+        [Route("GetMyRoadMaps")]
+        public async Task<IActionResult> GetMyRoadmaps()
+        {
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+
+            var roadMaps = await _roadMapService.GetByNewbieIdAsync(userId);
+            if (!roadMaps.Any())
+                return Ok(new List<RoadMapDto>());
             return Ok(roadMaps);
         }
     }

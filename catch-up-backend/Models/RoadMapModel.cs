@@ -10,17 +10,20 @@ namespace catch_up_backend.Models
         public int Id { get; set; }
         [ForeignKey("NewbieId")]
         public Guid NewbieId { get; set; }
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
+        [ForeignKey("CreatorId")]
+        public Guid CreatorId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime AssignDate { get; set; }
         public DateTime? FinishDate { get; set; }
-        public StatusEnum Status { get; set; }
         public StateEnum State { get; set; }
-        public RoadMapModel(Guid newbieId, string name)
+        public RoadMapModel(Guid newbieId, Guid creatorId, string title, string description)
         {
             this.NewbieId = newbieId;
-            this.Name = name;
-            this.Status = StatusEnum.ToDo;
-            this.StartDate = DateTime.Now;
+            this.CreatorId = creatorId;
+            this.Title = title;
+            this.Description = description;
+            this.AssignDate = DateTime.Now;
             State = StateEnum.Active;
         }
     }

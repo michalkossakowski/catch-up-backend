@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409134746_road-map-foreigh-key-repaired")]
+    partial class roadmapforeighkeyrepaired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -591,6 +594,9 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -629,6 +635,9 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1156,7 +1165,7 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.RoadMapModel", null)
                         .WithMany()
                         .HasForeignKey("RoadMapId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

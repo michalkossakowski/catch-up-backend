@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using catch_up_backend.Database;
+﻿using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
@@ -7,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
 using System.Text;
 using System.Security.Cryptography;
+using System.Data;
 
 namespace catch_up_backend.Repositories
 {
@@ -214,6 +214,21 @@ namespace catch_up_backend.Repositories
                     Position = u.Position
                 })
                 .ToListAsync();
+        }
+
+        public async Task<string> GetUserNameByIdAsync(Guid userId)
+        {
+            var user = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new { u.Name, u.Surname })
+                .FirstOrDefaultAsync();
+
+            if(user != null)
+            {
+                return $"{user.Name} {user.Surname}";
+            }
+
+            return "User not found";
         }
     }
 }
