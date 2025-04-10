@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Database;
+﻿using catch_up_backend.Controllers;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
@@ -124,6 +125,8 @@ namespace catch_up_backend.Services
         {
             var roadMaps = await _context.RoadMaps
                 .Where(rm => rm.State == StateEnum.Active && rm.NewbieId == newbieId)
+                .Include(rm => rm.RoadMapPoints)
+                .ThenInclude(rmp => rmp.Tasks)
                 .Select(rm => new RoadMapDto
                 {
                     Id = rm.Id,
@@ -133,41 +136,12 @@ namespace catch_up_backend.Services
                     CreatorId = rm.CreatorId,
                     AssignDate = rm.AssignDate,
                     FinishDate = rm.FinishDate,
+                    Status = rm.Status,
+                    Progress = rm.Progress
                 }).ToListAsync();
 
             foreach (var roadMap in roadMaps)
             {
-                int allPointsCount = await _context.RoadMapPoints
-                    .Where(rmp => rmp.State == StateEnum.Active 
-                        && rmp.RoadMapId == roadMap.Id)
-                    .CountAsync();
-
-                int finishedPointsCount = await _context.RoadMapPoints
-                    .Where(rmp => rmp.State == StateEnum.Active
-                        && rmp.RoadMapId == roadMap.Id
-                        && _context.Tasks
-                            .Where(t => t.State == StateEnum.Active && t.RoadMapPointId == rmp.Id)
-                            .Any()
-                        && _context.Tasks
-                            .Where(t => t.State == StateEnum.Active 
-                                && t.RoadMapPointId == rmp.Id)
-                            .All(t => t.Status == StatusEnum.Done))
-                    .CountAsync();
-
-                if (finishedPointsCount == 0)
-                {
-                    roadMap.Status = StatusEnum.ToDo;
-                }
-                else if (allPointsCount == finishedPointsCount)
-                {
-                    roadMap.Status = StatusEnum.Done;
-                }
-                else
-                {
-                    roadMap.Status = StatusEnum.InProgress;
-                    roadMap.Progress = Math.Round((decimal)finishedPointsCount / (decimal)allPointsCount * 100, 2);
-                }
-
                 roadMap.CreatorName = await _userRepository.GetUserNameByIdAsync(roadMap.CreatorId);
             }
 

@@ -80,6 +80,7 @@ namespace catch_up_backend.Services
         {
             var roadMapPoints = await _context.RoadMapPoints
                 .Where(rmp => rmp.State == StateEnum.Active && rmp.RoadMapId == roadMapId)
+                .Include(rmp => rmp.Tasks)
                 .Select(rmp => new RoadMapPointDto
                 {
                     Id = rmp.Id,
@@ -88,34 +89,8 @@ namespace catch_up_backend.Services
                     StartDate = rmp.StartDate,
                     FinishDate = rmp.FinishDate,
                     Deadline = rmp.Deadline,
+                    Status = rmp.Status
                 }).ToListAsync();
-
-            foreach (var roadMapPoint in roadMapPoints)
-            {
-                var allTasksCount = await _context.Tasks
-                    .Where(t => t.State == StateEnum.Active
-                        && t.RoadMapPointId == roadMapPoint.Id)
-                    .CountAsync();
-
-                var finishedTasksCount = await _context.Tasks
-                    .Where(t => t.State == StateEnum.Active
-                        && t.Status == StatusEnum.Done
-                        && t.RoadMapPointId == roadMapPoint.Id)
-                    .CountAsync();
-
-                if(finishedTasksCount == 0)
-                {
-                    roadMapPoint.Status = StatusEnum.ToDo;
-                }
-                else if (allTasksCount == finishedTasksCount)
-                {
-                    roadMapPoint.Status = StatusEnum.Done;
-                }
-                else
-                {
-                    roadMapPoint.Status = StatusEnum.InProgress;
-                }
-            }
 
             return roadMapPoints;
         }

@@ -440,7 +440,7 @@ VALUES
 
 
 
--- RoadMaps
+-- HUGE ALL YOU NEED FOR ROAD MAPS --------------------------------------------------------
 delete from [RoadMapPoints];
 delete from [RoadMaps];
 SET IDENTITY_INSERT [RoadMaps] ON
@@ -470,7 +470,7 @@ SET IDENTITY_INSERT [RoadMapPoints] OFF
 
 
 --tasks for roadmap points
-delete from[Tasks] where id between 100 and 139;
+delete from[Tasks] where id between 100 and 150;
 SET IDENTITY_INSERT [Tasks] ON
 INSERT INTO [Tasks] 
     ([ID], [NewbieId], [AssigningId], [TaskContentId], [Status], [AssignmentDate], [FINALIZATIONDATE], [DEADLINE], [SPENDTIME], [Priority], [State], [ROADMAPPOINTID], [RATE]) 
@@ -543,23 +543,27 @@ SET IDENTITY_INSERT [RoadMaps] ON
 INSERT INTO [RoadMaps] (Id, NewbieId, State, FinishDate, Title, AssignDate, CreatorId, Description)
 VALUES 
 (2, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, NULL, 'Optymalizacja wydajności', '2025-03-10 09:00:00', '437D2B01-ED58-4FCF-931A-08DD3251CE0A', 'Szkolenie z technik optymalizacji kodu.'),
-(3, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, NULL, 'Zarządzanie wersjami w GIT', '2025-03-15 14:00:00', '437D2B01-ED58-4FCF-931A-08DD3251CE0A', 'Kompleksowy kurs GIT i GitHub.');
+(3, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, NULL, 'Zarządzanie wersjami w GIT', '2025-03-15 14:00:00', '437D2B01-ED58-4FCF-931A-08DD3251CE0A', 'Kompleksowy kurs GIT i GitHub.'),
+(4, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, NULL, 'Nauka latania bokiem', '2025-03-15 14:00:00', '437D2B01-ED58-4FCF-931A-08DD3251CE0A', 'Niesamowite doznania, emocji fenomen socjologiczny siadamy głęboko w fotelach zapinamy pasy i startujemy.'),
+(5, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, NULL, 'Zawody w jedzeniu wafli tortowych na czas', '2025-03-15 14:00:00', '437D2B01-ED58-4FCF-931A-08DD3251CE0A', 'Smakowicie się zapowiada');
 SET IDENTITY_INSERT [RoadMaps] OFF
 
--- Dodanie punktów roadmap 2 (wszystkie taski zakończone)
+-- Dodanie punktów roadmap 2 (wszystkie pointy zakończone)
 SET IDENTITY_INSERT [RoadMapPoints] ON
 INSERT INTO [RoadMapPoints] (RoadMapId, Name, StartDate, FinishDate, State, Id, Deadline)
 VALUES
 (2, 'Analiza zużycia zasobów', '2025-03-11 09:00:00', '2025-03-11 10:00:00', 0, 11, NULL),
 (2, 'Wprowadzenie profilowania kodu', '2025-03-11 10:30:00', '2025-03-11 11:30:00', 0, 12, NULL),
 (2, 'Refaktoryzacja metod o wysokim koszcie', '2025-03-12 09:00:00', '2025-03-12 11:00:00', 0, 13, NULL);
--- Dodanie punktów roadmap 3 (mieszane taski)
+-- Dodanie punktów roadmap 3 (mieszane pointy)
 INSERT INTO [RoadMapPoints] (RoadMapId, Name, StartDate, FinishDate, State, Id, Deadline)
 VALUES
 (3, 'Inicjalizacja repozytorium', '2025-03-16 09:00:00', NULL, 0, 14, NULL),
 (3, 'Tworzenie gałęzi i pull requestów', '2025-03-16 10:00:00', NULL, 0, 15, NULL),
 (3, 'Rozwiązywanie konfliktów', '2025-03-17 09:00:00', NULL, 0, 16, NULL),
-(3, 'Tagowanie i wersjonowanie', '2025-03-17 11:00:00', NULL, 0, 17, NULL);
+(3, 'Tagowanie i wersjonowanie', '2025-03-17 11:00:00', NULL, 0, 17, NULL),
+-- Dodanie punktów roadmap 4 (pojedynczy point)
+(4, 'Wyjazd z podporządkowanej', '2025-03-17 11:00:00', NULL, 0, 18, NULL);
 SET IDENTITY_INSERT [RoadMapPoints] OFF
 
 -- Dodanie zakończonych tasków dla roadmapy 2

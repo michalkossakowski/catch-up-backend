@@ -172,9 +172,9 @@ namespace catch_up_backend.Database
             //RoadMapPointModel One To Many
             modelBuilder.Entity<RoadMapPointModel>()
                 .HasOne<RoadMapModel>()
-                .WithMany()
-                .HasForeignKey(x => x.RoadMapId)
-                .OnDelete(DeleteBehavior.NoAction); ;
+                .WithMany(rm => rm.RoadMapPoints) 
+                .HasForeignKey(rmp => rmp.RoadMapId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()
@@ -238,8 +238,8 @@ namespace catch_up_backend.Database
             //TaskModel One To Many
             modelBuilder.Entity<TaskModel>()
                 .HasOne<RoadMapPointModel>()
-                .WithMany()
-                .HasForeignKey(x => x.RoadMapPointId)
+                .WithMany(rmp => rmp.Tasks)
+                .HasForeignKey(t => t.RoadMapPointId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //SchoolingUserModel Many To Many
