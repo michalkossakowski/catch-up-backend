@@ -10,10 +10,12 @@ namespace catch_up_backend.Services
     public class RoadMapPointService : IRoadMapPointService
     {
         private readonly CatchUpDbContext _context;
+        private readonly IRoadMapService _roadMapService;
 
-        public RoadMapPointService(CatchUpDbContext context)
+        public RoadMapPointService(CatchUpDbContext context, IRoadMapService roadMapService)
         {
             _context = context;
+            _roadMapService = roadMapService;
         }
 
         public async Task<RoadMapPointDto> AddAsync(RoadMapPointDto newRoadMapPoint)
@@ -80,7 +82,6 @@ namespace catch_up_backend.Services
         {
             var roadMapPoints = await _context.RoadMapPoints
                 .Where(rmp => rmp.State == StateEnum.Active && rmp.RoadMapId == roadMapId)
-                .Include(rmp => rmp.Tasks)
                 .Select(rmp => new RoadMapPointDto
                 {
                     Id = rmp.Id,
@@ -93,6 +94,41 @@ namespace catch_up_backend.Services
                 }).ToListAsync();
 
             return roadMapPoints;
+        }
+
+        public async Task UpdateRoadMapPointStatus(int roadMapPointId)
+        {
+            var roadMapPoint = await _context.RoadMapPoints.FirstOrDefaultAsync(rmp => rmp.Id == roadMapPointId);
+
+            var activeTasks = await _context.Tasks
+                .Where(t => t.RoadMapPointId == roadMapPointId 
+                    && t.State == StateEnum.Active)
+                .ToListAsync() 
+                ?? new List<TaskModel>();
+
+            var finishedTasks = activeTasks
+                .Where(t => t.Status == StatusEnum.Done)
+                .ToList() 
+                ?? new List<TaskModel>();
+
+            if (finishedTasks.Count == 0)
+            {
+                roadMapPoint.Status = StatusEnum.ToDo;
+            }
+            else if (activeTasks.All(t => t.Status == StatusEnum.Done))
+            {
+                roadMapPoint.Status = StatusEnum.Done;
+                roadMapPoint.FinishDate = DateTime.Now;
+            }
+            else
+            {
+                roadMapPoint.Status = StatusEnum.InProgress;
+            }
+
+            _context.RoadMapPoints.Update(roadMapPoint);
+            await _context.SaveChangesAsync();
+
+            await _roadMapService.UpdateRoadMapStatus(roadMapPoint.RoadMapId);
         }
     }
 }

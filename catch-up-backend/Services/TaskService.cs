@@ -15,18 +15,21 @@ namespace catch_up_backend.Services
         private readonly ITaskContentService _contentService;
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
+        private readonly IRoadMapPointService _roadMapPointService;
         private readonly EmailController _emailController;
 
         public TaskService(
             CatchUpDbContext context,
             ITaskContentService contentService,
             IUserService userService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IRoadMapPointService roadMapPointService)
         {
             _context = context;
             _contentService = contentService;
             _userService = userService;
             _notificationService = notificationService;
+            _roadMapPointService = roadMapPointService;
             _emailController = new EmailController();
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask)
@@ -308,6 +311,11 @@ namespace catch_up_backend.Services
                 if (previousStatus != status)
                 {
                     await SendStatusChangeEmails(task, previousStatus);
+                }
+
+                if(status == StatusEnum.Done && task.RoadMapPointId != null)
+                {
+                    await _roadMapPointService.UpdateRoadMapPointStatus((int)task.RoadMapPointId);
                 }
             }
             catch (Exception e)

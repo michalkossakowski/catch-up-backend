@@ -125,8 +125,6 @@ namespace catch_up_backend.Services
         {
             var roadMaps = await _context.RoadMaps
                 .Where(rm => rm.State == StateEnum.Active && rm.NewbieId == newbieId)
-                .Include(rm => rm.RoadMapPoints)
-                .ThenInclude(rmp => rmp.Tasks)
                 .Select(rm => new RoadMapDto
                 {
                     Id = rm.Id,
@@ -146,6 +144,40 @@ namespace catch_up_backend.Services
             }
 
             return roadMaps;
+        }
+
+        public async Task UpdateRoadMapStatus(int roadMapId)
+        {
+            var roadMap = await _context.RoadMaps.FirstOrDefaultAsync(rmp => rmp.Id == roadMapId);
+
+            var activePoints = await _context.RoadMapPoints
+                .Where(rmp => rmp.State == StateEnum.Active)
+                .ToListAsync() 
+                ?? new List<RoadMapPointModel>();
+
+            var finishedPoints = activePoints
+                .Where(rmp => rmp.Status == StatusEnum.Done)
+                .ToList() 
+                ?? new List<RoadMapPointModel>();
+
+            roadMap.Progress = Math.Round((decimal)finishedPoints.Count / activePoints.Count * 100, 2);
+
+            if (finishedPoints.Count == 0)
+            {
+                roadMap.Status = StatusEnum.ToDo;
+            }
+            else if (activePoints.All(t => t.Status == StatusEnum.Done))
+            {
+                roadMap.Status = StatusEnum.Done;
+                roadMap.FinishDate = DateTime.Now;
+            }
+            else
+            {
+                roadMap.Status = StatusEnum.InProgress;
+            }
+
+            _context.RoadMaps.Update(roadMap);
+            await _context.SaveChangesAsync();
         }
     }
 }

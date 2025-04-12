@@ -1,5 +1,4 @@
 ﻿using catch_up_backend.Dtos;
-using catch_up_backend.Enums;
 
 namespace catch_up_backend.Interfaces
 {
@@ -11,5 +10,6 @@ namespace catch_up_backend.Interfaces
         public Task<List<RoadMapDto>> GetAllAsync();
         public Task<RoadMapDto> GetByIdAsync(int roadMapId);
         public Task<List<RoadMapDto>> GetByNewbieIdAsync(Guid newbieId);
+        public Task UpdateRoadMapStatus(int roadMapId);
     }
 }
