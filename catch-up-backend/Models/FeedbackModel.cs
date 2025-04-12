@@ -18,8 +18,10 @@ namespace catch_up_backend.Models
         public int ResourceId { get; set; }
         public DateTime createdDate { get; set; }
         public bool IsResolved { get; set; }
+        [ForeignKey("MaterialsId")]
+        public int? MaterialId { get; set; }
         public StateEnum State { get; set; }
-        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, ResourceTypeEnum resourceType, int resourceId)
+        public FeedbackModel(Guid senderId, Guid receiverId, string title, string description, ResourceTypeEnum resourceType, int resourceId, int? materialId)
         {
             SenderId = senderId;
             ReceiverId = receiverId;
@@ -27,6 +29,7 @@ namespace catch_up_backend.Models
             Description = description;
             ResourceType = resourceType;
             ResourceId = resourceId;
+            MaterialId = materialId;
             IsResolved = false;
             createdDate = DateTime.Now;
             State = StateEnum.Active;
