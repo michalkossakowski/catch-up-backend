@@ -65,6 +65,11 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+            //FeedbackModel One To Many
+            modelBuilder.Entity<FeedbackModel>()
+                .HasOne<MaterialsModel>()
+                .WithMany()
+                .HasForeignKey(x => x.MaterialId);
 
             /*//FileModel One To Many
             modelBuilder.Entity<FileModel>()

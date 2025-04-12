@@ -34,7 +34,8 @@ namespace catch_up_backend.Services
                 newFeedback.Title,
                 newFeedback.Description ?? "",
                 newFeedback.ResourceType,
-                newFeedback.ResourceId);
+                newFeedback.ResourceId,
+                newFeedback.MaterialId);
                 await _context.AddAsync(feedback);
                 await _context.SaveChangesAsync();
             }
@@ -58,6 +59,7 @@ namespace catch_up_backend.Services
                 feedback.ResourceType = newFeedback.ResourceType;
                 feedback.ResourceId = newFeedback.ResourceId;
                 feedback.IsResolved = newFeedback.IsResolved;
+                feedback.MaterialId = newFeedback.MaterialId;
                 _context.Feedbacks.Update(feedback);
                 await _context.SaveChangesAsync();
             }
@@ -96,6 +98,7 @@ namespace catch_up_backend.Services
                     Description = f.Description,
                     ResourceType = f.ResourceType,
                     ResourceId = f.ResourceId,
+                    MaterialId = f.MaterialId,
                     IsResolved = f.IsResolved,
                     createdDate = f.createdDate
                 }).FirstOrDefaultAsync();
@@ -125,6 +128,7 @@ namespace catch_up_backend.Services
                     Description = feedback.Description,
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
+                    MaterialId = feedback.MaterialId,
                     IsResolved = feedback.IsResolved,
                     ResourceName = resourceName,
                     UserSend = $"{userSend.Name} {userSend.Surname}",
@@ -159,6 +163,7 @@ namespace catch_up_backend.Services
                     ResourceType = feedback.ResourceType,
                     ResourceId = feedback.ResourceId,
                     IsResolved = feedback.IsResolved,
+                    MaterialId = feedback.MaterialId,
                     ResourceName = resourceName,
                     UserSend = $"{userSend.Name} {userSend.Surname}",
                     UserReceive = $"{userReceive.Name} {userReceive.Surname}",
