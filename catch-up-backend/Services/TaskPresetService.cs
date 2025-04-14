@@ -20,17 +20,39 @@ namespace catch_up_backend.Services
         {
             try
             {
-                var taskPreset = new TaskPresetModel(
-                    newTaskPreset.PresetId,
-                    newTaskPreset.TaskContentId);
-                await _context.AddAsync(taskPreset);
-                await _context.SaveChangesAsync();
+                var existingTaskPreset = await _context.TaskPresets
+                    .FirstOrDefaultAsync(tp => tp.PresetId == newTaskPreset.PresetId && 
+                                       tp.TaskContentId == newTaskPreset.TaskContentId);
+
+                if (existingTaskPreset != null)
+                {
+                    existingTaskPreset.State = StateEnum.Active;
+                    _context.TaskPresets.Update(existingTaskPreset);
+                    await _context.SaveChangesAsync();
+                    
+                    return new TaskPresetDto
+                    {
+                        PresetId = existingTaskPreset.PresetId,
+                        TaskContentId = existingTaskPreset.TaskContentId,
+                        State = existingTaskPreset.State
+                    };
+                }
+                else
+                {
+                    var taskPreset = new TaskPresetModel(
+                        newTaskPreset.PresetId,
+                        newTaskPreset.TaskContentId);
+                    await _context.AddAsync(taskPreset);
+                    await _context.SaveChangesAsync();
+                    
+                    newTaskPreset.State = taskPreset.State;
+                    return newTaskPreset;
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Add taskPreset: " + ex);
             }
-            return newTaskPreset;
         }
 
         public async Task<TaskPresetDto> Edit(int taskPresetId, TaskPresetDto newTaskPreset)
