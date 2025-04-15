@@ -15,18 +15,21 @@ namespace catch_up_backend.Services
         private readonly ITaskContentService _contentService;
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
+        private readonly IRoadMapPointService _roadMapPointService;
         private readonly EmailController _emailController;
 
         public TaskService(
             CatchUpDbContext context,
             ITaskContentService contentService,
             IUserService userService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IRoadMapPointService roadMapPointService)
         {
             _context = context;
             _contentService = contentService;
             _userService = userService;
             _notificationService = notificationService;
+            _roadMapPointService = roadMapPointService;
             _emailController = new EmailController();
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask)
@@ -309,6 +312,11 @@ namespace catch_up_backend.Services
                 {
                     await SendStatusChangeEmails(task, previousStatus);
                 }
+
+                if(status == StatusEnum.Done && task.RoadMapPointId != null)
+                {
+                    await _roadMapPointService.UpdateRoadMapPointStatus((int)task.RoadMapPointId);
+                }
             }
             catch (Exception e)
             {
@@ -459,6 +467,34 @@ namespace catch_up_backend.Services
                 throw new Exception("Error: Task SetTime " + e);
             }
             return new TaskDto(task);
+        }
+
+
+        public async Task<List<FullTask>> GetAllFullTasksByRoadMapPointIdAsync(int roadMapPointId)
+        {
+            var fullTasks = await _context.Tasks
+                .Where(task => task.State == StateEnum.Active 
+                    && task.RoadMapPointId == roadMapPointId)
+                .Join(
+                _context.TaskContents,
+                task => task.TaskContentId, taskContent => taskContent.Id,
+                (task, taskContent) => new FullTask(task, taskContent)).ToListAsync();
+
+            var users = await _userService.GetAll();
+
+            foreach (var task in fullTasks)
+            {
+                if (task.NewbieId.HasValue && task.AssigningId.HasValue)
+                {
+                    var newbie = users.FirstOrDefault(users => users.Id == task.NewbieId);
+                    var assigning = users.FirstOrDefault(users => users.Id == task.AssigningId);
+                    task.NewbieName = newbie.Name + " " + newbie.Surname;
+                    task.AssigningName = assigning.Name + " " + assigning.Surname;
+                }
+
+            }
+
+            return fullTasks;
         }
     }
 }

@@ -166,18 +166,25 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.NewbieId)
                 .OnDelete(DeleteBehavior.NoAction);
+           
             //RoadMapModel One To Many
             modelBuilder.Entity<RoadMapModel>()
                 .HasOne<UserModel>()
                 .WithMany()
-                .HasForeignKey(x => x.NewbieId)
+                .HasForeignKey(x => x.CreatorId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //RoadMapModel Progress precision
+            modelBuilder.Entity<RoadMapModel>()
+                .Property(r => r.Progress)
+                .HasPrecision(5, 2);
 
             //RoadMapPointModel One To Many
             modelBuilder.Entity<RoadMapPointModel>()
                 .HasOne<RoadMapModel>()
                 .WithMany()
-                .HasForeignKey(x => x.RoadMapId);
+                .HasForeignKey(x => x.RoadMapId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()

@@ -117,6 +117,16 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllFullTasksByRoadMapPointId/{roadMapId:int}")]
+        public async Task<IActionResult> GetAllFullTasksByRoadMapPointId(int roadMapId)
+        {
+            var fullTasks = await _taskService.GetAllFullTasksByRoadMapPointIdAsync(roadMapId);
+            if (fullTasks == null || !fullTasks.Any())
+                return Ok(new List<FullTask>());
+            return Ok(fullTasks);
+        }
+
+        [HttpGet]
         [Route("GetAllFullTaskByTaskContentId/{taskContentId:int}")]
         public async Task<IActionResult> GetAllFullTaskByTaskContentId(int taskContentId)
         {

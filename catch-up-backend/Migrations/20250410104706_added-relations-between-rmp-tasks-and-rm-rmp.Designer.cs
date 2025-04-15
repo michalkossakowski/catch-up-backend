@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410104706_added-relations-between-rmp-tasks-and-rm-rmp")]
+    partial class addedrelationsbetweenrmptasksandrmrmp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,9 +236,6 @@ namespace catch_up_backend.Migrations
                     b.Property<bool>("IsResolved")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MaterialId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
 
@@ -259,8 +259,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MaterialId");
 
                     b.HasIndex("ReceiverId");
 
@@ -593,14 +591,7 @@ namespace catch_up_backend.Migrations
                     b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Progress")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
                     b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -641,9 +632,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1036,10 +1024,6 @@ namespace catch_up_backend.Migrations
 
             modelBuilder.Entity("catch_up_backend.Models.FeedbackModel", b =>
                 {
-                    b.HasOne("catch_up_backend.Models.MaterialsModel", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialId");
-
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("ReceiverId")
@@ -1173,7 +1157,7 @@ namespace catch_up_backend.Migrations
             modelBuilder.Entity("catch_up_backend.Models.RoadMapPointModel", b =>
                 {
                     b.HasOne("catch_up_backend.Models.RoadMapModel", null)
-                        .WithMany()
+                        .WithMany("RoadMapPoints")
                         .HasForeignKey("RoadMapId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1261,7 +1245,7 @@ namespace catch_up_backend.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("catch_up_backend.Models.RoadMapPointModel", null)
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("RoadMapPointId")
                         .OnDelete(DeleteBehavior.NoAction);
 
@@ -1309,6 +1293,16 @@ namespace catch_up_backend.Migrations
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("catch_up_backend.Models.RoadMapModel", b =>
+                {
+                    b.Navigation("RoadMapPoints");
+                });
+
+            modelBuilder.Entity("catch_up_backend.Models.RoadMapPointModel", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

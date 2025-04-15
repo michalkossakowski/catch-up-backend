@@ -35,15 +35,6 @@ namespace catch_up_backend.Controllers
                 : StatusCode(500, new { message = "RoadMapPoint editing error" });
         }
 
-        [HttpPatch]
-        [Route("SetStatus/{roadMapPointId:int}/{status:int}")]
-        public async Task<IActionResult> SetStatus(int roadMapPointId, int status)
-        {
-            return await _roadMapPointService.SetStatusAsync(roadMapPointId, (StatusEnum)status)
-                ? Ok(new { message = "RoadMapPoint status changed", roadMap = roadMapPointId })
-                : StatusCode(500, new { message = "RoadMapPoint setting status error", roadMap = roadMapPointId });
-        }
-
         [HttpDelete]
         [Route("Delete/{roadMapPointId:int}")]
         public async Task<IActionResult> Delete(int roadMapPointId)
@@ -60,7 +51,7 @@ namespace catch_up_backend.Controllers
         {
             var roadMapPoints = await _roadMapPointService.GetByRoadMapIdAsync(roadMapId);
             if (!roadMapPoints.Any())
-                return NotFound(new { message = $"There is no any RoadMapPoints for RoadMap: '{roadMapId}'" });
+                return Ok(new List<RoadMapPointDto>());
             return Ok(roadMapPoints);
         }
     }

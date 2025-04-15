@@ -11,19 +11,19 @@ namespace catch_up_backend.Models
         [ForeignKey("RoadMapId")]
         public int RoadMapId { get; set; }
         public string Name { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         public DateTime? FinishDate { get; set; }
         public DateTime? Deadline { get; set; }
-        public StatusEnum Status { get; set; }
         public StateEnum State { get; set; }
+        public StatusEnum Status { get; set; }
+
         public RoadMapPointModel(int roadMapId, string name, DateTime? deadline = null)
         {
             RoadMapId = roadMapId;
             Name = name;
             Deadline = deadline;
-            StartDate = DateTime.Now;
-            Status = StatusEnum.ToDo;
             State = StateEnum.Active;
+            Status = StatusEnum.ToDo;
         }
     }
 }
