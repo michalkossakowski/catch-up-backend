@@ -10,8 +10,8 @@ namespace catch_up_backend.Interfaces
         public Task<bool> DeleteAsync(int feedbackId);
         public Task<FeedbackDto> GetByIdAsync(int feedbackId);
         public Task<List<FeedbackDto>> GetFeedbacksByResourceAsync(ResourceTypeEnum resourceType, int resourceId);
-        public Task<List<FeedbackDto>> GetByTitleAsync(string title);
-        public Task<List<FeedbackDto>> GetAllAsync();
+        public Task<List<FeedbackDto>> GetByTitleAsync(string title, Guid userId);
+        public Task<List<FeedbackDto>> GetAllAsync(Guid userId);
         public Task<bool> ChangeDoneStatusAsync(int feedbackId);
     }
 }
