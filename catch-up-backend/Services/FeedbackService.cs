@@ -105,11 +105,17 @@ namespace catch_up_backend.Services
 
             return feedback;
         }
-        public async Task<List<FeedbackDto>> GetByTitleAsync(string title)
+        public async Task<List<FeedbackDto>> GetByTitleAsync(string title, Guid userId)
         {
-            var feedbacks = await _context.Feedbacks
-                .Where(f => f.State != StateEnum.Deleted && f.Title.ToLower().Contains(title.ToLower()))
-                .ToListAsync();
+            var userLogged = await _userRepository.GetById(userId);
+            var query = _context.Feedbacks.Where(f => f.State != StateEnum.Deleted && f.Title.ToLower().Contains(title.ToLower()));
+
+            var feedbacks = userLogged.Position.ToLower() switch
+            {
+                "newbie" => await query.Where(f => f.SenderId == userId).ToListAsync(),
+                "admin" => await query.ToListAsync(),
+                _ => await query.Where(f => f.SenderId == userId || f.ReceiverId == userId).ToListAsync()
+            };
 
             var feedbackDtos = new List<FeedbackDto>();
 
@@ -139,11 +145,17 @@ namespace catch_up_backend.Services
 
             return feedbackDtos;
         }
-        public async Task<List<FeedbackDto>> GetAllAsync()
+        public async Task<List<FeedbackDto>> GetAllAsync(Guid userId)
         {
-            var feedbacks = await _context.Feedbacks
-                .Where(f => f.State != StateEnum.Deleted)
-                .ToListAsync();
+            var userLogged = await _userRepository.GetById(userId);
+            var query = _context.Feedbacks.Where(f => f.State != StateEnum.Deleted);
+
+            var feedbacks = userLogged.Position.ToLower() switch
+            {
+                "newbie" => await query.Where(f => f.SenderId == userId).ToListAsync(),
+                "admin" => await query.ToListAsync(),
+                _ => await query.Where(f => f.SenderId == userId || f.ReceiverId == userId).ToListAsync()
+            };
 
             var feedbackDtos = new List<FeedbackDto>();
 

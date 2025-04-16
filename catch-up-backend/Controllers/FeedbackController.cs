@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using catch_up_backend.Services;
@@ -68,7 +69,8 @@ namespace catch_up_backend.Controllers
         [Route("GetByTitle/{searchingTitle}")]
         public async Task<IActionResult> GetByTitle(string searchingTitle)
         {
-            var feedbacks = await _feedbackService.GetByTitleAsync(searchingTitle);
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+            var feedbacks = await _feedbackService.GetByTitleAsync(searchingTitle, userId);
             return Ok(feedbacks);
         }
 
@@ -85,7 +87,8 @@ namespace catch_up_backend.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var feedback = await _feedbackService.GetAllAsync();
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+            var feedback = await _feedbackService.GetAllAsync(userId);
             if (!feedback.Any())
                 return NotFound(new { message = "No feedbacks found" });
             return Ok(feedback);
