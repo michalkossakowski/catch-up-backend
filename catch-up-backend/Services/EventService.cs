@@ -6,16 +6,20 @@ using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Database;
 using catch_up_backend.Controllers;
+using catch_up_backend.Services;
+using catch_up_backend.Interfaces;
 
 public class EventService : IEventService
 {
     private readonly CatchUpDbContext _context;
     private readonly EmailController emailController;
+    private readonly INotificationService _notificationService;
 
-    public EventService(CatchUpDbContext context)
+    public EventService(CatchUpDbContext context, INotificationService notificationService)
     {
         _context = context; 
         emailController = new EmailController();
+        _notificationService = notificationService;
     }
 
     public async Task<IEnumerable<EventModel>> GetUserEvents(Guid userId)
@@ -34,9 +38,8 @@ public class EventService : IEventService
     {
         var receivers = await _context.Users
             .Where(u => u.Position == position)
-            .Select(u => u.Id)
             .ToListAsync();
-
+        var receiversIds = receivers.Select(r => r.Id).ToList();
         var eventEntry = new EventModel
         {
             Title = title,
@@ -44,26 +47,19 @@ public class EventService : IEventService
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,
-            ReceiverIds = receivers
+            ReceiverIds = receiversIds
         };
-        foreach(var receiver in receivers)
-        {
-            var newbie = await _context.Users.FindAsync(receiver);
-            var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
-            "Nowe Wydarzenie", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie zosta³o do Ciebie przydzielone nowe wydarzenie {title} maj¹ce miejsce w dniu {startDate.ToString()}. Koniecznie sprawdŸ szczegó³y wydarzenia na swoim profilu!"
-            ));
-        }
         _context.Events.Add(eventEntry);
+        SendMailAndNotification(receivers, eventEntry);
         await _context.SaveChangesAsync();
     }
 
     public async Task AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate)
     {
-        var receivers = await _context.Users
+        List<UserModel> receivers = await _context.Users
             .Where(u => u.Type == type)
-            .Select(u => u.Id)
             .ToListAsync();
-
+        var receiversIds = receivers.Select(r => r.Id).ToList();
         var eventEntry = new EventModel
         {
             Title = title,
@@ -71,19 +67,19 @@ public class EventService : IEventService
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,
-            ReceiverIds = receivers
+            ReceiverIds = receiversIds
         };
 
         _context.Events.Add(eventEntry);
+        SendMailAndNotification(receivers, eventEntry);
         await _context.SaveChangesAsync();
     }
 
     public async Task AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate)
     {
         var receivers = await _context.Users
-            .Select(u => u.Id)
             .ToListAsync();
-
+        var receiversIds = receivers.Select(r => r.Id).ToList();
         var eventEntry = new EventModel
         {
             Title = title,
@@ -91,10 +87,30 @@ public class EventService : IEventService
             StartDate = startDate,
             EndDate = endDate,
             OwnerId = ownerId,
-            ReceiverIds = receivers
+            ReceiverIds = receiversIds
         };
 
         _context.Events.Add(eventEntry);
+        await SendMailAndNotification(receivers, eventEntry);
         await _context.SaveChangesAsync();
+    }
+    private async Task SendMailAndNotification(List<UserModel> receivers, EventModel eventEntry)
+    {
+        foreach (UserModel receiver in receivers)
+        {
+
+            var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(
+                        receiver.Email,
+                        "Nowe Przypisanie",
+                                        $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}"
+                    ));
+            var notificationReceiver = new NotificationModel(
+                receiver.Id,
+                "Nowe Wydarzenie",
+                $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}",
+                "kot"
+            );
+            await _notificationService.AddNotification(notificationReceiver, receiver.Id);
+        }
     }
 }
