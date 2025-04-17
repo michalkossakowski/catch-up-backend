@@ -89,8 +89,6 @@ namespace catch_up_backend.Controllers
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
             var feedback = await _feedbackService.GetAllAsync(userId);
-            if (!feedback.Any())
-                return NotFound(new { message = "No feedbacks found" });
             return Ok(feedback);
         }
     }
