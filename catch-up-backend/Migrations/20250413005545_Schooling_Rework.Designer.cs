@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413005545_Schooling_Rework")]
+    partial class Schooling_Rework
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,9 +236,6 @@ namespace catch_up_backend.Migrations
                     b.Property<bool>("IsResolved")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MaterialId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
 
@@ -259,8 +259,6 @@ namespace catch_up_backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MaterialId");
 
                     b.HasIndex("ReceiverId");
 
@@ -577,25 +575,18 @@ namespace catch_up_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AssignDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("NewbieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Progress")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -603,13 +594,7 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
 
                     b.HasIndex("NewbieId");
 
@@ -637,7 +622,7 @@ namespace catch_up_backend.Migrations
                     b.Property<int>("RoadMapId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("State")
@@ -768,18 +753,18 @@ namespace catch_up_backend.Migrations
 
             modelBuilder.Entity("catch_up_backend.Models.SchoolingUserPartModel", b =>
                 {
-                    b.Property<int>("SchoolingUserId")
+                    b.Property<int>("SchoolingPartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SchoolingPartId")
+                    b.Property<int>("SchoolingUserId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDone")
                         .HasColumnType("bit");
 
-                    b.HasKey("SchoolingUserId", "SchoolingPartId");
+                    b.HasKey("SchoolingPartId", "SchoolingUserId");
 
-                    b.HasIndex("SchoolingPartId");
+                    b.HasIndex("SchoolingUserId");
 
                     b.ToTable("SchoolingUserParts");
                 });
@@ -1083,10 +1068,6 @@ namespace catch_up_backend.Migrations
 
             modelBuilder.Entity("catch_up_backend.Models.FeedbackModel", b =>
                 {
-                    b.HasOne("catch_up_backend.Models.MaterialsModel", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialId");
-
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("ReceiverId")
@@ -1206,12 +1187,6 @@ namespace catch_up_backend.Migrations
                 {
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("catch_up_backend.Models.UserModel", null)
-                        .WithMany()
                         .HasForeignKey("NewbieId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1222,7 +1197,7 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.RoadMapModel", null)
                         .WithMany()
                         .HasForeignKey("RoadMapId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

@@ -12,10 +12,13 @@ namespace catch_up_backend.Services
     {
         private readonly CatchUpDbContext _context;
         private readonly IMaterialService _materialService;
-        public SchoolingPartService(CatchUpDbContext context, IMaterialService materialService)
+        private readonly IFileService _fileService;
+
+        public SchoolingPartService(CatchUpDbContext context, IMaterialService materialService, IFileService fileService)
         {
             _context = context;
             _materialService = materialService;
+            _fileService = fileService;
         }
 
         public async Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId)
@@ -25,7 +28,7 @@ namespace catch_up_backend.Services
             .Select(sp => new SchoolingPartDto
             {
                 Id = sp.Id,
-                Name = sp.Name,
+                Title = sp.Title,
                 Content = sp.Content
             })
             .ToListAsync();
@@ -35,26 +38,6 @@ namespace catch_up_backend.Services
                 part.Materials = await GetMaterials(part.Id);
             }
             return schoolingParts;
-        }
-
-        public async Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId)
-        {
-            var result = await _context.SchoolingParts
-            .FirstOrDefaultAsync(sp => sp.Id == schoolingPartId && StateEnum.Active == sp.State);
-            
-            if(result == null)
-                return null;
-
-            var schoolingPart = new SchoolingPartDto
-            {
-                Id = result.Id,
-                Name = result.Name,
-                Content = result.Content
-            };
-
-
-            schoolingPart.Materials = await GetMaterials(schoolingPartId);
-            return schoolingPart;
         }
         public async Task<List<MaterialDto>> GetMaterials(int schoolingPartId)
         {
@@ -154,7 +137,7 @@ namespace catch_up_backend.Services
             .Select(sp => new SchoolingPartDto
             {
                 Id = sp.Id,
-                Name = sp.Name,
+                Title = sp.Title,
                 Content = sp.Content
             })
             .ToListAsync();
@@ -188,7 +171,7 @@ namespace catch_up_backend.Services
             var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id);
             if (schoolingPartModel == null) return false;
 
-            schoolingPartModel.Name = schoolingPart.Name;
+            schoolingPartModel.Title = schoolingPart.Title;
             schoolingPartModel.Content = schoolingPart.Content;
 
             var existingMaterials = await _context.MaterialsSchoolingParts
@@ -214,6 +197,93 @@ namespace catch_up_backend.Services
             {
                 await AddMaterialToSchooling(schoolingPart.Id, materialId);
             }
+            return true;
+        }
+
+        //Done
+        public async Task<List<SchoolingPartProgressBarDto>> GetSchoolingPartStatus(int schoolingId)
+        {
+            var parts = await _context.SchoolingParts
+                .Where(sp => sp.SchoolingId == schoolingId && sp.State == Enums.StateEnum.Active)
+                .ToListAsync();
+            if (parts == null) return null;
+
+            List<SchoolingPartProgressBarDto> partStatus = new();
+            foreach (var part in parts)
+            {
+                FileDto fileDto = null;
+
+                if (!(part.IconFileId is null))
+                    fileDto = await _fileService.GetById((int)part.IconFileId);
+
+                partStatus.Add(
+                    new SchoolingPartProgressBarDto
+                    {
+                        Id = part.Id,
+                        Order = part.Order,
+                        Title = part.Title,
+                        FileIcon = fileDto,
+                        IsDone = false,
+                        ShortDescription = part.ShortDescription
+                    }
+                );
+            }
+            return partStatus.OrderBy(x => x.Order).ToList();
+        }
+        public async Task<List<SchoolingPartProgressBarDto>> GetUserSchoolingPartStatus(int schoolingId, Guid userId)
+        {
+            List<SchoolingPartProgressBarDto> partStatus = await GetSchoolingPartStatus(schoolingId);
+            
+            int schoolingUserId = await _context.SchoolingsUsers
+                .Where(su => su.NewbieId == userId && su.SchoolingId == schoolingId)
+                .Select(su => su.Id)
+                .FirstOrDefaultAsync();
+
+            var parts = await _context.SchoolingUserParts
+                .Where(sps => sps.SchoolingUserId == schoolingUserId)
+                .ToListAsync();
+
+            if (parts == null) return null;
+
+            foreach (var part in parts)
+            {
+                partStatus.First( ps => ps.Id == part.SchoolingPartId ).IsDone = part.IsDone;
+            }
+            return partStatus;
+        }
+        public async Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId, Guid userId)
+        {
+            var result = await _context.SchoolingParts
+            .FirstOrDefaultAsync(sp => sp.Id == schoolingPartId && StateEnum.Active == sp.State);
+
+            if (result == null)
+                return null;
+
+            var schoolingPart = new SchoolingPartDto
+            {
+                Id = result.Id,
+                Title = result.Title,
+                Content = result.Content,
+                ShortDescription = result.ShortDescription,
+                IconFile = result.IconFileId != null ? await _fileService.GetById((int)result.IconFileId) : null,
+                schoolingUserId = await _context.SchoolingsUsers
+                    .Where(sup => sup.SchoolingId == result.SchoolingId && sup.NewbieId == userId)
+                    .Select(sup => sup.Id)
+                    .FirstOrDefaultAsync()
+            };
+
+
+            schoolingPart.Materials = await GetMaterials(schoolingPartId);
+            return schoolingPart;
+        }
+
+        public async Task<bool> ChangeUserSchoolingPartState(int schoolingUserId, int schoolingPartId, bool state)
+        {
+            var part = await _context.SchoolingUserParts.FindAsync(schoolingUserId, schoolingPartId);
+            if (part == null) return false;
+            part.IsDone = state;
+            
+            await _context.SaveChangesAsync();
             return true;
         }
     }

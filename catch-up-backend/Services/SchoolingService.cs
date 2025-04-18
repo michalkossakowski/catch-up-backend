@@ -11,12 +11,14 @@ namespace catch_up_backend.Services
         private readonly CatchUpDbContext _context;
         private readonly ICategoryService _categoryService;
         private readonly ISchoolingPartService _schoolingPartService;
+        private readonly IFileService _fileService;
 
-        public SchoolingService(CatchUpDbContext context, ICategoryService categoryService, ISchoolingPartService schoolingPartService)
+        public SchoolingService(CatchUpDbContext context, ICategoryService categoryService, ISchoolingPartService schoolingPartService, IFileService fileService)
         {
             _context = context;
             _categoryService = categoryService;
             _schoolingPartService = schoolingPartService;
+            _fileService = fileService;
         }
 
         public async Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
@@ -24,7 +26,7 @@ namespace catch_up_backend.Services
             if (schoolingPart == null || schoolingID <= 0)
                 return null;
 
-            var schoolingPartModel = new SchoolingPartModel(schoolingID, schoolingPart.Name, schoolingPart.Content);
+            var schoolingPartModel = new SchoolingPartModel(schoolingID, schoolingPart.Title, schoolingPart.Content, "",null);
             _context.SchoolingParts.Add(schoolingPartModel);
             await _context.SaveChangesAsync();
             schoolingPart.Id = schoolingPartModel.Id;
@@ -54,8 +56,10 @@ namespace catch_up_backend.Services
                 schoolingDto.CreatorId,
                 schoolingDto.CategoryId,
                 schoolingDto.Title,
-                schoolingDto.Description,
-                schoolingDto.Priority
+                schoolingDto.ShortDescription,
+                "",
+                schoolingDto.Priority,
+                null
             );
             await _context.AddAsync(schooling);
             await _context.SaveChangesAsync();
@@ -247,22 +251,6 @@ namespace catch_up_backend.Services
 
             return fullSchoolingDtos;
         }
-
-        public async Task<FullSchoolingDto> GetFull(int schoolingId)
-        {
-            var schoolingModel = await _context.Schoolings.FindAsync(schoolingId);
-            if(schoolingModel == null)
-                return null;
-
-            var schooling = new SchoolingDto(schoolingModel);
-
-            var category = await _categoryService.GetActiveCategory(schooling.CategoryId);
-
-            var schoolingParts = await _schoolingPartService.GetSchoolingParts(schooling.Id);
-
-            return new FullSchoolingDto(schooling, category, schoolingParts);
-        }
-
         public async Task<List<int>> GetUserSchoolingsID(Guid userId)
         {
             if (await _context.Users.FindAsync(userId) == null)
@@ -283,12 +271,41 @@ namespace catch_up_backend.Services
             if(!await _categoryService.IsActive(existingSchooling.CategoryId))
                 return false;
             existingSchooling.Title = schoolingDto.Title;
-            existingSchooling.Description = schoolingDto.Description;
+            existingSchooling.ShortDescription = schoolingDto.ShortDescription;
             existingSchooling.Priority = schoolingDto.Priority;
             existingSchooling.CategoryId = schoolingDto.CategoryId;
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        //
+        public async Task<SchoolingDto> GetById(int schoolingId)
+        {
+            var schoolingModel = await _context.Schoolings.FindAsync(schoolingId);
+            if (schoolingModel == null)
+                return null;
+
+            var schooling = new SchoolingDto(schoolingModel);
+            
+            schooling.SchoolingPartProgressBar = await _schoolingPartService.GetSchoolingPartStatus(schoolingId);
+
+            if (schoolingModel.IconFileId != null)
+                schooling.IconFile = await _fileService.GetById((int)schoolingModel.IconFileId);
+
+            return schooling;
+        }
+        public async Task<SchoolingDto> GetById(int schoolingId, Guid userId)
+        {
+            var schoolingModel = await _context.Schoolings.FindAsync(schoolingId);
+            if (schoolingModel == null)
+                return null;
+            var schooling = new SchoolingDto(schoolingModel);
+            schooling.SchoolingPartProgressBar = await _schoolingPartService.GetUserSchoolingPartStatus(schoolingId, userId);
+
+            if (schoolingModel.IconFileId != null)
+                schooling.IconFile = await _fileService.GetById((int)schoolingModel.IconFileId);
+            return schooling;
         }
     }
 }

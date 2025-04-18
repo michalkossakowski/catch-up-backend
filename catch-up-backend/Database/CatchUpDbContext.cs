@@ -32,6 +32,7 @@ namespace catch_up_backend.Database
         public DbSet<SchoolingModel> Schoolings { get; set; }
         public DbSet<SchoolingPartModel> SchoolingParts { get; set; }
         public DbSet<SchoolingUserModel> SchoolingsUsers { get; set; }
+        public DbSet<SchoolingUserPartModel> SchoolingUserParts { get; set; }
         public DbSet<TaskContentModel> TaskContents { get; set; }
         public DbSet<TaskPresetModel> TaskPresets { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
@@ -70,12 +71,6 @@ namespace catch_up_backend.Database
                 .HasOne<MaterialsModel>()
                 .WithMany()
                 .HasForeignKey(x => x.MaterialId);
-
-            /*//FileModel One To Many
-            modelBuilder.Entity<FileModel>()
-                .HasOne<MaterialsModel>()
-                .WithMany()
-                .HasForeignKey(x => x.MaterialsId);*/
 
             //FileInMaterial Many To Many
             modelBuilder.Entity<FileInMaterial>()
@@ -191,6 +186,13 @@ namespace catch_up_backend.Database
                 .HasOne<UserModel>()
                 .WithMany()
                 .HasForeignKey(x => x.CreatorId);
+
+            //SchoolingModel One To Many
+            modelBuilder.Entity<SchoolingModel>()
+                .HasOne<FileModel>()
+                .WithMany()
+                .HasForeignKey(x => x.IconFileId);
+
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()
                 .HasOne<CategoryModel>()
@@ -203,9 +205,13 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.SchoolingId);
 
+            //SchoolingModel One To One
+            modelBuilder.Entity<SchoolingPartModel>()
+                .HasOne<FileModel>()
+                .WithMany()
+                .HasForeignKey(x => x.IconFileId);
+
             //SchoolingUserModel Many To Many
-            modelBuilder.Entity<SchoolingUserModel>()
-                .HasKey(x => new { x.NewbieId, x.SchoolingId });
             modelBuilder.Entity<SchoolingUserModel>()
                 .HasOne<UserModel>()
                 .WithMany()
@@ -216,6 +222,22 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.SchoolingId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //SchoolingUserPartModel Many To Many
+            modelBuilder.Entity<SchoolingUserPartModel>()
+                .HasKey(sup => new {sup.SchoolingUserId, sup.SchoolingPartId});
+
+            //SchoolingUserPartModel One To Many
+            modelBuilder.Entity<SchoolingUserPartModel>()
+                .HasOne<SchoolingUserModel>()
+                .WithMany()
+                .HasForeignKey(sup => sup.SchoolingUserId);
+
+            //SchoolingUserPartModel One To Many
+            modelBuilder.Entity<SchoolingUserPartModel>()
+                .HasOne<SchoolingPartModel>()
+                .WithMany()
+                .HasForeignKey(sup => sup.SchoolingPartId);
 
             //TaskContentModel One To Many
             modelBuilder.Entity<TaskContentModel>()
