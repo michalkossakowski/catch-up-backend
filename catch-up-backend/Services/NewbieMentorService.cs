@@ -13,10 +13,12 @@ public class NewbieMentorService : INewbieMentorService
 {
     private readonly CatchUpDbContext _context;
     private readonly EmailController emailController;
-    public NewbieMentorService(CatchUpDbContext context)
+    private readonly INotificationService _notificationService;
+    public NewbieMentorService(CatchUpDbContext context, INotificationService notificationService)
     {
         _context = context;
         emailController = new EmailController();
+        _notificationService = notificationService;
     }
 
     public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
@@ -43,6 +45,20 @@ public class NewbieMentorService : INewbieMentorService
                     "Nowe Przypisanie",
                     $"Witaj {mentor.Name} {mentor.Surname}! \nW systemie został Ci przypisany nowy newbie {newbie.Name} {newbie.Surname}"
                 ));
+                var notificationNewbie = new NotificationModel(
+                    newbieId,
+                    "Nowe Przypisanie",
+                    $"Witaj {newbie.Name} {newbie.Surname}! \nW systemie został Ci przypisany nowy mentor {mentor.Name} {mentor.Surname}",
+                    $"/newbieMentor/profile/{newbie.Id}"
+                );
+                var notificationMentor = new NotificationModel(
+                    mentorId,
+                    "Nowe Przypisanie",
+                    $"Witaj {mentor.Name} {mentor.Surname}! \nW systemie został Ci przypisany nowy newbie {newbie.Name} {newbie.Surname}",
+                    $"/profile/{mentor.Id}"
+                );
+                await _notificationService.AddNotification(notificationNewbie, newbieId);
+                await _notificationService.AddNotification(notificationMentor, mentorId);
                 if (assignment == null)
                 {
                     NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
