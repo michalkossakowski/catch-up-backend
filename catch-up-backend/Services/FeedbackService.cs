@@ -236,15 +236,15 @@ namespace catch_up_backend.Services
                         }
                         return task?.Title ?? "Removed";
 
-                    case ResourceTypeEnum.Schooling:
-                        Console.WriteLine(resourceId.Value);
-                        var schooling = await _schoolingService.GetFull((int)resourceId);
-                        Console.WriteLine(schooling == null ? $"Schooling not found for ResourceId: {resourceId.Value}" : $"Schooling found: {schooling?.Schooling?.Title}");
-                        if (schooling == null)
-                        {
-                            Console.WriteLine($"Schooling not found for ResourceId: {resourceId.Value}");
-                        }
-                        return schooling?.Schooling?.Title ?? "Removed";
+                    //case ResourceTypeEnum.Schooling:
+                    //    Console.WriteLine(resourceId.Value);
+                    //    var schooling = await _schoolingService.GetFull((int)resourceId);
+                    //    Console.WriteLine(schooling == null ? $"Schooling not found for ResourceId: {resourceId.Value}" : $"Schooling found: {schooling?.Schooling?.Title}");
+                    //    if (schooling == null)
+                    //    {
+                    //        Console.WriteLine($"Schooling not found for ResourceId: {resourceId.Value}");
+                    //    }
+                    //    return schooling?.Schooling?.Title ?? "Removed";
 
                     default:
                         return "Removed";

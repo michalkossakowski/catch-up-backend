@@ -6,6 +6,8 @@ namespace catch_up_backend.Models
 {
     public class SchoolingUserModel
     {
+        [Key]
+        public int Id { get; set; }
         [ForeignKey("NewbieId")]
         public Guid NewbieId { get; set; }
         [ForeignKey("SchoolingId")]

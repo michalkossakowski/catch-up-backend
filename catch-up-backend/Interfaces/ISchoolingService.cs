@@ -4,7 +4,8 @@ namespace catch_up_backend.Interfaces
 {
     public interface ISchoolingService
     {
-        public Task<FullSchoolingDto> GetFull(int schoolingId);
+        public Task<SchoolingDto> GetById(int schoolingId);
+        public Task<SchoolingDto> GetById(int schoolingId, Guid userId);
         public Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto);
         public Task<List<FullSchoolingDto>> GetAllFull();
         public Task<bool> Edit(FullSchoolingDto fullSchoolingDto);
