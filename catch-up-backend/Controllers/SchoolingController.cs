@@ -60,7 +60,14 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = "Schooling part state changed successfully." })
                 : NotFound(new { message = "Schooling part not found." });
         }
-
+        [HttpPut]
+        [Route("EditSchoolingPart")]
+        public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartUpdateDto schoolingPartDto)
+        {
+            return await _schoolingPartService.EditSchoolingPart(schoolingPartDto)
+                ? Ok(new { message = "Schooling updated successfully." })
+                : NotFound(new { message = "Schooling not found." });
+        }
 
         //Change
         [HttpGet]
@@ -111,17 +118,7 @@ namespace catch_up_backend.Controllers
             return await _schoolingService.EditSchooling(schoolingDto)
                 ? Ok(new { message = "Schooling updated successfully." })
                 : NotFound(new { message = "Schooling not found." });
-        }
-
-        [HttpPut]
-        [Route("EditSchoolingPart")]
-        public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartDto schoolingPartDto)
-        {
-            return await _schoolingPartService.EditSchoolingPart(schoolingPartDto)
-                ? Ok(new { message = "Schooling updated successfully." })
-                : NotFound(new { message = "Schooling not found." });
-        }
-       
+        }       
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] SchoolingDto schoolingDto)

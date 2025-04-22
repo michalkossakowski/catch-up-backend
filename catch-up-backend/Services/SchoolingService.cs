@@ -21,7 +21,7 @@ namespace catch_up_backend.Services
             _fileService = fileService;
         }
 
-        public async Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
+/*        public async Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
         {
             if (schoolingPart == null || schoolingID <= 0)
                 return null;
@@ -41,7 +41,7 @@ namespace catch_up_backend.Services
                 await _context.SaveChangesAsync();
             }
             return schoolingPart;
-        }
+        }*/
 
         public async Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto)
         {
@@ -306,6 +306,11 @@ namespace catch_up_backend.Services
             if (schoolingModel.IconFileId != null)
                 schooling.IconFile = await _fileService.GetById((int)schoolingModel.IconFileId);
             return schooling;
+        }
+
+        public Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID)
+        {
+            throw new NotImplementedException();
         }
     }
 }
