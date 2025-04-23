@@ -48,14 +48,12 @@ namespace catch_up_backend.Services
                 return null;
             try
             {
-                roadMap.NewbieId = newRoadMap.NewbieId;
-                roadMap.CreatorId = newRoadMap.CreatorId;
                 roadMap.Title = newRoadMap.Title ?? "";
                 roadMap.Description = newRoadMap.Description ?? "";
-                roadMap.AssignDate = newRoadMap.AssignDate ?? DateTime.Now;
-                roadMap.FinishDate = newRoadMap.FinishDate;
+
                 _context.RoadMaps.Update(roadMap);
                 await _context.SaveChangesAsync();
+
                 newRoadMap.Id = roadMap.Id;
             }
             catch (Exception e)
@@ -65,7 +63,7 @@ namespace catch_up_backend.Services
             return newRoadMap;
         }
 
-        public async Task<bool> DeleteAsync(int roadMapId)
+        public async Task<bool> DeleteAsync(int roadMapId, bool deleteTasksInside = false)
         {
             var roadMap = await _context.RoadMaps.FindAsync(roadMapId);
             if (roadMap == null)

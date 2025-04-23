@@ -39,10 +39,10 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{roadMapId:int}")]
-        public async Task<IActionResult> Delete(int roadMapId)
+        [Route("Delete/{roadMapId:int}/{deleteTasksInside:bool}")]
+        public async Task<IActionResult> Delete(int roadMapId, bool deleteTasksInside = false)
         {
-            return await _roadMapService.DeleteAsync(roadMapId) 
+            return await _roadMapService.DeleteAsync(roadMapId, deleteTasksInside) 
                 ? Ok(new { message = "RoadMap deleted", roadMap = roadMapId })
                 : NotFound(new { message = "RoadMap not found", roadMap = roadMapId });
         }
@@ -62,8 +62,8 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetByNewbieId(Guid newbieId)
         {
             var roadMaps = await _roadMapService.GetByNewbieIdAsync(newbieId);
-            if (!roadMaps.Any())
-                return NotFound(new { message = $"There is no any RoadMaps for Newbie: '{newbieId}'" });
+            if (roadMaps == null || !roadMaps.Any())
+                return Ok(new List<RoadMapDto>());
             return Ok(roadMaps);
         }
 
@@ -74,7 +74,7 @@ namespace catch_up_backend.Controllers
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
             var roadMaps = await _roadMapService.GetByNewbieIdAsync(userId);
-            if (!roadMaps.Any())
+            if (roadMaps == null || !roadMaps.Any())
                 return Ok(new List<RoadMapDto>());
             return Ok(roadMaps);
         }

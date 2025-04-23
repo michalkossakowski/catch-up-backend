@@ -9,6 +9,7 @@ namespace catch_up_backend.Interfaces
         Task Delete(Guid userId);
         Task<UserDto> GetById(Guid userId);
         Task<List<UserModel>> GetAll();
+        Task<List<UserModel>> GetMyNewbies(Guid mentorId);
         Task<string> GetRole(Guid userId);
         Task<List<UserModel>> GetMentorAdmin();
         Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase);

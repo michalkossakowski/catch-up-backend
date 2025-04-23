@@ -1,6 +1,7 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
+using catch_up_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
@@ -36,10 +37,10 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{roadMapPointId:int}")]
-        public async Task<IActionResult> Delete(int roadMapPointId)
+        [Route("Delete/{roadMapPointId:int}/{deleteTasksInside:bool}")]
+        public async Task<IActionResult> Delete(int roadMapPointId, bool deleteTasksInside = false)
         {
-            return await _roadMapPointService.DeleteAsync(roadMapPointId) 
+            return await _roadMapPointService.DeleteAsync(roadMapPointId, deleteTasksInside) 
                 ? Ok(new { message = "RoadMapPoint deleted", roadMap = roadMapPointId })
                 : NotFound(new { message = "RoadMapPoint not found", roadMap = roadMapPointId });
         }
