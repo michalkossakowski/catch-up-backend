@@ -6,6 +6,7 @@ using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace catch_up_backend.Services
 {
@@ -72,6 +73,40 @@ namespace catch_up_backend.Services
             {
                 roadMap.State = StateEnum.Deleted;
                 _context.RoadMaps.Update(roadMap);
+               
+                var roadMapPoints = await _context.RoadMapPoints
+                    .Where(t => t.RoadMapId == roadMapId
+                        && t.State == StateEnum.Active).ToListAsync();
+
+                foreach(var roadMapPoint in roadMapPoints)
+                {
+
+                    var roadMapPointTasks = await _context.Tasks
+                    .Where(t => t.RoadMapPointId == roadMapPoint.Id
+                        && t.State == StateEnum.Active).ToListAsync();
+
+                    roadMapPoint.State = StateEnum.Deleted;
+
+                    _context.RoadMapPoints.Update(roadMapPoint);
+
+                    if (deleteTasksInside)
+                    {
+                        foreach (var task in roadMapPointTasks)
+                        {
+                            task.State = StateEnum.Deleted;
+                            _context.Tasks.Update(task);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var task in roadMapPointTasks)
+                        {
+                            task.RoadMapPointId = null;
+                            _context.Tasks.Update(task);
+                        }
+                    }
+                }
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

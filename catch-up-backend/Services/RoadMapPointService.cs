@@ -75,9 +75,9 @@ namespace catch_up_backend.Services
 
                 if (deleteTasksInside)
                 {
-                    foreach(var task in roadMapPointTasks)
+                    foreach (var task in roadMapPointTasks)
                     {
-                        task.RoadMapPointId = null;
+                        task.State = StateEnum.Deleted;
                         _context.Tasks.Update(task);
                     }
                 }
@@ -85,12 +85,14 @@ namespace catch_up_backend.Services
                 {
                     foreach (var task in roadMapPointTasks)
                     {
-                        task.State = StateEnum.Deleted;
+                        task.RoadMapPointId = null;
                         _context.Tasks.Update(task);
                     }
                 }
 
                 await _context.SaveChangesAsync();
+
+                await _roadMapService.UpdateRoadMapStatus(roadMapPoint.RoadMapId);
             }
             catch (Exception e)
             {
