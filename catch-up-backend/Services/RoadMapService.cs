@@ -184,16 +184,24 @@ namespace catch_up_backend.Services
             var roadMap = await _context.RoadMaps.FirstOrDefaultAsync(rmp => rmp.Id == roadMapId);
 
             var activePoints = await _context.RoadMapPoints
-                .Where(rmp => rmp.State == StateEnum.Active)
+                .Where(rmp => rmp.State == StateEnum.Active && rmp.RoadMapId == roadMapId)
                 .ToListAsync() 
                 ?? new List<RoadMapPointModel>();
 
             var finishedPoints = activePoints
-                .Where(rmp => rmp.Status == StatusEnum.Done)
+                .Where(rmp => rmp.Status == StatusEnum.Done && rmp.RoadMapId == roadMapId)
                 .ToList() 
                 ?? new List<RoadMapPointModel>();
 
-            roadMap.Progress = Math.Round((decimal)finishedPoints.Count / activePoints.Count * 100, 2);
+            if(activePoints.Count > 0)
+            {
+                roadMap.Progress = Math.Round((decimal)finishedPoints.Count / activePoints.Count * 100, 2);
+            }
+            else
+            {
+                roadMap.Progress = (decimal)0.00;
+            }
+
 
             if (finishedPoints.Count == 0)
             {
