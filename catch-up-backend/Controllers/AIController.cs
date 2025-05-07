@@ -17,9 +17,9 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("GetAIChatResponse")]
-        public async Task<IActionResult> GetAIChatResponse([FromBody] string message)
+        public async Task<IActionResult> GetAIChatResponse([FromBody] AIChatDto aiChatDto)
         {
-            var result = await _aiService.GenerateAIChatResponse(message);
+            var result = await _aiService.GenerateAIChatResponse(aiChatDto);
 
             return string.IsNullOrEmpty(result)
                 ? StatusCode(500, new { message = "Chat response error, try again later." })

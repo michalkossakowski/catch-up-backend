@@ -1,4 +1,5 @@
-﻿using catch_up_backend.Interfaces;
+﻿using catch_up_backend.Dtos;
+using catch_up_backend.Interfaces;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -14,19 +15,20 @@ namespace catch_up_backend.Services
         }
 
 
-        public async Task<string> GenerateAIChatResponse(string message)
+        public async Task<string> GenerateAIChatResponse(AIChatDto aiChatDto)
         {
             if (string.IsNullOrEmpty(_geminiApiUrl))
             {
-                return "AI integration is not configured ask admin for help.";
+                return "AI integration is not configured ask Admin for help.";
             }
 
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var additionalPrompt = "Generate response in the same language as request. In response use cool young people language. The request: ";
-                    var requestText = additionalPrompt + message;
+                    var requestText = $"Generate response in the same language as request. " +
+                        $"Additional prompt preferences: {aiChatDto.AdditionalPromptPreferences}. " +
+                        $"The request to process: '{aiChatDto.Message}'";
 
                     var requestBody = new
                     {

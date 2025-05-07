@@ -2,6 +2,7 @@
 {
     public class AIChatDto
     {
-        string message;
+        public string Message { get; set; }
+        public string AdditionalPromptPreferences { get; set; }
     }
 }
