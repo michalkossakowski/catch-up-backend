@@ -30,21 +30,39 @@ public class EventController : ControllerBase
     }
 
     [HttpPost("AddEventByPosition")]
-    public async Task<ActionResult> AddEventByPosition(Guid ownerId, string title, string description, string position, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventByPosition(
+    [FromQuery] Guid ownerId,
+    [FromQuery] string title,
+    [FromQuery] string description,
+    [FromQuery] string position,
+    [FromQuery] DateTime startDate,
+    [FromQuery] DateTime endDate)
     {
         await _eventService.AddEventByPosition(ownerId, title, description, position, startDate, endDate);
         return Ok();
     }
 
     [HttpPost("AddEventByType")]
-    public async Task<ActionResult> AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventByType(
+    [FromQuery] Guid ownerId,
+    [FromQuery] string title,
+    [FromQuery] string description,
+    [FromQuery] string type,
+    [FromQuery] DateTime startDate,
+    [FromQuery] DateTime endDate)
     {
         await _eventService.AddEventByType(ownerId, title, description, type, startDate, endDate);
         return Ok();
     }
 
+
     [HttpPost("AddEventForAllGroups")]
-    public async Task<ActionResult> AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult> AddEventForAllGroups(
+    [FromQuery] Guid ownerId,
+    [FromQuery] string title,
+    [FromQuery] string description,
+    [FromQuery] DateTime startDate,
+    [FromQuery] DateTime endDate)
     {
         await _eventService.AddEventForAllGroups(ownerId, title, description, startDate, endDate);
         return Ok();
