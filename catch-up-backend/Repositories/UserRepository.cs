@@ -120,6 +120,7 @@ namespace catch_up_backend.Repositories
                     Surname = u.Surname,
                     Email = u.Email,
                     Position = u.Position,
+                    Type = u.Type,
                     AvatarId = u.AvatarId
                 })
                 .FirstOrDefaultAsync();

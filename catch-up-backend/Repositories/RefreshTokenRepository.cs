@@ -26,7 +26,12 @@ namespace catch_up_backend.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RefreshTokenModel> GetByUserId(string refreshToken, Guid userId)
+        public async Task<RefreshTokenModel> GetByUserId(Guid userId)
+        {
+            return await _context.RefreshTokens.FirstOrDefaultAsync(t => t.UserId == userId);
+        }
+
+        public async Task<RefreshTokenModel> DoesTokenExist(string refreshToken, Guid userId)
         {
             return await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken && t.UserId == userId);
         }
