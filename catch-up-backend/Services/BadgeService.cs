@@ -23,7 +23,6 @@ namespace catch_up_backend.Services
                 newBadge.Name ?? "",
                 newBadge.Description ?? "",
                 newBadge.IconId,
-                //newBadge.IconSource ?? "",
                 newBadge.Count,
                 newBadge.CountType);
                 await _context.AddAsync(badge);
@@ -44,7 +43,6 @@ namespace catch_up_backend.Services
                 badge.Name = newBadge.Name;
                 badge.Description = newBadge.Description;
                 badge.IconId = newBadge.IconId;
-                //badge.IconSource = newBadge.IconSource;
                 badge.Count = newBadge.Count;
                 badge.CountType = newBadge.CountType;
                 _context.Badges.Update(badge);
