@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using Microsoft.AspNetCore.Http;
@@ -58,8 +59,6 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var badge = await _badgeService.GetAll();
-            if (!badge.Any())
-                return NotFound(new { message = "No Badges found" });
             return Ok(badge);
         }
 
@@ -79,12 +78,11 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetByMentorId/{userId:guid}")]
-        public async Task<IActionResult> GetByMentorId(Guid userId)
+        [Route("GetByMentorId")]
+        public async Task<IActionResult> GetByMentorId()
         {
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
             var mentorBadges = await _badgeService.GetByMentorId(userId);
-            if (mentorBadges == null || !mentorBadges.Any())
-                return NotFound(new { message = $"Mentor with id: {userId} has no assigned badges" });
             return Ok(mentorBadges);
         }
     }

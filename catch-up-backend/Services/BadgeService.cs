@@ -22,7 +22,8 @@ namespace catch_up_backend.Services
                 var badge = new BadgeModel(
                 newBadge.Name ?? "",
                 newBadge.Description ?? "",
-                newBadge.IconSource ?? "",
+                newBadge.IconId,
+                //newBadge.IconSource ?? "",
                 newBadge.Count,
                 newBadge.CountType);
                 await _context.AddAsync(badge);
@@ -42,7 +43,8 @@ namespace catch_up_backend.Services
             try {
                 badge.Name = newBadge.Name;
                 badge.Description = newBadge.Description;
-                badge.IconSource = newBadge.IconSource;
+                badge.IconId = newBadge.IconId;
+                //badge.IconSource = newBadge.IconSource;
                 badge.Count = newBadge.Count;
                 badge.CountType = newBadge.CountType;
                 _context.Badges.Update(badge);
@@ -77,7 +79,7 @@ namespace catch_up_backend.Services
                     Id = b.Id,
                     Name = b.Name,
                     Description = b.Description,
-                    IconSource = b.IconSource,
+                    IconId = b.IconId,
                     Count = b.Count,
                     CountType = b.CountType
                 }).FirstOrDefaultAsync();
@@ -93,7 +95,7 @@ namespace catch_up_backend.Services
                     Id = b.Id,
                     Name = b.Name,
                     Description = b.Description,
-                    IconSource = b.IconSource,
+                    IconId = b.IconId,
                     Count = b.Count,
                     CountType = b.CountType
                 })
