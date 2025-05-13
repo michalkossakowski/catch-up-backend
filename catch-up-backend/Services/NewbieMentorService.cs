@@ -94,28 +94,6 @@ public class NewbieMentorService : INewbieMentorService
         }
         return false;
     }
-    public async Task<bool> Archive(Guid newbieId, Guid mentorId)
-    {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId); 
-
-        if (assignment == null)
-        {
-            return false;
-        }
-        UserModel? newbie = await _context.Users.FindAsync(newbieId);
-        UserModel? mentor = await _context.Users.FindAsync(mentorId);
-        var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
-            "Archiwizacja Przypisania", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie mentor {mentor.Name} {mentor.Surname} został od Ciebie odpięty"
-            ));
-        var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(mentor.Email,
-         "Archiwizacja Przypisania", $"Witaj {mentor.Name} {mentor.Surname}! \n W systemie newbie {newbie.Name} {newbie.Surname} został od Ciebie odpięty"
-         ));
-        assignment.State = StateEnum.Archived;
-        assignment.EndDate = DateTime.Now;
-        await _context.SaveChangesAsync();
-        return true;
-    }
     public async Task<bool> Delete(Guid newbieId,Guid mentorId)
     {
         NewbieMentorModel? assignment = await _context.NewbiesMentors
@@ -171,12 +149,6 @@ public class NewbieMentorService : INewbieMentorService
         return await _context.NewbiesMentors
            .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
            .CountAsync();
-    }
-    public async Task<IEnumerable<NewbieMentorModel>> GetAllArchived()
-    {
-        return await _context.NewbiesMentors
-           .Where(a => a.State == StateEnum.Archived)
-           .ToListAsync();
     }
     public async Task<IEnumerable<NewbieMentorModel>> GetAllDeleted()
     {
