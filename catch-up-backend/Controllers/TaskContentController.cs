@@ -46,13 +46,13 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [Route("GetAll/{page}/{pageSize}")]
+        public async Task<IActionResult> GetAll(int page = 1, int pageSize = 5)
         {
-            var taskContent = await _taskContentService.GetAll();
-            if (!taskContent.Any())
+            var taskContent = await _taskContentService.GetAll(page, pageSize);
+            if (!taskContent.taskContents.Any())
                 return NotFound(new { message = "No task content found" });
-            return Ok(taskContent);
+            return Ok( new { taskContent.taskContents, taskContent.totalCount });
         }
 
         [HttpGet]

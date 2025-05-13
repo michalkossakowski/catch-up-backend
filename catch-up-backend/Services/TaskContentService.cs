@@ -80,10 +80,14 @@ namespace catch_up_backend.Services
             return true;
         }
 
-        public async Task<List<TaskContentDto>> GetAll()
+        public async Task<(List<TaskContentDto> taskContents, int totalCount)> GetAll(int page, int pageSize)
         {
-            var taskContents = await _context.TaskContents
-                .Where(tc => tc.State != StateEnum.Deleted)
+            var query = _context.TaskContents.Where(tc => tc.State != StateEnum.Deleted);
+            var totalCount = await query.CountAsync();
+
+            var taskContents = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(tc => new TaskContentDto
                 {
                     Id = tc.Id,
@@ -92,10 +96,12 @@ namespace catch_up_backend.Services
                     MaterialsId = tc.MaterialsId,
                     Title = tc.Title,
                     Description = tc.Description
-                }).ToListAsync();
+                })
+                .ToListAsync();
 
-            return taskContents;
+            return (taskContents, totalCount);
         }
+
         public async Task<TaskContentDto> GetById(int taskContentId)
         {
             var taskContent = await _context.TaskContents
