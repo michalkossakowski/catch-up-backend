@@ -69,6 +69,9 @@ namespace catch_up_backend
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
+            builder.Services.AddScoped<ITaskTimeLogService, TaskTimeLogService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
             builder.Services.AddScoped<ITaskContentService, TaskContentService>();
@@ -92,6 +95,7 @@ namespace catch_up_backend
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
             builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();
