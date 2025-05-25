@@ -14,6 +14,7 @@ public class NewbieMentorService : INewbieMentorService
     private readonly CatchUpDbContext _context;
     private readonly EmailController emailController;
     private readonly INotificationService _notificationService;
+
     public NewbieMentorService(CatchUpDbContext context, INotificationService notificationService)
     {
         _context = context;
@@ -23,227 +24,170 @@ public class NewbieMentorService : INewbieMentorService
 
     public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
     {
-        UserModel? newbie = _context.Users.FindAsync(newbieId).Result;
-        UserModel? mentor = _context.Users.FindAsync(mentorId).Result;
-        if (newbie != null && mentor != null)
+        UserModel? newbie = await _context.Users.FindAsync(newbieId);
+        UserModel? mentor = await _context.Users.FindAsync(mentorId);
+        if (newbie == null || mentor == null || newbie.Type != "Newbie" || mentor.Type != "Mentor")
         {
-            string? newbieType = newbie?.Type;
-            string? mentorType = mentor?.Type;
+            return false;
+        }
 
-            if (newbieType == "Newbie" && mentorType == "Mentor")
+        NewbieMentorModel? assignment = await _context.NewbiesMentors.FindAsync(newbieId, mentorId);
+
+        // Wysyłanie e-maili i powiadomień
+
+        Task.Run(() => emailController.SendEmail(
+            newbie.Email,
+            "New Assignment",
+            $"Hello {newbie.Name} {newbie.Surname}! \nA new mentor has been assigned to you in the system: {mentor.Name} {mentor.Surname}."
+        ));
+        Task.Run(() => emailController.SendEmail(
+            mentor.Email,
+            "New Assignment",
+            $"Hello {mentor.Name} {mentor.Surname}! \nA new newbie has been assigned to you in the system: {newbie.Name} {newbie.Surname}."
+        ));
+        await _notificationService.AddNotification(new NotificationModel(
+            newbieId,
+            "New Assignment",
+            $"Hello {newbie.Name} {newbie.Surname}! \nA new mentor has been assigned to you in the system: {mentor.Name} {mentor.Surname}.",
+            $"/newbieMentor/profile/{newbie.Id}"
+        ), newbieId);
+        await _notificationService.AddNotification(new NotificationModel(
+            mentorId,
+            "New Assignment",
+            $"Hello {mentor.Name} {mentor.Surname}! \nA new newbie has been assigned to you in the system: {newbie.Name} {newbie.Surname}.",
+            $"/profile/{mentor.Id}"
+        ), mentorId);
+
+
+
+        if (assignment == null)
+        {
+            _context.NewbiesMentors.Add(new NewbieMentorModel(newbieId, mentorId));
+        }
+        else
+        {
+            if (assignment.State == StateEnum.Deleted)
             {
-                NewbieMentorModel? assignment = await _context.NewbiesMentors
-                    .FindAsync(newbieId, mentorId);
-                var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(
+                assignment.StartDate = DateTime.Now;
+            }
+            assignment.EndDate = null;
+            assignment.State = StateEnum.Active;
+        }
+
+        // Aktualizacja licznika odznak mentora
+        mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount] = mentor.Counters.GetValueOrDefault(BadgeTypeCountEnum.AssignNewbiesCount, 0) + 1;
+        _context.Users.Update(mentor);
+        await _context.SaveChangesAsync();
+
+        await new BadgeService(_context).AssignBadgeAutomatically(
+            mentor.Id,
+            BadgeTypeCountEnum.AssignNewbiesCount,
+            mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]
+        );
+
+        return true;
+    }
+
+    public async Task<bool> SetAssignmentState(Guid newbieId, Guid mentorId, StateEnum state)
+    {
+        NewbieMentorModel? assignment = await _context.NewbiesMentors.FindAsync(newbieId, mentorId);
+        if (assignment == null)
+        {
+            return false;
+        }
+
+        UserModel? newbie = await _context.Users.FindAsync(newbieId);
+        UserModel? mentor = await _context.Users.FindAsync(mentorId);
+
+        await Task.WhenAll(
+            Task.Run(() => emailController.SendEmail(
                 newbie.Email,
-                "Nowe Przypisanie",
-                $"Witaj {newbie.Name} {newbie.Surname}! \nW systemie został Ci przypisany nowy mentor {mentor.Name} {mentor.Surname}"
-                ));
+                $"{state} Assign",
+                $"Hello {newbie.Name} {newbie.Surname}! \n Mentor {mentor.Name} {mentor.Surname} has been unassign from you on system"
+            )),
+            Task.Run(() => emailController.SendEmail(
+                mentor.Email,
+                $"{state} Assign",
+                $"Hello {mentor.Name} {mentor.Surname}! \n Newbie {newbie.Name} {newbie.Surname} has been unassign from you on system"
+            ))
+        );
 
-                var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(
-                    mentor.Email,
-                    "Nowe Przypisanie",
-                    $"Witaj {mentor.Name} {mentor.Surname}! \nW systemie został Ci przypisany nowy newbie {newbie.Name} {newbie.Surname}"
-                ));
-                var notificationNewbie = new NotificationModel(
-                    newbieId,
-                    "Nowe Przypisanie",
-                    $"Witaj {newbie.Name} {newbie.Surname}! \nW systemie został Ci przypisany nowy mentor {mentor.Name} {mentor.Surname}",
-                    $"/newbieMentor/profile/{newbie.Id}"
-                );
-                var notificationMentor = new NotificationModel(
-                    mentorId,
-                    "Nowe Przypisanie",
-                    $"Witaj {mentor.Name} {mentor.Surname}! \nW systemie został Ci przypisany nowy newbie {newbie.Name} {newbie.Surname}",
-                    $"/profile/{mentor.Id}"
-                );
-                await _notificationService.AddNotification(notificationNewbie, newbieId);
-                await _notificationService.AddNotification(notificationMentor, mentorId);
-                if (assignment == null)
+        assignment.State = state;
+        assignment.EndDate = DateTime.Now;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IEnumerable<UserModel>> GetAssignments(Guid id, RoleEnum role)
+    {
+        List<Guid> relatedIds;
+        if (role == RoleEnum.Mentor)
+        {
+            relatedIds = await _context.NewbiesMentors
+                .Where(a => a.State == StateEnum.Active && a.MentorId == id)
+                .Select(a => a.NewbieId)
+                .ToListAsync();
+        }
+        else
+        {
+            relatedIds = await _context.NewbiesMentors
+                .Where(a => a.State == StateEnum.Active && a.NewbieId == id)
+                .Select(a => a.MentorId)
+                .ToListAsync();
+        }
+
+        var assignments = await _context.Users
+            .Where(u => relatedIds.Contains(u.Id))
+            .ToListAsync();
+
+        return assignments;
+    }
+
+    public async Task<IEnumerable<UserModel>> GetUsers(RoleEnum role, bool? assigned, Guid? relatedId)
+    {
+        var query = _context.Users
+        .Where(u => u.State == StateEnum.Active &&
+        u.Type == role.ToString());
+
+
+        if (assigned.HasValue)
+        {
+            if (assigned.Value)
+            {
+                query = query.Where(u => _context.NewbiesMentors
+                    .Any(nm => nm.State == StateEnum.Active && (role == RoleEnum.Mentor ? nm.MentorId : nm.NewbieId) == u.Id));
+            }
+            else
+            {
+                if (relatedId.HasValue)
                 {
-                    NewbieMentorModel newAssignment = new NewbieMentorModel(newbieId, mentorId);
-                    _context.NewbiesMentors.Add(newAssignment);
+                    query = query.Where(u => !_context.NewbiesMentors
+                        .Any(nm => nm.State == StateEnum.Active && (role == RoleEnum.Mentor ? nm.MentorId : nm.NewbieId) == u.Id && (role == RoleEnum.Mentor ? nm.NewbieId : nm.MentorId) == relatedId));
                 }
                 else
                 {
-                    if (assignment.State == StateEnum.Deleted) //jeżeli jest usunięty to zliczanie od początku liczymy, jak zaarchiwizowany to usuwamy tylko końcową, jakby kontynuacja
-                    {
-                        assignment.StartDate = DateTime.Now;
-                    }
-                    assignment.EndDate = null;
-                    assignment.State = StateEnum.Active;
+                    query = query.Where(u => !_context.NewbiesMentors
+                        .Any(nm => nm.State == StateEnum.Active && (role == RoleEnum.Mentor ? nm.MentorId : nm.NewbieId) == u.Id));
                 }
-                if (mentor.Counters.ContainsKey(BadgeTypeCountEnum.AssignNewbiesCount))
-                {
-                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]++;
-                }
-                else
-                {
-                    mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount] = 1;
-                }
-
-                _context.Users.Update(mentor);
-                await _context.SaveChangesAsync();
-                await new BadgeService(_context).AssignBadgeAutomatically(
-                mentor.Id,
-                BadgeTypeCountEnum.AssignNewbiesCount,
-                mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]
-            );
-                return true;
             }
         }
-        return false;
-    }
-    public async Task<bool> Archive(Guid newbieId, Guid mentorId)
-    {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId); 
 
-        if (assignment == null)
-        {
-            return false;
-        }
-        UserModel? newbie = await _context.Users.FindAsync(newbieId);
-        UserModel? mentor = await _context.Users.FindAsync(mentorId);
-        var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
-            "Archiwizacja Przypisania", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie mentor {mentor.Name} {mentor.Surname} został od Ciebie odpięty"
-            ));
-        var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(mentor.Email,
-         "Archiwizacja Przypisania", $"Witaj {mentor.Name} {mentor.Surname}! \n W systemie newbie {newbie.Name} {newbie.Surname} został od Ciebie odpięty"
-         ));
-        assignment.State = StateEnum.Archived;
-        assignment.EndDate = DateTime.Now;
-        await _context.SaveChangesAsync();
-        return true;
-    }
-    public async Task<bool> Delete(Guid newbieId,Guid mentorId)
-    {
-        NewbieMentorModel? assignment = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId);
-        if (assignment == null)
-        {
-            return false;
-        }
-        UserModel? newbie = await _context.Users.FindAsync(newbieId);
-        UserModel? mentor = await _context.Users.FindAsync(mentorId);
-        var sendNewbieEmailTask = Task.Run(() => emailController.SendEmail(newbie.Email,
-            "Usunięcie Przypisania", $"Witaj {newbie.Name} {newbie.Surname}! \n W systemie mentor {mentor.Name} {mentor.Surname} został od Ciebie odpięty"
-            ));
-        var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(mentor.Email,
-         "Usunięcie Przypisania", $"Witaj {mentor.Name} {mentor.Surname}! \n W systemie newbie {newbie.Name} {newbie.Surname} został od Ciebie odpięty"
-         ));
-        assignment.State= StateEnum.Deleted;
-        assignment.EndDate = DateTime.Now;
-        await _context.SaveChangesAsync();
-        return true;
-    }
-    public async Task<IEnumerable<UserModel>> GetAssignmentsByMentor(Guid mentorId)
-    {
-        List<Guid> newbieIds = await _context.NewbiesMentors
-            .Where(a => a.State == StateEnum.Active && a.MentorId == mentorId)
-            .Select(a => a.NewbieId) 
-            .ToListAsync();
-
-        return await _context.Users
-            .Where(u => newbieIds.Contains(u.Id)) 
-            .ToListAsync();
-    }
-    public async Task<int> GetNewbieCountByMentor(Guid mentorId)
-    {
-        return await _context.NewbiesMentors
-            .Where(a => a.State == StateEnum.Active && a.MentorId == mentorId)
-            .CountAsync();
+        var users = await query.ToListAsync();
+        return users;
     }
 
-    public async Task<IEnumerable<UserModel>> GetAssignmentsByNewbie(Guid newbieId)
+    public async Task<IEnumerable<NewbieMentorModel>> GetAssignmentHistory(StateEnum? state)
     {
-        List<Guid> mentorIds = await _context.NewbiesMentors
-           .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
-           .Select(a => a.MentorId)
-           .ToListAsync();
+        var query = _context.NewbiesMentors.AsQueryable();
+        if (state.HasValue)
+        {
+            query = query.Where(a => a.State == state.Value);
+        }
+        else
+        {
+            query = query.Where(a => a.State == StateEnum.Archived || a.State == StateEnum.Deleted);
+        }
 
-        return await _context.Users
-            .Where(u => mentorIds.Contains(u.Id))
-            .ToListAsync();
-    }
-    public async Task<int> GetMentorsCountByNewbie(Guid newbieId)
-    {
-        return await _context.NewbiesMentors
-           .Where(a => a.State == StateEnum.Active && a.NewbieId == newbieId)
-           .CountAsync();
-    }
-    public async Task<IEnumerable<NewbieMentorModel>> GetAllArchived()
-    {
-        return await _context.NewbiesMentors
-           .Where(a => a.State == StateEnum.Archived)
-           .ToListAsync();
-    }
-    public async Task<IEnumerable<NewbieMentorModel>> GetAllDeleted()
-    {
-        return await _context.NewbiesMentors
-           .Where(a => a.State == StateEnum.Deleted)
-           .ToListAsync();
-    }
-    public async Task<IEnumerable<UserModel>> GetAllMentors()
-    {
-        return await _context.Users
-            .Where(a => a.State == StateEnum.Active && a.Type == "Mentor")
-            .ToListAsync();
-    }
-    public async Task<IEnumerable<UserModel>> GetAllNewbies()
-    {
-        return await _context.Users
-            .Where(a => a.State == StateEnum.Active && a.Type == "Newbie")
-            .ToListAsync();
-    }
-    public async Task<IEnumerable<UserModel>> GetAllUnassignedNewbies(Guid mentorId)
-    {
-        return await _context.Users
-            .Where(user =>
-                user.State == StateEnum.Active &&
-                user.Type == "Newbie" &&
-                !_context.NewbiesMentors
-                    .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == user.Id && nm.MentorId == mentorId))
-            .ToListAsync();
-    }
-    public async Task<IEnumerable<UserModel>> GetAllUnassignedMentors(Guid newbieId)
-    {
-        return await _context.Users
-           .Where(user =>
-               user.State == StateEnum.Active &&
-               user.Type == "Mentor" &&
-               !_context.NewbiesMentors
-                   .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == newbieId && nm.MentorId == user.Id))
-           .ToListAsync();
-    }
-    public async Task<IEnumerable<UserModel>> GetAllUnassignedNewbies()
-    {
-        return await _context.Users
-            .Where(user =>
-                user.State == StateEnum.Active &&
-                user.Type == "Newbie" &&
-                !_context.NewbiesMentors
-                    .Any(nm => nm.State == StateEnum.Active && nm.NewbieId == user.Id))
-            .ToListAsync();
-    }
-    public async Task<string> GetDateStart(Guid newbieId, Guid mentorId)
-    {
-         NewbieMentorModel? newbieMentor= await _context.NewbiesMentors
-             .FindAsync(newbieId, mentorId);
-        if(newbieMentor == null)
-        {
-            return null;
-        }
-        return newbieMentor.StartDate.ToString();
-    }
-    public async Task<string> GetDateEnd(Guid newbieId, Guid mentorId)
-    {
-        NewbieMentorModel? newbieMentor = await _context.NewbiesMentors
-            .FindAsync(newbieId, mentorId);
-        if (newbieMentor == null)
-        {
-            return null;
-        }
-        return newbieMentor.EndDate.ToString();
+        return await query.ToListAsync();
     }
 }

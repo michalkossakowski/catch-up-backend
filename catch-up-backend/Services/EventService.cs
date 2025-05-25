@@ -107,8 +107,7 @@ public class EventService : IEventService
             var notificationReceiver = new NotificationModel(
                 receiver.Id,
                 "Nowe Wydarzenie",
-                $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}",
-                "kot"
+                $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}", null
             );
             await _notificationService.AddNotification(notificationReceiver, receiver.Id);
         }
