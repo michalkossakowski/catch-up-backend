@@ -12,9 +12,15 @@ namespace catch_up_backend.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        public TaskController(ITaskService taskService)
+        private readonly ITaskCommentService _taskCommentService;
+        private readonly ITaskTimeLogService _taskTimeLogService;
+        private readonly ICompanySettingsService _companySettingsService;
+        public TaskController(ITaskService taskService, ITaskCommentService taskCommentService, ITaskTimeLogService taskTimeLogService, ICompanySettingsService companySettingsService)
         {
             _taskService = taskService;
+            _taskCommentService = taskCommentService;
+            _taskTimeLogService = taskTimeLogService;
+            _companySettingsService = companySettingsService;
         }
 
         [HttpPost]
@@ -192,6 +198,25 @@ namespace catch_up_backend.Controllers
             return task != null
                 ? Ok(new { message = $"Task rate setted to {task.SpendTime}", task = task })
                 : StatusCode(500, new { message = "Task rate set error", taskId = taskId });
+        }
+        [HttpGet]
+        [Route("GetFullTaskData/{taskId:int}")]
+        public async Task<IActionResult> GetFullTaskData(int taskId)
+        {
+            var fullTaskResult = await _taskService.GetFullTaskByIdAsync(taskId);
+            if (fullTaskResult == null)
+                return NotFound(new { message = $"Task with id: [{taskId}] not found" });
+            var commentResult = await _taskCommentService.GetByTaskIdAsync(taskId,1,5);
+            
+            var settings = await _companySettingsService.GetCompanySettings();
+            var isTimeLogEnabled = settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == true;
+            if (!isTimeLogEnabled)
+            {
+                return Ok(new { fullTaskResult, commentResult.comments, commentResult.totalCount, isTimeLogEnabled });
+            }
+            var timeLogResult = await _taskTimeLogService.GetByTaskIdAsync(taskId, 1, 5);
+
+            return Ok(new {fullTask = fullTaskResult, comments = commentResult.comments, commentsTotalCount = commentResult.totalCount, timelogs = timeLogResult.timeLogs, timeLogTotalCount = timeLogResult.totalCount, hours = timeLogResult.hours, minutes = timeLogResult.minutes, isTimeLogEnabled });
         }
     }
 }

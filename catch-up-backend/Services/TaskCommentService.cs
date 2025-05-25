@@ -1,19 +1,27 @@
-﻿using catch_up_backend.Database;
+﻿using Azure.Core;
+using catch_up_backend.Database;
 using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
+using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace catch_up_backend.Services
 {
     public class TaskCommentService : ITaskCommentService
     {
+        private readonly IUserRepository _userRepository;
         private readonly CatchUpDbContext _context;
-        public TaskCommentService(CatchUpDbContext context)
+        public TaskCommentService(CatchUpDbContext context, IUserRepository userRepository)
         {
             _context = context;
+            this._userRepository = userRepository;
         }
 
         public async Task<TaskCommentDto> AddAsync(TaskCommentDto newTaskComment)
@@ -47,7 +55,7 @@ namespace catch_up_backend.Services
                 comment.State = StateEnum.Deleted;
                 _context.TaskComments.Update(comment);
                 _context.SaveChanges();
-                
+
             }
             catch (Exception e)
             {
@@ -78,19 +86,58 @@ namespace catch_up_backend.Services
             }
             return newTaskComment;
         }
+        public async Task<TaskCommentDto> PatchAsnc(int id, JsonPatchDocument<TaskCommentModel> patchDoc)
+        {
+            try
+            {
+                var comment = await _context.TaskComments.FindAsync(id);
+                if (comment == null)
+                {
+                    return null;
+                }
+                var restrictedFields = new[] { "/id", "/taskid", "/creatorid", "/creationdate", "/modificationdate" };
+                var allowedOperations = patchDoc.Operations
+                    .Where(op => !restrictedFields.Contains(op.path.ToLower()))
+                    .ToList();
+                var filteredPatchDoc = new JsonPatchDocument<TaskCommentModel>(allowedOperations, patchDoc.ContractResolver);
 
+                filteredPatchDoc.ApplyTo(comment);
+                comment.ModificationDate = DateTime.Now;
+                _context.TaskComments.Update(comment);
+                await _context.SaveChangesAsync();
+                return new TaskCommentDto(comment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
         public async Task<List<TaskCommentDto>> GetAllAsync()
         {
-            return await _context.TaskComments
+            var comments = await _context.TaskComments
                 .Where(x => x.State == StateEnum.Active)
                 .Select(x => new TaskCommentDto(x)).ToListAsync();
+
+            foreach (var comment in comments)
+            {
+                var user = await _userRepository.GetById(comment.CreatorId);
+                comment.CreatorName = user.Name + " " + user.Surname;
+            }
+            return comments;
         }
 
         public async Task<TaskCommentDto> GetByIdAsync(int id)
         {
-            return await _context.TaskComments
+            var comment = await _context.TaskComments
                 .Where(x => x.Id == id && x.State == StateEnum.Active)
                 .Select(x => new TaskCommentDto(x)).FirstOrDefaultAsync();
+            if (comment == null)
+            {
+                return null;
+            }
+            var user = await _userRepository.GetById(comment.CreatorId);
+            comment.CreatorName = user.Name + " " + user.Surname;
+            return comment;
         }
 
         public async Task<(List<TaskCommentDto> comments, int totalCount)> GetByTaskIdAsync(int taskId, int page, int pageSize)
@@ -98,14 +145,19 @@ namespace catch_up_backend.Services
             var totalCount = await _context.TaskComments
                 .Where(x => x.TaskId == taskId && x.State == StateEnum.Active)
                 .CountAsync();
-            var commments = await _context.TaskComments
+            var comments = await _context.TaskComments
                 .Where(x => x.TaskId == taskId && x.State == StateEnum.Active)
                 .OrderByDescending(x=>x.CreationDate)
-                .Take(pageSize)
                 .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(x => new TaskCommentDto(x))
                 .ToListAsync();
-            return (commments, totalCount);
+            foreach (var comment in comments)
+            {
+                var user = await _userRepository.GetById(comment.CreatorId);
+                comment.CreatorName = user.Name + " " + user.Surname;
+            }
+            return (comments, totalCount);
         }
     }
 }

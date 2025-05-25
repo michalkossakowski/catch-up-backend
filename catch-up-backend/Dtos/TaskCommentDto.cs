@@ -10,6 +10,7 @@ namespace catch_up_backend.Dtos
         public int Id { get; set; }
         public int TaskId { get; set; }
         public Guid CreatorId { get; set; }
+        public string? CreatorName { get; set; }
         public int? MaterialId { get; set; }
         public string Content { get; set; }
         public DateTime CreationDate { get; set; }
