@@ -17,7 +17,7 @@ namespace catch_up_backend.Controllers
             _newbieMentorService = newbieMentorService;
         }
 
-        // Przypisanie nowego pracownika do mentora
+        // Assign a new employee to a mentor
         [HttpPost]
         [Route("Assign/{newbieId:guid}/{mentorId:guid}")]
         public async Task<IActionResult> Assign(Guid newbieId, Guid mentorId)
@@ -25,202 +25,70 @@ namespace catch_up_backend.Controllers
             bool result = await _newbieMentorService.AssignNewbieToMentor(newbieId, mentorId);
             if (!result)
             {
-                return NotFound(new { message = "Mentor or User not found or their Type is wrong" });
+                return NotFound(new { message = "Mentor or new employee not found or their type is invalid" });
             }
-            return Ok(new { message = "Newbie assigned to mentor", newbieId, mentorId });
+            return Ok(new { message = "New employee assigned to mentor", newbieId, mentorId });
         }
 
-        // Archiwizuje przypisania nowego pracownika do mentora
-        [HttpDelete]
-        [Route("Archive/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> Archive(Guid newbieId, Guid mentorId)
+        // Set assignment state (archive or delete)
+        [HttpPatch]
+        [Route("SetState/{newbieId:guid}/{mentorId:guid}")]
+        public async Task<IActionResult> SetState(Guid newbieId, Guid mentorId, [FromQuery] StateEnum state)
         {
-            bool result = await _newbieMentorService.Archive(newbieId, mentorId);
+            if (state != StateEnum.Archived && state != StateEnum.Deleted)
+            {
+                return BadRequest(new { message = "State must be Archived or Deleted" });
+            }
+
+            bool result = await _newbieMentorService.SetAssignmentState(newbieId, mentorId, state);
             if (!result)
             {
                 return NotFound(new { message = "Assignment not found" });
             }
 
-            return Ok(new { message = "Connection has been archived", newbieId, mentorId });
+            return Ok(new { message = $"Assignment state set to {state}", newbieId, mentorId });
         }
-        // Usuwanie przypisania nowego pracownika do mentora
-        [HttpDelete]
-        [Route("Delete/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> Delete(Guid newbieId, Guid mentorId)
+
+        // Get assignments for a mentor or a new employee
+        [HttpGet]
+        [Route("GetAssignments/{id:guid}")]
+        public async Task<IActionResult> GetAssignments(Guid id, [FromQuery] RoleEnum role)
         {
-            bool result = await _newbieMentorService.Delete(newbieId, mentorId);
-            if (!result)
+            var result = await _newbieMentorService.GetAssignments(id, role);
+            if (result == null)
             {
-                return NotFound(new { message = "Assignment not found" });
+                return NotFound(new { message = $"No assignments found for {role} with ID {id}" });
             }
 
-            return Ok(new { message = "Newbie unassigned from mentor", newbieId, mentorId });
+            return Ok(result);
         }
-        // Pobieranie wszystkich przypisań dla danego mentora
+
+        // Get users (mentors or new employees, assigned or unassigned)
         [HttpGet]
-        [Route("GetAssignmentsByMentor/{mentorId:guid}")]
-        public async Task<IActionResult> GetAssignmentsByMentor(Guid mentorId)
+        [Route("GetUsers")]
+        public async Task<IActionResult> GetUsers([FromQuery] RoleEnum role, [FromQuery] bool? assigned, [FromQuery] Guid? relatedId)
         {
-            IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByMentor(mentorId);
-            if (assignments==null)
+            var result = await _newbieMentorService.GetUsers(role, assigned, relatedId);
+            if (result == null)
             {
-                return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
+                return NotFound(new { message = $"No {role.ToString().ToLower()}s found" });
             }
 
-            return Ok(assignments);
+            return Ok(result);
         }
-        //  Zwraca liczbę powiązanych do mentora nowych pracowników
+
+        // Get assignment history (archived or deleted)
         [HttpGet]
-        [Route("GetNewbieCountByMentor/{mentorId:guid}")]
-        public async Task<IActionResult> GetNewbieCountByMentor(Guid mentorId)
+        [Route("GetAssignmentHistory")]
+        public async Task<IActionResult> GetAssignmentHistory([FromQuery] StateEnum? state)
         {
-            int count = await _newbieMentorService.GetNewbieCountByMentor(mentorId);
-            if (count==null)
+            var history = await _newbieMentorService.GetAssignmentHistory(state);
+            if (history == null)
             {
-                return NotFound(new { message = $"No assignments found for mentor with ID {mentorId}" });
-            }
-            return Ok(count);
-        }
-        // Pobieranie przypisań dla danego nowego pracownika
-        [HttpGet]
-        [Route("GetAssignmentsByNewbie/{newbieId:guid}")]
-        public async Task<IActionResult> GetAssignmentsByNewbie(Guid newbieId)
-        {
-            IEnumerable<UserModel> assignments = await _newbieMentorService.GetAssignmentsByNewbie(newbieId);
-            if (assignments==null)
-            {
-                return NotFound(new { message = $"No assignments found for mentor with ID {newbieId}" });
+                return NotFound(new { message = "No assignment history found" });
             }
 
-            return Ok(assignments);
-        }
-        //  Zwraca liczbę powiązanych do nowego pracownika mentorów
-        [HttpGet]
-        [Route("GetMentorCountByNewbie/{newbieId:guid}")]
-        public async Task<IActionResult>GetMentorsCountByNewbie(Guid newbieId)
-        {
-            int count = await _newbieMentorService.GetMentorsCountByNewbie(newbieId);
-            if (count == null)
-            {
-                return NotFound(new { message = $"No assignments found for mentor with ID {newbieId}" });
-            }
-            return Ok(count);
-        }
-        // Pobieranie wszystkich zaarchiwizowanych przypisań
-        [HttpGet]
-        [Route("GetAllArchived")]
-        public async Task<IActionResult> GetAllArchived()
-        {
-            IEnumerable<NewbieMentorModel> archived = await _newbieMentorService.GetAllArchived();
-            if (archived==null)
-            {
-                return NotFound(new { message = "There aren't archived connections." });
-            }
-            return Ok(archived);
-        }
-        // Pobieranie wszystkich usuniętych przypisań
-        [HttpGet]
-        [Route("GetAllDeleted")]
-        public async Task<IActionResult> GetAllDeleted()
-        {
-            IEnumerable<NewbieMentorModel> deleted = await _newbieMentorService.GetAllDeleted();
-            if (deleted==null)
-            {
-                return NotFound(new { message = "There aren't deleted connections." });
-            }
-
-            return Ok(deleted);
-        }
-        // Pobieranie wszystkich mentorów
-        [HttpGet]
-        [Route("GetAllMentors")]
-        public async Task<IActionResult> GetAllMentors()
-        {
-            IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllMentors();
-            if (mentors==null)
-            {
-                return NotFound(new { message = $"No mentors found." });
-            }
-
-            return Ok(mentors);
-        }
-        // Pobieranie wszystkich newbies
-        [HttpGet]
-        [Route("GetAllNewbies")]
-        public async Task<IActionResult> GetAllNewbies()
-        {
-            IEnumerable<UserModel> mentors = await _newbieMentorService.GetAllNewbies();
-            if (mentors == null)
-            {
-                return NotFound(new { message = $"No mentors found." });
-            }
-
-            return Ok(mentors);
-        }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do konretnego mentora
-        [HttpGet]
-        [Route("GetAllUnassignedNewbies/{mentorId:guid}")]
-        public async Task<IActionResult> GetAllUnassignedNewbies(Guid mentorId)
-        {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies(mentorId);
-            if (unassigned == null)
-            {
-                return NotFound(new { message = $"No unassigned newbies found. " });
-            }
-
-            return Ok(unassigned);
-        }
-        // Pobieranie wszystkich nowych pracowników jeszcze nie przypisanych do nikogo
-        [HttpGet]
-        [Route("GetAllUnassignedNewbies")]
-        public async Task<IActionResult> GetAllUnassignedNewbies()
-        {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedNewbies();
-            if (unassigned == null)
-            {
-                return NotFound(new { message = $"No unassigned newbies found. " });
-            }
-
-            return Ok(unassigned);
-        }
-        // Pobieranie wszystkich mentorów jeszcze nie przypisanych do konretnego nowego pracownika
-        [HttpGet]
-        [Route("GetAllUnassignedMentors/{newbieId:guid}")]
-        public async Task<IActionResult> GetAllUnassignedMentors(Guid newbieId)
-        {
-            IEnumerable<UserModel> unassigned = await _newbieMentorService.GetAllUnassignedMentors(newbieId);
-            if (unassigned == null)
-            {
-                return NotFound(new { message = $"No unassigned newbies found. " });
-            }
-
-            return Ok(unassigned);
-        }
-        // Zwraca datę rozpoczęcia szkolenia
-        [HttpGet]
-        [Route("GetDateStart/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> GetDateStart(Guid newbieId, Guid mentorId)
-        {
-            string dateStart = await _newbieMentorService.GetDateStart(newbieId, mentorId);
-            if (dateStart==null)
-            {
-                return NotFound(new { message = $"No start datefound." });
-            }
-
-            return Ok(dateStart);
-        }
-        // Zwraca datę zakończenia szkolenia 
-        [HttpGet]
-        [Route("GetDateEnd/{newbieId:guid}/{mentorId:guid}")]
-        public async Task<IActionResult> GetDateEnd(Guid newbieId, Guid mentorId)
-        {
-            string dateEnd = await _newbieMentorService.GetDateEnd(newbieId, mentorId);
-            if (dateEnd == null)
-            {
-                return NotFound(new { message = $"No start datefound." });
-            }
-
-            return Ok(dateEnd);
+            return Ok(history);
         }
     }
 }

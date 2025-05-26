@@ -1,10 +1,10 @@
 ﻿namespace catch_up_backend.Enums
 {
-    public enum TypeEnum
+    public enum RoleEnum
     {
         Newbie,
         Mentor,
-        Menager,
+        HR,
         Admin
     }
 }
