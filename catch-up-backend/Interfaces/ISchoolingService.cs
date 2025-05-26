@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Response;
 
 namespace catch_up_backend.Interfaces
 {
@@ -6,17 +7,9 @@ namespace catch_up_backend.Interfaces
     {
         public Task<SchoolingDto> GetById(int schoolingId);
         public Task<SchoolingDto> GetById(int schoolingId, Guid userId);
-        public Task<FullSchoolingDto?> CreateSchooling(SchoolingDto schoolingDto);
-        public Task<List<FullSchoolingDto>> GetAllFull();
-        public Task<bool> Edit(FullSchoolingDto fullSchoolingDto);
+        Task<PagedResponse<SchoolingDto>> GetSchoolingsAsync(SchoolingQueryParameters parameters);
+        Task<PagedResponse<SchoolingDto>> GetSubscribedSchoolingsAsync(SchoolingQueryParameters parameters, Guid userId);
+        Task<PagedResponse<SchoolingDto>> GetOwnedSchoolingsAsync(SchoolingQueryParameters parameters, Guid userId);
         public Task<bool> EditSchooling(SchoolingDto schoolingDto);
-        public Task<SchoolingPartDto> CreateSchoolingPart(SchoolingPartDto schoolingPart, int schoolingID);
-        public Task<bool> DeleteSchooling(int schoolingId);
-        public Task<bool> ArchiveSchooling(int schoolingId);
-        public Task<List<FullSchoolingDto>> GetAllFull(Guid userId);
-        public Task<bool> AddSchoolingToUser(Guid userId, int schoolingId);
-        public Task<List<int>> GetUserSchoolingsID(Guid userId);
-        public Task<bool> ArchiveUserSchooling(Guid userId, int schoolingId);
-        public Task<bool> DeleteUserSchooling(Guid userId, int schoolingId);
     }
 }
