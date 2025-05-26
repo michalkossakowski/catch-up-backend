@@ -261,6 +261,7 @@ namespace catch_up_backend.Services
                 .Select(su => su.SchoolingId)
                 .ToListAsync();
         }
+        //
 
         public async Task<bool> EditSchooling(SchoolingDto schoolingDto)
         {
@@ -274,12 +275,13 @@ namespace catch_up_backend.Services
             existingSchooling.ShortDescription = schoolingDto.ShortDescription;
             existingSchooling.Priority = schoolingDto.Priority;
             existingSchooling.CategoryId = schoolingDto.CategoryId;
+            existingSchooling.Content = schoolingDto.Content;
+            existingSchooling.IconFileId = schoolingDto.IconFile?.Id;
 
             await _context.SaveChangesAsync();
             return true;
         }
 
-        //
         public async Task<SchoolingDto> GetById(int schoolingId)
         {
             var schoolingModel = await _context.Schoolings.FindAsync(schoolingId);

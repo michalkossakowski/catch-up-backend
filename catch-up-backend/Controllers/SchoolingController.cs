@@ -69,6 +69,14 @@ namespace catch_up_backend.Controllers
                 : NotFound(new { message = "Schooling not found." });
         }
 
+        [HttpPut]
+        [Route("EditSchooling")]
+        public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
+        {
+            return await _schoolingService.EditSchooling(schoolingDto)
+                ? Ok(new { message = "Schooling updated successfully." })
+                : NotFound(new { message = "Schooling not found." });
+        }
         //Change
         [HttpGet]
         [Route("GetAllFull")]
@@ -110,15 +118,6 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = "Schooling updated successfully." })
                 : NotFound(new { message = "Schooling not found." });
         }
-
-        [HttpPut]
-        [Route("EditSchooling")]
-        public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
-        {
-            return await _schoolingService.EditSchooling(schoolingDto)
-                ? Ok(new { message = "Schooling updated successfully." })
-                : NotFound(new { message = "Schooling not found." });
-        }       
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] SchoolingDto schoolingDto)
