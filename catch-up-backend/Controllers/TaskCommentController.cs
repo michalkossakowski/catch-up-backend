@@ -1,8 +1,12 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
+using catch_up_backend.Models;
+
 
 namespace catch_up_backend.Controllers
 {
@@ -19,12 +23,23 @@ namespace catch_up_backend.Controllers
         [Route("AddTaskComment")]
         public async Task<IActionResult> AddTaskComment([FromBody] TaskCommentDto newTaskComment)
         {
-            var result = await _taskCommentService.AddAsync(newTaskComment);
-            return result != null
-                ? Ok(new { message = "Task comment added", taskComment = result })
-                : StatusCode(500, new { message = "Error: Task comment add" });
+            
+            try
+            {
+                var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+                newTaskComment.CreatorId = userId;
+                var result = await _taskCommentService.AddAsync(newTaskComment);
+                return result != null
+                    ? Ok(new { message = "Task comment added", taskComment = result })
+                    : StatusCode(500, new { message = "Error: Task comment add" });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"Task comment add error: {ex}");
+            }
+            
         }
-        [HttpPatch]
+        [HttpPut]
         [Route("EditTaskComment/{commentId:int}")]
         public async Task<IActionResult> EditTaskComment(int commentId, TaskCommentDto newTaskComment)
         {
@@ -33,6 +48,16 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = $"Task comment edited", taskComment = newTaskComment })
                 : StatusCode(500, new { message = "Task comment editing error", commentId = commentId });
         }
+        [HttpPatch]
+        [Route("PatchTaskComment/{commentId:int}")]
+        public async Task<IActionResult> EditTaskCommentPatch(int commentId, [FromBody] JsonPatchDocument<TaskCommentModel> patchDoc)
+        {
+            var newTaskComment = await _taskCommentService.PatchAsnc(commentId, patchDoc);
+            return newTaskComment != null
+                ? Ok(new { message = $"Task comment edited", taskComment = newTaskComment })
+                : StatusCode(500, new { message = "Task comment editing error", commentId = commentId });
+        }
+
         [HttpDelete]
         [Route("DeleteTaskComment/{commentId:int}")]
         public async Task<IActionResult> DeleteTaskComment(int commentId)

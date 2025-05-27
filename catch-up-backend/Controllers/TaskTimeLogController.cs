@@ -30,7 +30,7 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = "Task time log added", taskTimeLog = result })
                 : StatusCode(500, new { message = "Error: Task time log add" });
         }
-        [HttpPatch]
+        [HttpPut]
         [Route("EditTaskTimeLog/{taskTimeLogId:int}")]
         public async Task<IActionResult> EditTaskTaskTimeLog(int taskTimeLogId, TaskTimeLogDto newTaskTimeLog)
         {
