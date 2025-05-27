@@ -12,7 +12,6 @@ namespace catch_up_backend.Interfaces
         public Task<bool> DeleteSchoolingPart(int schoolingPartId);
         public Task<bool> ArchiveMaterialFromSchooling(int schoolingPartId, int materialId);
         public Task<bool> DeleteMaterialFromSchooling(int schoolingPartId, int materialId);
-        public Task<bool> EditSchoolingPart(SchoolingPartDto schoolingPart);
         public Task<bool> EditManySchoolingPart(List<SchoolingPartDto> schoolingPart);
 
         //Done
@@ -20,5 +19,6 @@ namespace catch_up_backend.Interfaces
         public Task<List<SchoolingPartProgressBarDto>> GetSchoolingPartStatus(int schoolingId);
         public Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId, Guid userId);
         public Task<bool> ChangeUserSchoolingPartState(int schoolingUserId, int schoolingPartId, bool state);
+        public Task<bool> EditSchoolingPart(SchoolingPartUpdateDto schoolingPart);
     }
 }

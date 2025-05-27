@@ -21,7 +21,7 @@ namespace catch_up_backend.Services
             _fileService = fileService;
         }
 
-        public async Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId)
+/*        public async Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId)
         {
             var schoolingParts = await _context.SchoolingParts
             .Where(sp => sp.SchoolingId == schoolingId && sp.State == Enums.StateEnum.Active)
@@ -38,7 +38,7 @@ namespace catch_up_backend.Services
                 part.Materials = await GetMaterials(part.Id);
             }
             return schoolingParts;
-        }
+        }*/
         public async Task<List<MaterialDto>> GetMaterials(int schoolingPartId)
         {
             var materialIds = await _context.MaterialsSchoolingParts
@@ -130,7 +130,7 @@ namespace catch_up_backend.Services
             return true;
         }
 
-        public async Task<List<SchoolingPartDto>> GetAllSchoolingParts()
+/*        public async Task<List<SchoolingPartDto>> GetAllSchoolingParts()
         {
             var schoolingParts = await _context.SchoolingParts
             .Where(sp => sp.State == Enums.StateEnum.Active)
@@ -147,15 +147,8 @@ namespace catch_up_backend.Services
                 part.Materials = await GetMaterials(part.Id);
             }
             return schoolingParts;
-        }
-
-        public async Task<bool> EditSchoolingPart(SchoolingPartDto schoolingPart)
-        {
-            if (!await Edit(schoolingPart)) return false;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
+        }*/
+/*
         public async Task<bool> EditManySchoolingPart(List<SchoolingPartDto> schoolingParts)
         {
             foreach (var part in schoolingParts)
@@ -164,9 +157,9 @@ namespace catch_up_backend.Services
             }
             await _context.SaveChangesAsync();
             return true;
-        }
+        }*/
 
-        private async Task<bool> Edit(SchoolingPartDto schoolingPart)
+/*        private async Task<bool> Edit(SchoolingPartDto schoolingPart)
         {
             var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id);
             if (schoolingPartModel == null) return false;
@@ -198,7 +191,7 @@ namespace catch_up_backend.Services
                 await AddMaterialToSchooling(schoolingPart.Id, materialId);
             }
             return true;
-        }
+        }*/
 
         //Done
         public async Task<List<SchoolingPartProgressBarDto>> GetSchoolingPartStatus(int schoolingId)
@@ -273,7 +266,10 @@ namespace catch_up_backend.Services
             };
 
 
-            schoolingPart.Materials = await GetMaterials(schoolingPartId);
+            schoolingPart.Materials = await _context.MaterialsSchoolingParts.Where(msp => msp.SchoolingPartId == schoolingPartId && msp.State == StateEnum.Active)
+                .Select(msp => msp.MaterialsId)
+                .ToListAsync();
+
             return schoolingPart;
         }
 
@@ -285,6 +281,58 @@ namespace catch_up_backend.Services
             
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> EditSchoolingPart(SchoolingPartUpdateDto schoolingPart)
+        {
+            var schoolingPartModel = await _context.SchoolingParts.FindAsync(schoolingPart.Id);
+            if (schoolingPartModel is null) return false;
+
+            schoolingPartModel.Title = schoolingPart.Title;
+            schoolingPartModel.Content = schoolingPart.Content;
+            schoolingPartModel.ShortDescription = schoolingPart.ShortDescription;
+            schoolingPartModel.IconFileId = schoolingPart.Id;
+            
+            var existingMaterials = await _context.MaterialsSchoolingParts
+              .Where(m => m.SchoolingPartId == schoolingPart.Id && m.State == StateEnum.Active)
+              .Select(m => m.MaterialsId)
+              .ToListAsync();
+
+            var materialsToRemove = existingMaterials
+                .Where(existingMaterialId => !schoolingPart.MaterialsId.Any(id => id == existingMaterialId))
+                .ToList();
+
+            var materialsToAdd = schoolingPart.MaterialsId
+                .Where(id => !existingMaterials.Contains(id))
+                .ToList();
+
+            foreach (var materialId in materialsToRemove)
+            {
+                await DeleteMaterialFromSchooling(schoolingPart.Id, materialId);
+            }
+
+            foreach (var materialId in materialsToAdd)
+            {
+                await AddMaterialToSchooling(schoolingPart.Id, materialId);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SchoolingPartDto>> GetAllSchoolingParts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EditManySchoolingPart(List<SchoolingPartDto> schoolingPart)
+        {
+            throw new NotImplementedException();
         }
     }
 }

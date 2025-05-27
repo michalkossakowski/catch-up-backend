@@ -9,7 +9,7 @@ namespace catch_up_backend.Dtos
         public string Content { get; set; }
         public string ShortDescription { get; set; }
         public FileDto IconFile { get; set; }
-        public List<MaterialDto> Materials { get; set; }
+        public List<int> Materials { get; set; }
         public int schoolingUserId {get; set;}
     }
 }
