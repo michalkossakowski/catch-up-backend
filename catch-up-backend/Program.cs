@@ -15,7 +15,8 @@ using catch_up_backend.Hubs;
 using System.Text.Json;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
 
 namespace catch_up_backend
 {
@@ -27,7 +28,16 @@ namespace catch_up_backend
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+             
+
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    // U¿yj CamelCasePropertyNamesContractResolver dla zgodnoœci z System.Text.Json
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    // Opcjonalnie: skonfiguruj inne ustawienia
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -61,7 +71,6 @@ namespace catch_up_backend
                         }
                     };
                 });
-
             // Services
             builder.Services.AddScoped<IFaqService, FaqService>();
             builder.Services.AddScoped<IBadgeService, BadgeService>();
@@ -69,6 +78,9 @@ namespace catch_up_backend
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+            builder.Services.AddScoped<ITaskCommentService, TaskCommentService>();
+            builder.Services.AddScoped<ITaskTimeLogService, TaskTimeLogService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewbieMentorService, NewbieMentorService>();
             builder.Services.AddScoped<ITaskContentService, TaskContentService>();
@@ -92,6 +104,7 @@ namespace catch_up_backend
 
             // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICompanySettingsService, CompanySettingsService>();
             builder.Services.AddScoped<ICompanyCityService, CompanyCityService>();

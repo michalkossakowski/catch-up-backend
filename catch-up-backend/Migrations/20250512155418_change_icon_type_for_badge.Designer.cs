@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512155418_change_icon_type_for_badge")]
+    partial class change_icon_type_for_badge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1049,57 +1052,6 @@ namespace catch_up_backend.Migrations
                     b.ToTable("UsersNotifications");
                 });
 
-            modelBuilder.Entity("catch_up_backend.Models.UserProfileModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InterestsJson")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Interests");
-
-                    b.Property<string>("LanguagesJson")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Languages");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SlackUsername")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TeamsUsername")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserProfiles");
-                });
-
             modelBuilder.Entity("EventReceivers", b =>
                 {
                     b.HasOne("catch_up_backend.Models.EventModel", null)
@@ -1429,17 +1381,6 @@ namespace catch_up_backend.Migrations
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("catch_up_backend.Models.UserProfileModel", b =>
-                {
-                    b.HasOne("catch_up_backend.Models.UserModel", "User")
-                        .WithOne()
-                        .HasForeignKey("catch_up_backend.Models.UserProfileModel", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,20 +9,9 @@ namespace catch_up_backend.Interfaces
     public interface INewbieMentorService
     {
         Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId);
-        Task<bool> Archive(Guid newbieId, Guid mentorId);
-        Task<bool> Delete(Guid newbieId, Guid mentorId);
-        Task<IEnumerable<UserModel>> GetAssignmentsByMentor(Guid mentorId);
-        Task<int> GetNewbieCountByMentor(Guid mentorId);
-        Task<IEnumerable<UserModel>> GetAssignmentsByNewbie(Guid newbieId);
-        Task<int> GetMentorsCountByNewbie(Guid newbieId);
-        Task<IEnumerable<NewbieMentorModel>> GetAllArchived();
-        Task<IEnumerable<NewbieMentorModel>> GetAllDeleted();
-        Task<IEnumerable<UserModel>> GetAllMentors();
-        Task<IEnumerable<UserModel>> GetAllNewbies();
-        Task<IEnumerable<UserModel>> GetAllUnassignedNewbies(Guid mentorId);
-        Task<IEnumerable<UserModel>> GetAllUnassignedMentors(Guid newbieId);
-        Task<string> GetDateStart(Guid newbieId, Guid mentorId);
-        Task<string> GetDateEnd(Guid newbieId, Guid mentorId);
-        Task<IEnumerable<UserModel>> GetAllUnassignedNewbies();
+        Task<bool> SetAssignmentState(Guid newbieId, Guid mentorId, StateEnum state);
+        Task<IEnumerable<UserModel>> GetAssignments(Guid id, RoleEnum role);
+        Task<IEnumerable<UserModel>> GetUsers(RoleEnum role, bool? assigned, Guid? relatedId);
+        Task<IEnumerable<NewbieMentorModel>> GetAssignmentHistory(StateEnum? state);
     }
 }

@@ -8,7 +8,7 @@ namespace catch_up_backend.Interfaces
         public Task<TaskContentDto> Add(TaskContentDto newTaskContent);
         public Task<TaskContentDto> Edit(int taskContentId, TaskContentDto newTaskContent);
         public Task<bool> Delete(int taskContentId);
-        public Task<List<TaskContentDto>> GetAll();
+        public Task<(List<TaskContentDto> taskContents, int totalCount)> GetAll(int page, int pageSize);
         public Task<TaskContentDto> GetById(int taskContentId);
         public Task<List<TaskContentDto>> GetByTitle(string title);
         public Task<List<TaskContentDto>> GetByCreatorId(Guid creatorId);

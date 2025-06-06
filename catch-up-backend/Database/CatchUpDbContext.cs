@@ -37,6 +37,7 @@ namespace catch_up_backend.Database
         public DbSet<TaskPresetModel> TaskPresets { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<UserProfileModel> UserProfiles { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
         public DbSet<FirebaseTokenModel> FirebaseTokens { get; set; }
         public DbSet<UserNotificationModel> UsersNotifications { get; set; }
@@ -374,6 +375,26 @@ namespace catch_up_backend.Database
                         c => c == null ? null : c.ToDictionary(entry => entry.Key, entry => entry.Value)
                     )
                 );
+
+            modelBuilder.Entity<UserProfileModel>()
+                .HasOne(up => up.User)
+                .WithOne()
+                .HasForeignKey<UserProfileModel>(up => up.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            modelBuilder.Entity<UserProfileModel>()
+                .Property(up => up.InterestsJson)
+                .HasColumnName("Interests");
+                
+            modelBuilder.Entity<UserProfileModel>()
+                .Property(up => up.LanguagesJson)
+                .HasColumnName("Languages");
+                
+            modelBuilder.Entity<UserProfileModel>()
+                .Ignore(up => up.Interests);
+                
+            modelBuilder.Entity<UserProfileModel>()
+                .Ignore(up => up.Languages);
 
             base.OnModelCreating(modelBuilder);
         }

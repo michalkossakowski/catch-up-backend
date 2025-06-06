@@ -98,19 +98,18 @@ public class EventService : IEventService
     {
         foreach (UserModel receiver in receivers)
         {
-
             var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(
                         receiver.Email,
-                        "Nowe Przypisanie",
-                                        $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}"
+                        "New Assignment",
+                        $"Hello {receiver.Name} {receiver.Surname}! \nA new event {eventEntry.Title} has been assigned to you in the system, taking place from {eventEntry.StartDate.ToString()} to {eventEntry.EndDate.ToString()}!\n Event description: {eventEntry.Description}"
                     ));
             var notificationReceiver = new NotificationModel(
                 receiver.Id,
-                "Nowe Wydarzenie",
-                $"Witaj {receiver.Name} {receiver.Surname}! \nW systemie zosta³o przypisane do Ciebie nowe wydarzenie {eventEntry.Title} maj¹ce miejsce {eventEntry.StartDate.ToString()} - {eventEntry.EndDate.ToString()}!\n Opis wydarzenia: {eventEntry.Description}",
-                "kot"
+                "New Event",
+                $"Hello {receiver.Name} {receiver.Surname}! \nA new event {eventEntry.Title} has been assigned to you in the system, taking place from {eventEntry.StartDate.ToString()} to {eventEntry.EndDate.ToString()}!\n Event description: {eventEntry.Description}", null
             );
             await _notificationService.AddNotification(notificationReceiver, receiver.Id);
         }
+
     }
 }
