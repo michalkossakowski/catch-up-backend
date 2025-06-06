@@ -10,6 +10,7 @@ namespace catch_up_backend.Interfaces.RepositoryInterfaces
         Task<UserDto> GetById(Guid userId);
         Task<UserModel> GetByMail(string email);
         Task<List<UserModel>> GetAll();
+        Task<List<UserModel>> GetMyNewbies(Guid userId);
         Task<string> GetRole(Guid userId);
         Task<List<UserModel>> GetMentorAdmin();
         Task<IEnumerable<UserDto>> SearchUsers(string searchPhrase);

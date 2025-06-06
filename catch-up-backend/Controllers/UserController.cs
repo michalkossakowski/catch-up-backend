@@ -1,4 +1,5 @@
 ﻿using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,19 @@ namespace catch_up_backend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAll();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("GetMyNewbies")]
+        public async Task<IActionResult> GetMyNewbies()
+        {
+            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request); 
+           
+            var users = await _userService.GetMyNewbies(userId);
+
+            if (users == null && !users.Any())
+                return Ok(new List<UserDto>());
             return Ok(users);
         }
 
