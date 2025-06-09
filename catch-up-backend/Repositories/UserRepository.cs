@@ -144,6 +144,7 @@ namespace catch_up_backend.Repositories
             return users;
         }
 
+        [Obsolete("Metoda nie jest juz uzywana do autentykacji!")]
         public async Task<string> GetRole(Guid userId)
         {
             var userRole = await _context.Users
