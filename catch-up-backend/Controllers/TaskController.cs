@@ -222,7 +222,7 @@ namespace catch_up_backend.Controllers
             var isTimeLogEnabled = settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == true;
             if (!isTimeLogEnabled)
             {
-                return Ok(new { fullTaskResult, commentResult.comments, commentResult.totalCount, isTimeLogEnabled });
+                return Ok(new { fullTask = fullTaskResult, comments = commentResult.comments, commentsTotalCount = commentResult.totalCount, timelogs = new List<TaskTimeLogDto>(), timeLogTotalCount = 0, hours = 0, minutes = 0, isTimeLogEnabled });
             }
             var timeLogResult = await _taskTimeLogService.GetByTaskIdAsync(taskId, 1, 5);
 
