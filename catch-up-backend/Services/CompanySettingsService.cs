@@ -30,7 +30,7 @@ namespace catch_up_backend.Services
             var companySettings = await _context.CompanySettings.ToListAsync();
             foreach (var setting in updatedSettings)
             {
-                var existingSetting = companySettings.FirstOrDefault(s=>s.Name == setting.Key);
+                var existingSetting = companySettings.FirstOrDefault(s => s.Name == setting.Key);
                 if (existingSetting != null)
                 {
                     if (existingSetting.Value != setting.Value)
@@ -72,5 +72,35 @@ namespace catch_up_backend.Services
             return companySetting.Value;
         }
 
+        public async Task<bool?> SetTaskTimeLogging(bool enable)
+        {
+            try
+            {
+                SettingModel companySetting = await _context.CompanySettings.FirstOrDefaultAsync(s => s.Name == "EnableTaskTimeLog");
+                companySetting.Value = enable;
+                _context.SaveChanges();
+                return companySetting.Value;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public async Task<bool> GetTaskTimeLoggingSetting()
+        {
+            SettingModel companySetting = await _context.CompanySettings.FirstOrDefaultAsync(s => s.Name == "EnableTaskTimeLog");
+            if (companySetting == null)
+            {
+                var defaultSettings = new List<SettingModel>
+                {
+                    new SettingModel("EnableTaskTimeLog")
+                };
+                _context.CompanySettings.AddRange(defaultSettings);
+                _context.SaveChanges();
+                return false;
+            }
+            return companySetting.Value;
+        }
     }
 }
