@@ -1,5 +1,4 @@
 ﻿using catch_up_backend.Dtos;
-using catch_up_backend.Enums;
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
