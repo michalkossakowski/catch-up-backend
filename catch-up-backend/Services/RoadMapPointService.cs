@@ -44,12 +44,12 @@ namespace catch_up_backend.Services
                 return null;
             try
             {
-                roadMapPoint.RoadMapId = newRoadMapPoint.RoadMapId;
                 roadMapPoint.Name = newRoadMapPoint.Name ?? "";
-                roadMapPoint.StartDate = newRoadMapPoint.StartDate ?? DateTime.Now;
-                roadMapPoint.FinishDate = newRoadMapPoint.FinishDate;
+                roadMapPoint.Deadline = newRoadMapPoint.Deadline;
+             
                 _context.RoadMapPoints.Update(roadMapPoint);
                 await _context.SaveChangesAsync();
+                
                 newRoadMapPoint.Id = roadMapPoint.Id;
             }
             catch (Exception e)
@@ -59,7 +59,7 @@ namespace catch_up_backend.Services
             return newRoadMapPoint;
         }
 
-        public async Task<bool> DeleteAsync(int roadMapPointId)
+        public async Task<bool> DeleteAsync(int roadMapPointId, bool deleteTasksInside = false)
         {
             var roadMapPoint = await _context.RoadMapPoints.FindAsync(roadMapPointId);
             if (roadMapPoint == null)
@@ -68,14 +68,36 @@ namespace catch_up_backend.Services
             {
                 roadMapPoint.State = StateEnum.Deleted;
                 _context.RoadMapPoints.Update(roadMapPoint);
+
+                var roadMapPointTasks = await _context.Tasks
+                    .Where(t => t.RoadMapPointId == roadMapPoint.Id 
+                        && t.State == StateEnum.Active).ToListAsync();
+
+                if (deleteTasksInside)
+                {
+                    foreach(var task in roadMapPointTasks)
+                    {
+                        task.RoadMapPointId = null;
+                        _context.Tasks.Update(task);
+                    }
+                }
+                else
+                {
+                    foreach (var task in roadMapPointTasks)
+                    {
+                        task.State = StateEnum.Deleted;
+                        _context.Tasks.Update(task);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 throw new Exception("Error: RoadMap Delete " + e);
             }
-            return true;
 
+            return true;
         }
 
         public async Task<List<RoadMapPointDto>> GetByRoadMapIdAsync(int roadMapId)

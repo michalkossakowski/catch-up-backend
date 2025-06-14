@@ -144,6 +144,38 @@ namespace catch_up_backend.Repositories
             return users;
         }
 
+
+        public async Task<List<UserModel>> GetMyNewbies(Guid mentorId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == mentorId);
+            
+            if (user.Position.ToUpper() == "ADMIN")
+            {
+                var allNewbies = await _context
+                    .Users
+                    .Where(u => u.State == StateEnum.Active
+                        && u.Type.ToUpper() == "NEWBIE")
+                    .ToListAsync();
+
+                return allNewbies;
+            }
+
+            var newbieIds = await _context
+                .NewbiesMentors
+                .Where(u => u.State == StateEnum.Active 
+                    && u.MentorId == mentorId)
+                .Select(u => u.NewbieId)
+                .ToListAsync();
+
+            var newbies = await _context
+                .Users
+                .Where(u => u.State == StateEnum.Active
+                    && newbieIds.Contains(u.Id))
+                .ToListAsync();
+
+            return newbies;
+        }
+
         [Obsolete("Metoda nie jest juz uzywana do autentykacji!")]
         public async Task<string> GetRole(Guid userId)
         {
