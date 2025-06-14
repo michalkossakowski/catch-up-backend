@@ -27,11 +27,19 @@ namespace catch_up_backend.Services
 
             if (user == null)
                 return null;
-
+            
             if (!VerifyPassword(request.Password, user.Password))
                 return null;
 
-            var (accessToken, refreshToken) = GenerateTokens(user.Id);
+            // Check if refresh token exists
+            var storedToken = await refreshTokenRepository.GetByUserId(user.Id);
+            if (storedToken != null){
+                await refreshTokenRepository.Delete(storedToken);
+            }
+
+            var accessToken = GenerateAccessToken(user.Id, user.Type);
+            var refreshToken = GenerateRefreshToken(user.Id, user.Type);
+
             await StoreRefreshToken(user.Id, refreshToken);
 
             return new AuthResponseDto(accessToken, refreshToken);
@@ -49,28 +57,37 @@ namespace catch_up_backend.Services
             }
         }
 
-        private (string accessToken, string refreshToken) GenerateTokens(Guid id){
+        private string GenerateAccessToken(Guid id, string userType){
             var accessToken = GenerateJwtToken(
                 id,
+                userType,
                 _config["Jwt:AccessTokenSecret"],
                 TimeSpan.FromHours(12)
             );
 
+            return accessToken;
+        }
+
+        private string GenerateRefreshToken(Guid id, string userType){
             var refreshToken = GenerateJwtToken(
                 id,
+                userType,
                 _config["Jwt:AccessTokenSecret"],
                 TimeSpan.FromDays(7)
             );
 
-            return (accessToken, refreshToken);
+            return refreshToken;
         }
 
-        private string GenerateJwtToken(Guid userId, string secret, TimeSpan whenExpire){
+        private string GenerateJwtToken(Guid userId, string userType, string secret, TimeSpan whenExpire){
             var tokenHandler = new JwtSecurityTokenHandler(); // create a new JWT token handler
             var key = Encoding.ASCII.GetBytes(secret); // convert secret key into byte array
             // create a token descriptor
             var tokenDescriptor = new SecurityTokenDescriptor{
-                Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]), // set the subject of the token to be the user ID
+                Subject = new ClaimsIdentity([
+                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()), // user ID
+                     new Claim(ClaimTypes.Role, userType) // role
+                ]),
                 // set the issuer and audience claims from the app secret config
                 Issuer = _config["Jwt:Issuer"],
                 Audience = _config["Jwt:Audience"],
@@ -109,7 +126,7 @@ namespace catch_up_backend.Services
             var userId = Guid.Parse(principal.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             // Check if refresh token exists and is valid
-            var storedToken = await refreshTokenRepository.GetByUserId(refreshToken, userId);
+            var storedToken = await refreshTokenRepository.DoesTokenExist(refreshToken, userId);
             if (storedToken == null || storedToken.ExpiresAt < DateTime.UtcNow)
                 throw new Exception("Invalid or expired refresh token");
 
@@ -117,7 +134,9 @@ namespace catch_up_backend.Services
             var user = await userRepository.GetById(userId);
             if (user == null)
                 throw new Exception("User not found");
-            var (accessToken, newRefreshToken) = GenerateTokens(user.Id);
+
+            var accessToken = GenerateAccessToken(user.Id, user.Type);
+            var newRefreshToken = GenerateRefreshToken(user.Id, user.Type);
 
             // Replace old refresh token
             await refreshTokenRepository.Delete(storedToken);

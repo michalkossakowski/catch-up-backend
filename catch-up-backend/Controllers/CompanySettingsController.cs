@@ -18,7 +18,7 @@ namespace catch_up_backend.Controllers
         [Route("UpdateAll")]
         public async Task<IActionResult> UpdateSettings([FromBody] Dictionary<string, bool> updatedSettings)
         {
-            if(updatedSettings == null || !updatedSettings.Any())
+            if (updatedSettings == null || !updatedSettings.Any())
             {
                 return BadRequest(new { message = "Settings data is missing or invalid" });
             }
@@ -27,7 +27,7 @@ namespace catch_up_backend.Controllers
             {
                 return Ok(new { message = "Settings updated successfully", updatedSettings });
             }
-            return NotFound(new {message= "Failed to update settings"});
+            return NotFound(new { message = "Failed to update settings" });
         }
         [HttpGet]
         [Route("GetWithoutMessage")]
@@ -78,6 +78,27 @@ namespace catch_up_backend.Controllers
             {
                 return NotFound(new { message = "Failed to turn on/off localization" });
             }
+        }
+        [HttpPatch]
+        [Route("SetTaskTimeLoggingSetting/{enable:bool}")]
+        public async Task<IActionResult> SetTaskTimeLogging(bool enable)
+        {
+            bool? result = await _companySettingsService.SetTaskTimeLogging(enable);
+            if (result.HasValue)
+            {
+                return Ok(new { message = $"Task time logging has been set to {enable}" });
+            }
+            else
+            {
+                return NotFound(new { message = "Failed to set task time logging" });
+            }
+        }
+        [HttpGet]
+        [Route("GetTaskTimeLoggingSetting")]
+        public async Task<IActionResult> GetTaskTimeLoggingSetting()
+        {
+            bool result = await _companySettingsService.GetTaskTimeLoggingSetting();
+            return Ok(new { message = "Task time logging setting retrieved successfully", enable = result });
         }
     }
 }

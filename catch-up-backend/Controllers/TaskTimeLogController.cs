@@ -20,8 +20,7 @@ namespace catch_up_backend.Controllers
         [Route("AddTaskTimeLog")]
         public async Task<IActionResult> AddTaskTimeLog([FromBody] TaskTimeLogDto newTaskTimeLog)
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if(settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if(await _companySettingsService.GetTaskTimeLoggingSetting())
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
@@ -34,8 +33,7 @@ namespace catch_up_backend.Controllers
         [Route("EditTaskTimeLog/{taskTimeLogId:int}")]
         public async Task<IActionResult> EditTaskTaskTimeLog(int taskTimeLogId, TaskTimeLogDto newTaskTimeLog)
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if (await _companySettingsService.GetTaskTimeLoggingSetting()   )
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
@@ -48,8 +46,7 @@ namespace catch_up_backend.Controllers
         [Route("DeleteTaskTimeLog/{taskTimeLogId:int}")]
         public async Task<IActionResult> DeleteTaskTaskTimeLog(int taskTimeLogId)
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if (await _companySettingsService.GetTaskTimeLoggingSetting())
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
@@ -61,8 +58,7 @@ namespace catch_up_backend.Controllers
         [Route("GetAllTaskTimeLogs")]
         public async Task<IActionResult> GetAllTaskTimeLogs()
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if (await _companySettingsService.GetTaskTimeLoggingSetting())
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
@@ -73,8 +69,7 @@ namespace catch_up_backend.Controllers
         [Route("GetTaskTimeLogById/{taskTimeLogId:int}")]
         public async Task<IActionResult> GetTaskTimeLogById(int taskTimeLogId)
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if (await _companySettingsService.GetTaskTimeLoggingSetting())
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }
@@ -88,8 +83,7 @@ namespace catch_up_backend.Controllers
         [Route("GetTaskTimeLogByTaskId/{taskId:int}/{page:int}/{pageSize:int}")]
         public async Task<IActionResult> GetTaskTimeLogByTaskId(int taskId, int page = 1, int pageSize = 5)
         {
-            var settings = await _companySettingsService.GetCompanySettings();
-            if (settings.Settings.ContainsKey("EnableTaskTimeLog") && settings.Settings["EnableTaskTimeLog"] == false)
+            if (await _companySettingsService.GetTaskTimeLoggingSetting())
             {
                 return BadRequest(new { message = "Task time log feature is disabled" });
             }

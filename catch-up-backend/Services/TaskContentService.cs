@@ -4,6 +4,7 @@ using catch_up_backend.Interfaces;
 using catch_up_backend.Database;
 using Microsoft.EntityFrameworkCore;
 using catch_up_backend.Enums;
+using catch_up_backend.Response;
 
 namespace catch_up_backend.Services
 {
@@ -100,6 +101,55 @@ namespace catch_up_backend.Services
                 .ToListAsync();
 
             return (taskContents, totalCount);
+        }
+
+        public async Task<PagedResponse<TaskContentDto>> GetTaskContentsAsync(TaskContentQueryParameters parameters)
+        {
+            var query = _context.TaskContents.Where(tc => tc.State != StateEnum.Deleted);
+
+            if (!string.IsNullOrEmpty(parameters.TitleFilter))
+            {
+                query = query.Where(tc => tc.Title.Contains(parameters.TitleFilter));
+            }
+
+            if (parameters.CategoryFilter.HasValue)
+            {
+                query = query.Where(tc => tc.CategoryId == parameters.CategoryFilter.Value);
+            }
+
+            if (parameters.CreatorFilter.HasValue)
+            {
+                query = query.Where(tc => tc.CreatorId == parameters.CreatorFilter.Value);
+            }
+
+            query = parameters.SortBy?.ToLower() switch
+            {
+                "title" => parameters.SortOrder.ToLower() == "desc" 
+                    ? query.OrderByDescending(tc => tc.Title)
+                    : query.OrderBy(tc => tc.Title),
+                "category" => parameters.SortOrder.ToLower() == "desc"
+                    ? query.OrderByDescending(tc => tc.CategoryId)
+                    : query.OrderBy(tc => tc.CategoryId),
+                _ => query.OrderBy(tc => tc.Title)
+            };
+
+            var totalCount = await query.CountAsync();
+
+            var taskContents = await query
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize)
+                .Select(tc => new TaskContentDto
+                {
+                    Id = tc.Id,
+                    CreatorId = tc.CreatorId,
+                    CategoryId = tc.CategoryId,
+                    MaterialsId = tc.MaterialsId,
+                    Title = tc.Title,
+                    Description = tc.Description
+                })
+                .ToListAsync();
+
+            return new PagedResponse<TaskContentDto>(taskContents, parameters.PageNumber, parameters.PageSize, totalCount);
         }
 
         public async Task<TaskContentDto> GetById(int taskContentId)

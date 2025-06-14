@@ -120,6 +120,7 @@ namespace catch_up_backend.Repositories
                     Surname = u.Surname,
                     Email = u.Email,
                     Position = u.Position,
+                    Type = u.Type,
                     AvatarId = u.AvatarId
                 })
                 .FirstOrDefaultAsync();
@@ -175,6 +176,7 @@ namespace catch_up_backend.Repositories
             return newbies;
         }
 
+        [Obsolete("Metoda nie jest juz uzywana do autentykacji!")]
         public async Task<string> GetRole(Guid userId)
         {
             var userRole = await _context.Users

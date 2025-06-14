@@ -2,6 +2,7 @@
 using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
+using catch_up_backend.Response;
 
 
 namespace catch_up_backend.Controllers
@@ -53,6 +54,19 @@ namespace catch_up_backend.Controllers
             if (!taskContent.taskContents.Any())
                 return NotFound(new { message = "No task content found" });
             return Ok( new { taskContent.taskContents, taskContent.totalCount });
+        }
+
+        [HttpGet]
+        [Route("Get")]
+        public async Task<ActionResult<PagedResponse<TaskContentDto>>> GetTaskContents([FromQuery] TaskContentQueryParameters parameters)
+        {
+            if (parameters.PageNumber < 1 || parameters.PageSize < 1)
+            {
+                return BadRequest("PageNumber and PageSize must be greater than 0.");
+            }
+
+            var result = await _taskContentService.GetTaskContentsAsync(parameters);
+            return Ok(result);
         }
 
         [HttpGet]

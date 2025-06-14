@@ -9,6 +9,8 @@ namespace catch_up_backend.Interfaces
         Task<CompanySettingsDto> GetCompanySettings();
         Task<bool> TurnOnLocalization();
         Task<bool> TurnOffLocalization();
+        Task<bool?> SetTaskTimeLogging(bool enable);
+        Task<bool> GetTaskTimeLoggingSetting();
     }
 }
 
