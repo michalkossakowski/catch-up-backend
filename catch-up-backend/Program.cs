@@ -9,13 +9,10 @@ using System.Text;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
 using catch_up_backend.Repositories;
 using catch_up_backend.Services.Interfaces;
-using catch_up_backend.Models;
-using System.Security.Cryptography;
 using catch_up_backend.Hubs;
 using System.Text.Json;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
 
 namespace catch_up_backend
@@ -27,22 +24,16 @@ namespace catch_up_backend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-             
-
             builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 {
-                    // U¿yj CamelCasePropertyNamesContractResolver dla zgodnoœci z System.Text.Json
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    // Opcjonalnie: skonfiguruj inne ustawienia
                     options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                 });
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //----------- Custom Section Start -----------
             //Database
             var connectionString = builder.Configuration.GetConnectionString("catchUpConnectionString") ?? throw new InvalidOperationException("Connection string 'catchUpConnectionString' not found.");
             builder.Services.AddDbContext<CatchUpDbContext>(options => options.UseSqlServer(connectionString));

@@ -173,7 +173,7 @@ VALUES
 -- SCHOOLINGS
 SET IDENTITY_INSERT [Schoolings] ON;
 INSERT INTO [Schoolings] 
-    ([Id], [CreatorId], [CategoryId], [Title], [Description], [Priority], [State]) 
+    ([Id], [CreatorId], [CategoryId], [Title], [ShortDescription], [Priority], [State]) 
 VALUES 
     (1, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Zaawansowane Techniki Programowania w Pythonie', N'Szkolenie dla doświadczonych programistów, które zagłębia się w zaawansowane techniki programowania w języku Python. Kurs obejmuje tematy takie jak optymalizacja kodu, wielowątkowość, programowanie asynchroniczne oraz wykorzystanie bibliotek do analizy danych.', 1, 0),
     (2, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Podstawy Marketingu Cyfrowego', N'Szkolenie dla osób, które chcą zdobyć podstawową wiedzę na temat marketingu w internecie. Kurs obejmuje zagadnienia takie jak SEO, SEM, marketing w mediach społecznościowych i email marketing.', 2, 0),
@@ -189,7 +189,7 @@ SET IDENTITY_INSERT [Schoolings] OFF;
 -- SCHOOLING PARTS
 SET IDENTITY_INSERT [SchoolingParts] ON
 INSERT INTO [SchoolingParts] 
-    ([Id], [SchoolingId], [Name], [Content], [State])
+    ([Id], [SchoolingId], [Title], [Content], [State])
 VALUES 
     (1, 1, N'Wprowadzenie do Programowania Obiektowego w Pythonie', N'W tej części kursu uczestnicy zapoznają się z podstawami programowania obiektowego w Pythonie. Omówimy klasy, obiekty, dziedziczenie oraz polimorfizm. Kurs pokaże, jak organizować kod w sposób modularny, tworzyć hierarchie klas i korzystać z właściwości obiektów. Uczestnicy nauczą się również jak za pomocą Python implementować i wykorzystywać wzorce projektowe, co umożliwia tworzenie bardziej zaawansowanych aplikacji.', 0),
     (2, 1, N'Optymalizacja i Wydajność Pythona', N'W tej części kursu uczestnicy poznają techniki optymalizacji kodu w Pythonie, w tym zarządzanie pamięcią, profilowanie aplikacji i używanie bibliotek do przyspieszania obliczeń, takich jak NumPy. Omówimy również zasady dobrego kodowania, które pozwolą na pisanie bardziej wydajnych i skalowalnych aplikacji. Celem jest zrozumienie, jak uniknąć typowych pułapek w Pythonie, które mogą wpływać na wydajność aplikacji.', 0),
@@ -430,15 +430,10 @@ VALUES
     ('34567890-1234-5678-2345-6789abcdef01', '23456789-0123-4567-1234-56789abcdef0', 0, NULL, GETDATE()),
     ('34567890-1234-5678-2345-6789abcdef01', '56789012-3456-7890-4567-89abcdef0123', 0, NULL, GETDATE());
 
-    -- COMPANY SETTINGS
-    SET IDENTITY_INSERT [CompanySettings] ON
-    INSERT INTO [CompanySettings] ([Name],[Value])
-    -- Enables logging of task time
-    VALUES ('EnableTaskTimeLog','true');
-    SET IDENTITY_INSERT [CompanySettings] OFF
-
-
-
+-- COMPANY SETTINGS
+INSERT INTO [CompanySettings] ([Name],[Value])
+-- Enables logging of task time
+VALUES ('EnableTaskTimeLog','true');
 
 -- <<<<< HUGE ALL YOU NEED FOR ROAD MAPS --------------------------------------------------------
 delete from [RoadMapPoints];
