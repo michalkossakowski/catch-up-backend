@@ -1,4 +1,6 @@
-﻿namespace catch_up_backend.Models
+﻿using catch_up_backend.Enums;
+
+namespace catch_up_backend.Models
 {
     public class EventModel
     {
@@ -8,11 +10,10 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid OwnerId { get; set; }
-        public List<Guid> ReceiverIds { get; set; } 
-
+        public string TargetUserType { get; set; }
+        public StateEnum State { get; set; }
         public EventModel()
         {
-            ReceiverIds = new List<Guid>();
         }
     }
 }

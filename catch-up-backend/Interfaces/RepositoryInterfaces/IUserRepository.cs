@@ -4,6 +4,7 @@ using catch_up_backend.Models;
 namespace catch_up_backend.Interfaces.RepositoryInterfaces
 {
     public interface IUserRepository{
+        IQueryable<UserModel> GetQueryable();
         Task<UserDto> Add(UserDto newUser);
         Task<UserDto> Edit(Guid userId, UserDto updatedUser);
         Task Delete(Guid userId);

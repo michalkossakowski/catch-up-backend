@@ -328,22 +328,22 @@ SET IDENTITY_INSERT [Notifications] ON
 INSERT INTO [Notifications] 
     (Id, SenderId, Title, Message, SendDate, Source, State) 
 VALUES 
-    (2, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Assignment!', 'Prepare report', '2025-01-15 09:23:45', '/Tasks/27', 0),
-    (3, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Alert', 'Review documents', '2025-01-20 14:15:22', '/Tasks/28', 0),
-    (4, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent Task', 'Call client', '2025-01-25 11:47:13', '/Tasks/29', 0),
-    (5, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Job', 'Update database', '2025-02-01 16:30:59', '/Tasks/30', 0),
-    (6, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Reminder', 'Send email', '2025-02-05 13:12:34', '/Tasks/31', 0),
-    (7, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Action Required', 'Check stats', '2025-02-10 10:25:47', '/Tasks/32', 0),
-    (8, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Task', 'Fix bug', '2025-02-15 15:55:11', '/Tasks/33', 0),
-    (9, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Quick Task', 'Upload file', '2025-02-20 09:41:28', '/Tasks/34', 0),
-    (10, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Update', 'Test feature', '2025-02-25 12:33:19', '/Tasks/35', 0),
-    (11, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Duty', 'Write code', '2025-03-01 14:22:56', '/Tasks/36', 0),
-    (12, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Notice', 'Meet team', '2025-03-05 17:18:43', '/Tasks/37', 0),
-    (13, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Work Alert', 'Plan sprint', '2025-03-10 08:59:32', '/Tasks/38', 0),
-    (14, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Added', 'Design UI', '2025-03-15 11:44:15', '/Tasks/39', 0),
-    (15, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Item', 'Check logs', '2025-03-20 13:27:58', '/Tasks/40', 0),
-    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-22 16:09:41', '/Tasks/41', 0),
-    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-23 01:06:24', '/Tasks/42', 0);
+    (2, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Assignment!', 'Prepare report', '2025-01-15 09:23:45', '/task/27', 0),
+    (3, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Alert', 'Review documents', '2025-01-20 14:15:22', '/task/28', 0),
+    (4, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent Task', 'Call client', '2025-01-25 11:47:13', '/task/29', 0),
+    (5, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Job', 'Update database', '2025-02-01 16:30:59', '/task/30', 0),
+    (6, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Reminder', 'Send email', '2025-02-05 13:12:34', '/task/31', 0),
+    (7, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Action Required', 'Check stats', '2025-02-10 10:25:47', '/task/32', 0),
+    (8, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Task', 'Fix bug', '2025-02-15 15:55:11', '/task/33', 0),
+    (9, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Quick Task', 'Upload file', '2025-02-20 09:41:28', '/task/34', 0),
+    (10, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Update', 'Test feature', '2025-02-25 12:33:19', '/task/35', 0),
+    (11, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Duty', 'Write code', '2025-03-01 14:22:56', '/task/36', 0),
+    (12, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Notice', 'Meet team', '2025-03-05 17:18:43', '/task/37', 0),
+    (13, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Work Alert', 'Plan sprint', '2025-03-10 08:59:32', '/task/38', 0),
+    (14, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Added', 'Design UI', '2025-03-15 11:44:15', '/task/39', 0),
+    (15, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Item', 'Check logs', '2025-03-20 13:27:58', '/task/40', 0),
+    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-22 16:09:41', '/task/41', 0),
+    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-23 01:06:24', '/task/42', 0);
 SET IDENTITY_INSERT [Notifications] OFF
 
 -- USERS NOTIFICATIONS
@@ -588,3 +588,44 @@ VALUES
 SET IDENTITY_INSERT [Tasks] OFF
 
 -- >>>>> END OF HUGE ALL YOU NEED FOR ROAD MAPS --------------------------------------------------------
+
+-- Events
+TRUNCATE TABLE [catch-up-db].[dbo].[Events];
+
+-- Insert events
+INSERT INTO [dbo].[Events] ([Title], [StartDate], [EndDate], [OwnerId], [TargetUserType], [Description], [State])
+VALUES
+('Welcome Meeting', '2025-10-21 10:00:00', '2025-10-23 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Introduction to the team and discussion of first tasks.', 0),
+('Company Policies Overview', '2025-10-23 14:00:00', '2025-10-23 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Overview of company policies and procedures.', 0),
+('IT Setup & Tools', '2025-10-25 09:00:00', '2025-10-25 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Instructions for laptop setup, accounts, and work tools.', 0),
+('HR Onboarding Session', '2025-10-28 13:00:00', '2025-10-28 14:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Meeting with HR – benefits, leave, and procedures.', 0),
+('Team Introduction', '2025-11-01 10:30:00', '2025-11-01 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Meet the team and assign mentors.', 0),
+('Project Kickoff', '2025-11-05 15:00:00', '2025-11-09 16:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Discussion of the first project for new employees.', 0),
+('Security Training', '2025-11-10 09:00:00', '2025-11-10 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Training on information and IT security.', 0),
+('Product Overview', '2025-11-15 14:00:00', '2025-11-18 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Presentation of company products and services.', 0),
+('Code of Conduct', '2025-11-20 11:00:00', '2025-11-20 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Discussion of workplace ethics and behavior.', 0),
+('Mentor 1:1', '2025-11-25 13:00:00', '2025-11-25 13:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Individual meeting with assigned mentor.', 0),
+('Department Overview', '2025-12-01 10:00:00', '2025-12-01 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Presentation of department structures and key processes.', 0),
+('Workplace Safety', '2025-12-05 09:30:00', '2025-12-05 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Health and safety training in the office.', 0),
+('Team Building Activity', '2025-12-10 14:00:00', '2025-12-10 16:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Team integration through games and group tasks.', 0),
+('Performance Expectations', '2025-12-15 10:00:00', '2025-12-15 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Discussion of expectations and key KPIs for new employees.', 0),
+('Feedback Session', '2025-12-20 15:00:00', '2025-12-20 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Feedback meeting after the first few weeks.', 0),
+('Office Tour', '2025-12-25 09:00:00', '2025-12-25 10:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Office tour and workstation presentation.', 0),
+('Mentor Check-in', '2026-01-05 13:00:00', '2026-01-05 13:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Short meeting with mentor – questions and support.', 0),
+('Training Module 1', '2026-01-10 10:30:00', '2026-01-10 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'First technical training module for new employees.', 0),
+('Training Module 2', '2026-01-15 09:00:00', '2026-01-19 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Second technical training module.', 0),
+('Onboarding Wrap-up', '2026-02-01 14:00:00', '2026-02-01 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Summary of onboarding period and Q&A.', 0);
+
+-- Insert events with empty TargetUserType
+INSERT INTO [dbo].[Events] ([Title], [StartDate], [EndDate], [OwnerId], [TargetUserType], [Description], [State])
+VALUES
+('Company Town Hall', '2025-10-30 10:00:00', '2025-10-30 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'All-hands meeting with the entire company.', 0),
+('All-Hands Meeting', '2025-11-12 14:00:00', '2025-11-12 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Regular meeting for all teams.', 0),
+('Holiday Celebration', '2025-12-24 16:00:00', '2025-12-24 18:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Company holiday party for everyone.', 0),
+('Year-End Review', '2025-12-31 10:00:00', '2025-12-31 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Review of the year’s results for all employees.', 0),
+('Quarterly Strategy Meeting', '2026-01-20 09:00:00', '2026-01-20 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Planning and strategy session with all departments.', 0),
+('Cross-Department Workshop', '2026-02-10 13:00:00', '2026-02-10 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Workshop involving multiple departments for collaboration.', 0),
+('Innovation Talk', '2026-02-25 10:00:00', '2026-02-25 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Presentation on new ideas and innovation initiatives.', 0),
+('Health & Wellness Seminar', '2026-03-05 14:00:00', '2026-03-05 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Seminar on employee health and wellness.', 0),
+('Community Volunteering', '2026-03-20 09:00:00', '2026-03-20 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Company volunteering event open to all.', 0),
+('Annual Planning Session', '2026-04-01 10:00:00', '2026-04-01 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Planning session for the upcoming fiscal year.', 0);

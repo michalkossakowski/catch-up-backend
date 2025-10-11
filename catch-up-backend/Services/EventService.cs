@@ -1,115 +1,179 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using catch_up_backend.Constants;
+using catch_up_backend.Database;
+using catch_up_backend.Dtos;
+using catch_up_backend.Enums;
+using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using Microsoft.EntityFrameworkCore;
-using catch_up_backend.Database;
-using catch_up_backend.Controllers;
-using catch_up_backend.Services;
-using catch_up_backend.Interfaces;
 
 public class EventService : IEventService
 {
     private readonly CatchUpDbContext _context;
-    private readonly EmailController emailController;
+    private readonly IEmailService _emailService;
     private readonly INotificationService _notificationService;
+    private readonly IUserService _userService;
+    private readonly ILogger<EventService> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public EventService(CatchUpDbContext context, INotificationService notificationService)
+    public EventService(
+        CatchUpDbContext context, 
+        IEmailService emailService,
+        INotificationService notificationService,
+        IUserService userService,
+         IServiceProvider serviceProvider,
+        ILogger<EventService> logger)
     {
-        _context = context; 
-        emailController = new EmailController();
+        _context = context;
+        _emailService = emailService;
         _notificationService = notificationService;
+        _userService = userService;
+        _serviceProvider = serviceProvider;
+        _logger = logger;
     }
 
-    public async Task<IEnumerable<EventModel>> GetUserEvents(Guid userId)
+    public async Task<IEnumerable<EventDto>> GetUserEvents(Guid userId)
     {
-        return await _context.Events
-            .Where(e => e.OwnerId == userId || e.ReceiverIds.Contains(userId))
-            .ToListAsync();
-    }
+        var userRole = await _userService.GetRole(userId);
 
-    public async Task<IEnumerable<EventModel>> GetFullEvents()
-    {
-        return await _context.Events.ToListAsync();
-    }
+        var query = _context.Events.Where(e => e.State == StateEnum.Active && e.EndDate > DateTime.Now).AsQueryable();
 
-    public async Task AddEventByPosition(Guid ownerId, string title, string description, string position, DateTime startDate, DateTime endDate)
-    {
-        var receivers = await _context.Users
-            .Where(u => u.Position == position)
-            .ToListAsync();
-        var receiversIds = receivers.Select(r => r.Id).ToList();
-        var eventEntry = new EventModel
+        if (userRole != UserType.Admin)
         {
-            Title = title,
-            Description = description,
-            StartDate = startDate,
-            EndDate = endDate,
-            OwnerId = ownerId,
-            ReceiverIds = receiversIds
-        };
-        _context.Events.Add(eventEntry);
-        SendMailAndNotification(receivers, eventEntry);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate)
-    {
-        List<UserModel> receivers = await _context.Users
-            .Where(u => u.Type == type)
-            .ToListAsync();
-        var receiversIds = receivers.Select(r => r.Id).ToList();
-        var eventEntry = new EventModel
-        {
-            Title = title,
-            Description = description,
-            StartDate = startDate,
-            EndDate = endDate,
-            OwnerId = ownerId,
-            ReceiverIds = receiversIds
-        };
-
-        _context.Events.Add(eventEntry);
-        SendMailAndNotification(receivers, eventEntry);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate)
-    {
-        var receivers = await _context.Users
-            .ToListAsync();
-        var receiversIds = receivers.Select(r => r.Id).ToList();
-        var eventEntry = new EventModel
-        {
-            Title = title,
-            Description = description,
-            StartDate = startDate,
-            EndDate = endDate,
-            OwnerId = ownerId,
-            ReceiverIds = receiversIds
-        };
-
-        _context.Events.Add(eventEntry);
-        await SendMailAndNotification(receivers, eventEntry);
-        await _context.SaveChangesAsync();
-    }
-    private async Task SendMailAndNotification(List<UserModel> receivers, EventModel eventEntry)
-    {
-        foreach (UserModel receiver in receivers)
-        {
-            var sendMentorEmailTask = Task.Run(() => emailController.SendEmail(
-                        receiver.Email,
-                        "New Assignment",
-                        $"Hello {receiver.Name} {receiver.Surname}! \nA new event {eventEntry.Title} has been assigned to you in the system, taking place from {eventEntry.StartDate.ToString()} to {eventEntry.EndDate.ToString()}!\n Event description: {eventEntry.Description}"
-                    ));
-            var notificationReceiver = new NotificationModel(
-                receiver.Id,
-                "New Event",
-                $"Hello {receiver.Name} {receiver.Surname}! \nA new event {eventEntry.Title} has been assigned to you in the system, taking place from {eventEntry.StartDate.ToString()} to {eventEntry.EndDate.ToString()}!\n Event description: {eventEntry.Description}", null
-            );
-            await _notificationService.AddNotification(notificationReceiver, receiver.Id);
+            query = query.Where(e => string.IsNullOrWhiteSpace(e.TargetUserType)
+                || e.TargetUserType == userRole
+                || e.OwnerId == userId);
         }
 
+        return await query.Select(e => new EventDto
+        {
+            Id = e.Id,
+            Title = e.Title,
+            Description = e.Description,
+            StartDate = e.StartDate,
+            EndDate = e.EndDate,
+            OwnerId = e.OwnerId,
+            TargetUserType = e.TargetUserType
+        })
+        .ToListAsync();
+    }
+
+    public async Task<bool> DeleteAsync(Guid userId, int eventId)
+    {
+        var userRole = await _userService.GetRole(userId);
+
+        var eventToRemove = await _context.Events
+            .FirstOrDefaultAsync(e => e.Id == eventId 
+                && (e.OwnerId == userId
+                    || userRole == UserType.Admin));
+
+        if (eventToRemove == null)
+        {
+            return false;
+        }
+        else
+        {
+            eventToRemove.State = StateEnum.Deleted;
+            _context.Events.Update(eventToRemove);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+    }
+
+    public async Task<EventDto> AddAsync(EventDto eventDto)
+    {
+        var newEvent = new EventModel
+        {
+            Title = eventDto.Title,
+            Description = eventDto.Description,
+            StartDate = eventDto.StartDate,
+            EndDate = eventDto.EndDate,
+            OwnerId = eventDto.OwnerId,
+            TargetUserType = eventDto.TargetUserType,
+            State = StateEnum.Active
+        };
+
+        _context.Events.Add(newEvent);
+        await _context.SaveChangesAsync();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var scope = _serviceProvider.CreateScope();
+                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+                var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<EventService>>();
+
+                await SendMailAndNotificationScoped(newEvent, userService, emailService, notificationService, logger);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Background task failed: {ex}");
+            }
+        });
+
+        return new EventDto
+        {
+            Id = newEvent.Id,
+            Title = newEvent.Title,
+            Description = newEvent.Description,
+            StartDate = newEvent.StartDate,
+            EndDate = newEvent.EndDate,
+            OwnerId = newEvent.OwnerId,
+            TargetUserType = newEvent.TargetUserType
+        };
+    }
+
+    private static async Task SendMailAndNotificationScoped(
+        EventModel eventModel,
+        IUserService userService,
+        IEmailService emailService,
+        INotificationService notificationService,
+        ILogger logger)
+    {
+        var receivers = string.IsNullOrWhiteSpace(eventModel.TargetUserType) 
+            ? await userService.GetQueryable().Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email
+                }).ToListAsync()
+            : await userService.SearchUsersByRole(eventModel.TargetUserType);
+
+        var subject = $"New Event: {eventModel.Title}";
+
+        var body = $"Description: {eventModel.Description}\n" +
+            $"Start: {eventModel.StartDate.ToString()}, End: {eventModel.EndDate.ToString()}";
+
+        var receiverIds = receivers.Select(r => r.Id).ToList();
+        try
+        {
+            var notificationReceiver = new NotificationModel(
+                eventModel.OwnerId,
+                subject,
+                body,
+                "/home"
+            );
+
+            await notificationService.AddNotification(notificationReceiver, receiverIds);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError($"Cannot send notification to users {string.Join(", ", receiverIds)}: {ex.Message}");
+        }
+
+        //foreach (var receiver in receivers)
+        //{
+        //    try
+        //    {
+        //        await emailService.SendEmail(receiver.Email!, subject, body, null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError($"Cannot send email to user {receiver.Id}: {ex.Message}");
+        //    }
+        //}
     }
 }
