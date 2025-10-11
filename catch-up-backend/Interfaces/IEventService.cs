@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using catch_up_backend.Models;
+using catch_up_backend.Dtos;
 
 public interface IEventService
 {
-    Task<IEnumerable<EventModel>> GetUserEvents(Guid userId);
-    Task<IEnumerable<EventModel>> GetFullEvents();
-    Task AddEventByPosition(Guid ownerId, string title, string description, string position, DateTime startDate, DateTime endDate);
-    Task AddEventByType(Guid ownerId, string title, string description, string type, DateTime startDate, DateTime endDate);
-    Task AddEventForAllGroups(Guid ownerId, string title, string description, DateTime startDate, DateTime endDate);
+    Task<IEnumerable<EventDto>> GetUserEvents(Guid userId);
+    Task<EventDto> AddAsync(EventDto eventDto);
+    Task<bool> DeleteAsync(Guid userId, int eventId);
 }

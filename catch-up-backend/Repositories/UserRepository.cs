@@ -29,6 +29,11 @@ namespace catch_up_backend.Repositories
             }
         }
 
+        public IQueryable<UserModel> GetQueryable()
+        {
+            return _context.Users.AsQueryable();
+        }
+
         public async Task<UserDto> Add(UserDto newUser)
         {
             var hashedPassword = HashPassword(newUser.Password);

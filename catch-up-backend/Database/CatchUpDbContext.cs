@@ -302,27 +302,13 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //EventModel One To Many
             modelBuilder.Entity<EventModel>()
             .HasOne<UserModel>()
             .WithMany()
             .HasForeignKey(x => x.OwnerId)
             .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<EventModel>()
-            .HasMany<UserModel>()
-            .WithMany("Events")
-            .UsingEntity<Dictionary<string, object>>(
-            "EventReceivers",
-            j => j
-            .HasOne<UserModel>()
-            .WithMany()
-            .HasForeignKey("ReceiverId")
-            .OnDelete(DeleteBehavior.NoAction),
-            j => j
-            .HasOne<EventModel>()
-            .WithMany()
-            .HasForeignKey("EventId")
-            .OnDelete(DeleteBehavior.NoAction)
-            );
 
             //TaskCommentModel One To Many
             modelBuilder.Entity<TaskCommentModel>()

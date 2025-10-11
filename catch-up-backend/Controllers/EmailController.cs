@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using catch_up_backend.Services;
 using catch_up_backend.Interfaces;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace catch_up_backend.Controllers
 {

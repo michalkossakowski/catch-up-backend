@@ -58,7 +58,7 @@ namespace catch_up_backend.Services
                     sender.Id,
                     "You have received a new Task !",
                     $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
-                    $"/tasks/{newTask.Id}"
+                    $"/task/{newTask.Id}"
                 );
 
                 await _notificationService.AddNotification(notification, newTask.NewbieId!.Value);
