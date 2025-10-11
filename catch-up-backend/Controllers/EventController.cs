@@ -39,7 +39,7 @@ public class EventController : ControllerBase
         var result =  await _eventService.AddAsync(eventDto);
 
         return result != null
-            ? Ok(new { message = "Event added", eventDto = eventDto })
+            ? Ok(new { message = "Event added", eventDto = result })
             : StatusCode(500, new { message = "Event adding error" });
     }
 }
