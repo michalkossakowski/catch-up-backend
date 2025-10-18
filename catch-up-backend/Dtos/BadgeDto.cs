@@ -10,5 +10,7 @@ namespace catch_up_backend.Dtos
         public int? IconId { get; set; }
         public int? Count { get; set; }
         public BadgeTypeCountEnum? CountType { get; set; }
+        public DateTime? AchievedDate { get; set; }
+
     }
 }

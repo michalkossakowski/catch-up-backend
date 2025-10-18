@@ -1,8 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
-using catch_up_backend.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
@@ -83,6 +81,7 @@ namespace catch_up_backend.Controllers
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
             var mentorBadges = await _badgeService.GetByMentorId(userId);
+
             return Ok(mentorBadges);
         }
     }
