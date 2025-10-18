@@ -10,10 +10,14 @@ namespace catch_up_backend.Services
     public class BadgeService : IBadgeService
     {
         private readonly CatchUpDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public BadgeService(CatchUpDbContext context)
+        public BadgeService(
+            CatchUpDbContext context,
+            INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
         public async Task<bool> Add(BadgeDto newBadge)
         {
@@ -68,6 +72,7 @@ namespace catch_up_backend.Services
             }
             return true;
         }
+
         public async Task<BadgeDto> GetById(int badgeId)
         {
             var badge = await _context.Badges
@@ -84,6 +89,7 @@ namespace catch_up_backend.Services
 
             return badge;
         }
+
         public async Task<List<BadgeDto>> GetAll()
         {
             var badges = await _context.Badges
@@ -102,23 +108,79 @@ namespace catch_up_backend.Services
             return badges;
         }
 
-        public async Task AssignBadgeManuallyAsync(Guid userId, int badgeId)
+        public async Task<List<BadgeDto>> GetByMentorId(Guid userId)
         {
-            await ExecuteAssignment(userId, badgeId);
+            var mentorBadges = await _context.MentorsBadges
+                .Where(mb => mb.MentorId == userId)
+                .Join(_context.Badges,
+                    mb => mb.BadgeId,
+                    b => b.Id,
+                    (mb, b) => new { MentorBadge = mb, Badge = b })
+                .Where(x => x.Badge.State != StateEnum.Deleted)
+                .Select(x => new BadgeDto
+                {
+                    Id = x.Badge.Id,
+                    Name = x.Badge.Name,
+                    Description = x.Badge.Description,
+                    IconId = x.Badge.IconId,
+                    Count = x.Badge.Count,
+                    CountType = x.Badge.CountType,
+                    AchievedDate = x.MentorBadge.AchievedDate
+                })
+                .ToListAsync();
+
+            return mentorBadges;
         }
 
-        public async Task AssignBadgeAutomatically(Guid userId, BadgeTypeCountEnum countType, int count)
+        public async Task AssignBadgeManuallyAsync(Guid userId, int badgeId)
         {
-            int? badgeId = await CheckConditions(countType, count);
+            var badge = await _context.Badges.FirstOrDefaultAsync(b => b.Id == badgeId);
 
-            if (badgeId.HasValue)
+            if(badge == null)
             {
-                await ExecuteAssignment(userId, badgeId.Value);
-                Console.WriteLine($"Assign badge {badgeId.Value} to mentor {userId}.");
+                throw new ArgumentOutOfRangeException($"Badge with id {badgeId} not found.");
             }
-            else
+
+            await AssignBadgeAsync(userId, badge);
+        }
+
+        public async Task HandleUserBadgesAsync(Guid userId, BadgeTypeCountEnum counterToIncrement)
+        {
+            var user = _context.Users
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
             {
-                Console.WriteLine("No badge to assign.");
+                throw new ArgumentException($"User with id {userId} not found.");
+            }
+
+            if (user.Counters == null)
+            {
+                user.Counters = new Dictionary<BadgeTypeCountEnum, int>();
+            }
+            
+            user.Counters[counterToIncrement] = user.Counters.GetValueOrDefault(counterToIncrement, 0) + 1;
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            var userBadges = await _context.MentorsBadges
+                .Where(mb => mb.MentorId == userId)
+                .Select(mb => mb.BadgeId)
+                .ToListAsync();
+
+            var possibleBadges = await _context.Badges
+                .Where(b => b.CountType == counterToIncrement
+                    && b.State != StateEnum.Deleted
+                    && !userBadges.Contains(b.Id))
+                .ToListAsync();
+
+            foreach (var badge in possibleBadges)
+            {
+                if(user.Counters[counterToIncrement] >= badge.Count)
+                {
+                    await AssignBadgeAsync(userId, badge);
+                }
             }
         }
 
@@ -132,17 +194,19 @@ namespace catch_up_backend.Services
             return badge?.Id;
         }
 
-        private async Task ExecuteAssignment(Guid mentorId, int badgeId)
+        private async Task AssignBadgeAsync(Guid mentorId, BadgeModel badge)
         {
             try
             {
-                var mentorBadge = new MentorBadgeModel(mentorId, badgeId);
+                var mentorBadge = new MentorBadgeModel(mentorId, badge.Id);
 
                 await _context.MentorsBadges.AddAsync(mentorBadge);
 
                 await _context.SaveChangesAsync();
 
-                Console.WriteLine($"Assign badge {badgeId} to mentor {mentorId} with date: {mentorBadge.AchievedDate}.");
+                await PrepareAndSendNotificationAsync(mentorId, badge);
+
+                Console.WriteLine($"Assign badge {badge.Id} to mentor {mentorId} with date: {mentorBadge.AchievedDate}.");
             }
             catch (Exception ex)
             {
@@ -150,25 +214,16 @@ namespace catch_up_backend.Services
             }
         }
 
-        public async Task<List<MentorBadgeDto>> GetByMentorId(Guid userId)
+        private async Task PrepareAndSendNotificationAsync(Guid mentorId, BadgeModel badge)
         {
-            var mentorBadges = await _context.MentorsBadges
-                .Where(mb => mb.MentorId == userId)
-                .Join(_context.Badges,
-                    mb => mb.BadgeId,
-                    b => b.Id,
-                    (mb, b) => new { MentorBadge = mb, Badge = b })
-                .Where(x => x.Badge.State != StateEnum.Deleted)
-                .Select(x => new MentorBadgeDto
-                {
-                    MentorId = x.MentorBadge.MentorId,
-                    BadgeId = x.MentorBadge.BadgeId,
-                    AchievedDate = x.MentorBadge.AchievedDate
-                })
-                .ToListAsync();
+            var notification = new NotificationModel(
+                mentorId,
+                "New Badge Achieved!",
+                $"Congratulations! You have earned a new badge: {badge.Name} !",
+                $"/badges"
+            );
 
-            return mentorBadges;
+            await _notificationService.AddNotification(notification, mentorId);
         }
-
     }
 }

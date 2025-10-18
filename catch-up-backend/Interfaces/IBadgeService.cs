@@ -10,9 +10,8 @@ namespace catch_up_backend.Interfaces
         public Task<bool> Delete(int badgeId);
         public Task<BadgeDto> GetById(int badgeId);
         public Task<List<BadgeDto>> GetAll();
+        public Task<List<BadgeDto>> GetByMentorId(Guid userId);
         public Task AssignBadgeManuallyAsync(Guid userId, int badgeId);
-        public Task AssignBadgeAutomatically(Guid userId, BadgeTypeCountEnum countType, int count);
-        public Task<int?> CheckConditions(BadgeTypeCountEnum countType, int countToCheck);
-        public Task<List<MentorBadgeDto>> GetByMentorId(Guid userId);
+        public Task HandleUserBadgesAsync(Guid userId, BadgeTypeCountEnum counterToIncrememt);
     }
 }
