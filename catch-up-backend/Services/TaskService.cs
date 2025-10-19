@@ -50,7 +50,6 @@ namespace catch_up_backend.Services
 
                 await SendTaskAssignmentEmails(task);
 
-                // Sending notification
                 var taskContent = _context.TaskContents.FirstOrDefault(tc => tc.Id == newTask.TaskContentId);
                 var sender = await _userService.GetById(newTask.AssigningId!.Value);
 
@@ -98,7 +97,6 @@ namespace catch_up_backend.Services
             var task = await _context.Tasks.FindAsync(id);
             if (task == null) return (null, null);
 
-            //var taskContent = await _context.TaskContents.FindAsync(task.TaskContentId);
             var taskContent = await _contentService.GetById(task.TaskContentId);
             if (taskContent == null) return (null, null);
             try
@@ -332,7 +330,6 @@ namespace catch_up_backend.Services
                 var sender = await _userService.GetById(task.AssigningId!.Value);
                 var newbie = await _userService.GetById(task.NewbieId!.Value);
 
-                // Sent to Newbie
                 _ = Task.Run(() => _emailController.SendEmail(
                     newbie.Email,
                     "New Task Assigned",
@@ -343,7 +340,6 @@ namespace catch_up_backend.Services
                     $"Description: {taskContent.Description}"
                 ));
 
-                // Sent to Mentor / Assigner
                 _ = Task.Run(() => _emailController.SendEmail(
                     sender.Email,
                     "Task Assignment Confirmation",
@@ -374,7 +370,6 @@ namespace catch_up_backend.Services
                 string previousStatusText = GetStatusDescription(previousStatus);
                 string newStatusText = GetStatusDescription(task.Status);
 
-                // Sent to Newbie
                 _ = Task.Run(() => _emailController.SendEmail(
                     newbie.Email,
                     $"Task Status Updated: {taskContent.Title}",
@@ -383,7 +378,6 @@ namespace catch_up_backend.Services
                     $"from {previousStatusText} to {newStatusText}."
                 ));
 
-                // Sent to Mentor / Assigner
                 _ = Task.Run(() => _emailController.SendEmail(
                     assigner.Email,
                     $"Task Status Updated: {taskContent.Title}",
