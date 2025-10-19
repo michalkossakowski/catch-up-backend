@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using catch_up_backend.Dtos;
+using catch_up_backend.Helpers;
 using catch_up_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,56 +14,32 @@ public class EventController : ControllerBase
         _eventService = eventService;
     }
 
-    [HttpGet("GetUserEvents/{id}")]
-    public async Task<ActionResult<IEnumerable<EventModel>>> GetUserEvents(Guid id)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<EventDto>>> Get()
     {
-        var events = await _eventService.GetUserEvents(id);
+        var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+        var events = await _eventService.GetUserEvents(userId);
+
         return Ok(events);
     }
 
-    [HttpGet("GetFullEvents")]
-    public async Task<ActionResult<IEnumerable<EventModel>>> GetFullEvents()
+    [HttpDelete]
+    [Route("Delete/{eventId:int}")]
+    public async Task<ActionResult<IEnumerable<EventModel>>> Delete(int eventId)
     {
-        var events = await _eventService.GetFullEvents();
-        return Ok(events);
+        var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
+        return await _eventService.DeleteAsync(userId, eventId)
+            ? Ok(new { message = $"Event '{eventId}' deleted" })
+            : NotFound(new { message = $"Event with id: '{eventId}' not found or user don't have permission" });
     }
 
-    [HttpPost("AddEventByPosition")]
-    public async Task<ActionResult> AddEventByPosition(
-    [FromQuery] Guid ownerId,
-    [FromQuery] string title,
-    [FromQuery] string description,
-    [FromQuery] string position,
-    [FromQuery] DateTime startDate,
-    [FromQuery] DateTime endDate)
+    [HttpPost]
+    public async Task<ActionResult> Post(EventDto eventDto)
     {
-        await _eventService.AddEventByPosition(ownerId, title, description, position, startDate, endDate);
-        return Ok();
-    }
+        var result =  await _eventService.AddAsync(eventDto);
 
-    [HttpPost("AddEventByType")]
-    public async Task<ActionResult> AddEventByType(
-    [FromQuery] Guid ownerId,
-    [FromQuery] string title,
-    [FromQuery] string description,
-    [FromQuery] string type,
-    [FromQuery] DateTime startDate,
-    [FromQuery] DateTime endDate)
-    {
-        await _eventService.AddEventByType(ownerId, title, description, type, startDate, endDate);
-        return Ok();
-    }
-
-
-    [HttpPost("AddEventForAllGroups")]
-    public async Task<ActionResult> AddEventForAllGroups(
-    [FromQuery] Guid ownerId,
-    [FromQuery] string title,
-    [FromQuery] string description,
-    [FromQuery] DateTime startDate,
-    [FromQuery] DateTime endDate)
-    {
-        await _eventService.AddEventForAllGroups(ownerId, title, description, startDate, endDate);
-        return Ok();
+        return result != null
+            ? Ok(new { message = "Event added", eventDto = result })
+            : StatusCode(500, new { message = "Event adding error" });
     }
 }

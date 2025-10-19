@@ -1,23 +1,23 @@
 DECLARE @sql NVARCHAR(MAX) = '';
 
--- Wy��czanie i usuni�cie kluczy obcych
+-- TURN OFF FK KEYS
 SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(fk.parent_object_id)) 
                + ' DROP CONSTRAINT ' + QUOTENAME(fk.name) + ';' + CHAR(13)
 FROM sys.foreign_keys fk;
 
-PRINT @sql;  -- Sprawdzenie SQL przed wykonaniem
+PRINT @sql;
 EXEC sp_executesql @sql;
 
--- Truncate wszystkich tabel
+-- TRUNCATE ALL TABLES
 SET @sql = '';
 SELECT @sql += 'TRUNCATE TABLE ' + QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) + ';' + CHAR(13)
 FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE';
 
-PRINT @sql;  -- Sprawdzenie SQL przed wykonaniem
+PRINT @sql; 
 EXEC sp_executesql @sql;
 
--- Przywr�cenie usuni�tych kluczy obcych
+-- TURN ON FK KEYS
 SET @sql = '';
 SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(fk.parent_object_id)) 
                + ' ADD CONSTRAINT ' + QUOTENAME(fk.name) 
@@ -35,5 +35,5 @@ SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(fk.parent_object_id))
                + ');' + CHAR(13)
 FROM sys.foreign_keys fk;
 	
-PRINT @sql;  -- Sprawdzenie SQL przed wykonaniem
+PRINT @sql;
 EXEC sp_executesql @sql;

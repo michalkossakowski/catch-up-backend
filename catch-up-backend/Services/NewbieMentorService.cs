@@ -14,12 +14,17 @@ public class NewbieMentorService : INewbieMentorService
     private readonly CatchUpDbContext _context;
     private readonly EmailController emailController;
     private readonly INotificationService _notificationService;
+    private readonly IBadgeService _badgeService;
 
-    public NewbieMentorService(CatchUpDbContext context, INotificationService notificationService)
+    public NewbieMentorService(
+        CatchUpDbContext context, 
+        INotificationService notificationService,
+        IBadgeService badgeService)
     {
         _context = context;
         emailController = new EmailController();
         _notificationService = notificationService;
+        _badgeService = badgeService;
     }
 
     public async Task<bool> AssignNewbieToMentor(Guid newbieId, Guid mentorId)
@@ -32,8 +37,6 @@ public class NewbieMentorService : INewbieMentorService
         }
 
         NewbieMentorModel? assignment = await _context.NewbiesMentors.FindAsync(newbieId, mentorId);
-
-        // Wysyłanie e-maili i powiadomień
 
         Task.Run(() => emailController.SendEmail(
             newbie.Email,
@@ -74,16 +77,7 @@ public class NewbieMentorService : INewbieMentorService
             assignment.State = StateEnum.Active;
         }
 
-        // Aktualizacja licznika odznak mentora
-        mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount] = mentor.Counters.GetValueOrDefault(BadgeTypeCountEnum.AssignNewbiesCount, 0) + 1;
-        _context.Users.Update(mentor);
-        await _context.SaveChangesAsync();
-
-        await new BadgeService(_context).AssignBadgeAutomatically(
-            mentor.Id,
-            BadgeTypeCountEnum.AssignNewbiesCount,
-            mentor.Counters[BadgeTypeCountEnum.AssignNewbiesCount]
-        );
+        await _badgeService.HandleUserBadgesAsync(mentor.Id, BadgeTypeCountEnum.NewbiesCount);
 
         return true;
     }

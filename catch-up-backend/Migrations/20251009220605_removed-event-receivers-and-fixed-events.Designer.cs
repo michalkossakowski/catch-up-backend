@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using catch_up_backend.Database;
 
@@ -11,9 +12,11 @@ using catch_up_backend.Database;
 namespace catch_up_backend.Migrations
 {
     [DbContext(typeof(CatchUpDbContext))]
-    partial class CatchUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251009220605_removed-event-receivers-and-fixed-events")]
+    partial class removedeventreceiversandfixedevents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +97,46 @@ namespace catch_up_backend.Migrations
                     b.ToTable("CompanyCities");
                 });
 
+            modelBuilder.Entity("catch_up_backend.Models.EmployeeCardModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdditionalInformation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AvatarSource")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TelephoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmployeeCards");
+                });
+
             modelBuilder.Entity("catch_up_backend.Models.EventModel", b =>
                 {
                     b.Property<int>("Id")
@@ -114,9 +157,6 @@ namespace catch_up_backend.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.Property<string>("TargetUserType")
                         .IsRequired()
@@ -295,6 +335,39 @@ namespace catch_up_backend.Migrations
                     b.ToTable("FirebaseTokens");
                 });
 
+            modelBuilder.Entity("catch_up_backend.Models.GradeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("EvaluatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RatedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EvaluatorId");
+
+                    b.HasIndex("RatedId");
+
+                    b.ToTable("Grades");
+                });
+
             modelBuilder.Entity("catch_up_backend.Models.MaterialsModel", b =>
                 {
                     b.Property<int>("Id")
@@ -411,6 +484,30 @@ namespace catch_up_backend.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("catch_up_backend.Models.PointsModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("MentorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MentorId");
+
+                    b.ToTable("Points");
                 });
 
             modelBuilder.Entity("catch_up_backend.Models.PresetModel", b =>
@@ -1041,6 +1138,21 @@ namespace catch_up_backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("catch_up_backend.Models.GradeModel", b =>
+                {
+                    b.HasOne("catch_up_backend.Models.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("EvaluatorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("catch_up_backend.Models.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("RatedId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("catch_up_backend.Models.MaterialsSchoolingPartModel", b =>
                 {
                     b.HasOne("catch_up_backend.Models.MaterialsModel", null)
@@ -1091,6 +1203,15 @@ namespace catch_up_backend.Migrations
                     b.HasOne("catch_up_backend.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("catch_up_backend.Models.PointsModel", b =>
+                {
+                    b.HasOne("catch_up_backend.Models.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("MentorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

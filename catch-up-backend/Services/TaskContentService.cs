@@ -11,10 +11,12 @@ namespace catch_up_backend.Services
     public class TaskContentService : ITaskContentService
     {
         private readonly CatchUpDbContext _context;
+        private readonly IBadgeService _badgeService;
 
-        public TaskContentService(CatchUpDbContext context)
+        public TaskContentService(CatchUpDbContext context, IBadgeService badgeService)
         {   
             _context = context;
+            _badgeService = badgeService;
         }
 
         public async Task<TaskContentDto> Add(TaskContentDto newTaskContent)
@@ -30,11 +32,14 @@ namespace catch_up_backend.Services
                 await _context.AddAsync(taskContent);
                 await _context.SaveChangesAsync();
                 newTaskContent.Id = taskContent.Id;
+
+                await _badgeService.HandleUserBadgesAsync((Guid)newTaskContent.CreatorId!, BadgeTypeCountEnum.CreatedTasksCount);
             }
             catch (Exception ex)
             {
                 throw new Exception("Error: Add taskContent: " + ex);
             }
+
             return newTaskContent;
         }
 

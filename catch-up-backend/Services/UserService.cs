@@ -12,6 +12,10 @@ namespace catch_up_backend.Services
             this.userRepository = userRepository;
         }
 
+        public IQueryable<UserModel> GetQueryable()
+        {
+            return userRepository.GetQueryable();
+        }
         public async Task<UserDto> Add(UserDto newUser)
         {
             return await userRepository.Add(newUser);

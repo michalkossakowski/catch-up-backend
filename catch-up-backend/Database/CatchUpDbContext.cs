@@ -14,18 +14,15 @@ namespace catch_up_backend.Database
 
         public DbSet<BadgeModel> Badges { get; set; }
         public DbSet<CategoryModel> Categories { get; set; }
-        public DbSet<EmployeeCardModel> EmployeeCards { get; set; }
         public DbSet<FaqModel> Faqs { get; set; }
         public DbSet<FeedbackModel> Feedbacks { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<FileInMaterial> FileInMaterials { get; set; }
-        public DbSet<GradeModel> Grades { get; set; }
         public DbSet<MaterialsSchoolingPartModel> MaterialsSchoolingParts { get; set; }
         public DbSet<MaterialsModel> Materials { get; set; }
         public DbSet<MentorBadgeModel> MentorsBadges { get; set; }
         public DbSet<NewbieMentorModel> NewbiesMentors { get; set; }
         public DbSet<NotificationModel> Notifications { get; set; }
-        public DbSet<PointsModel> Points { get; set; }
         public DbSet<PresetModel> Presets { get; set; }
         public DbSet<RoadMapModel> RoadMaps { get; set; }
         public DbSet<RoadMapPointModel> RoadMapPoints { get; set; }
@@ -87,19 +84,6 @@ namespace catch_up_backend.Database
                 .HasForeignKey(x => x.MaterialId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //GradeModel One To Many
-            modelBuilder.Entity<GradeModel>()
-                .HasOne<UserModel>()
-                .WithMany()
-                .HasForeignKey(x => x.RatedId)
-                .OnDelete(DeleteBehavior.NoAction);
-            //GradeModel One To Many
-            modelBuilder.Entity<GradeModel>()
-                .HasOne<UserModel>()
-                .WithMany()
-                .HasForeignKey(x => x.EvaluatorId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             //MaterialsSchoolingPartModel Many To Many
             modelBuilder.Entity<MaterialsSchoolingPartModel>()
                 .HasKey(x => new { x.MaterialsId, x.SchoolingPartId });
@@ -143,12 +127,6 @@ namespace catch_up_backend.Database
                 .HasOne<UserModel>()
                 .WithMany()
                 .HasForeignKey(x => x.SenderId);
-
-            //PointsModel One To Many
-            modelBuilder.Entity<PointsModel>()
-                .HasOne<UserModel>()
-                .WithMany()
-                .HasForeignKey(x => x.MentorId);
 
             //PresetModel One To Many
             modelBuilder.Entity<PresetModel>()
@@ -302,27 +280,13 @@ namespace catch_up_backend.Database
                 .WithMany()
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //EventModel One To Many
             modelBuilder.Entity<EventModel>()
             .HasOne<UserModel>()
             .WithMany()
             .HasForeignKey(x => x.OwnerId)
             .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<EventModel>()
-            .HasMany<UserModel>()
-            .WithMany("Events")
-            .UsingEntity<Dictionary<string, object>>(
-            "EventReceivers",
-            j => j
-            .HasOne<UserModel>()
-            .WithMany()
-            .HasForeignKey("ReceiverId")
-            .OnDelete(DeleteBehavior.NoAction),
-            j => j
-            .HasOne<EventModel>()
-            .WithMany()
-            .HasForeignKey("EventId")
-            .OnDelete(DeleteBehavior.NoAction)
-            );
 
             //TaskCommentModel One To Many
             modelBuilder.Entity<TaskCommentModel>()

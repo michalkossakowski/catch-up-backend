@@ -16,13 +16,15 @@ namespace catch_up_backend.Services
         private readonly INotificationService _notificationService;
         private readonly IRoadMapPointService _roadMapPointService;
         private readonly EmailController _emailController;
+        private readonly IBadgeService _badgeService;
 
         public TaskService(
             CatchUpDbContext context,
             ITaskContentService contentService,
             IUserService userService,
             INotificationService notificationService,
-            IRoadMapPointService roadMapPointService)
+            IRoadMapPointService roadMapPointService,
+            IBadgeService badgeService)
         {
             _context = context;
             _contentService = contentService;
@@ -30,6 +32,7 @@ namespace catch_up_backend.Services
             _notificationService = notificationService;
             _roadMapPointService = roadMapPointService;
             _emailController = new EmailController();
+            _badgeService = badgeService;
         }
         public async Task<TaskDto> AddAsync(TaskDto newTask)
         {
@@ -57,10 +60,12 @@ namespace catch_up_backend.Services
                     sender.Id,
                     "You have received a new Task !",
                     $"{sender.Name} {sender.Surname} assigned you a task: \"{taskContent!.Title}\"",
-                    $"/tasks/{newTask.Id}"
+                    $"/task/{newTask.Id}"
                 );
 
                 await _notificationService.AddNotification(notification, newTask.NewbieId!.Value);
+
+                await _badgeService.HandleUserBadgesAsync(sender.Id, BadgeTypeCountEnum.AssignedTasksCount);
             }
             catch (Exception ex)
             {

@@ -1,39 +1,41 @@
 -- USERS
 -- BASIC TYPE USERS
+DELETE FROM [USERS];
 INSERT INTO [Users] ([Id], [Name], [Surname], [Email], [Password], [Type], [Position], [State], [Counters], [AvatarId]) 
 VALUES 
-(N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Admin', N'Adminski', N'admin@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Admin', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-(N'04D68924-791D-4022-F2E3-08DD33FC8FD5', N'Mentor', N'Mentorski', N'mentor@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Mentor', 0, N'{"AssignNewbiesCount":1,"CheckedTasksCount":2,"CreatedTasksCount":3,"CreatedSchoolingsCount":4}', NULL),
-(N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'Newbie', N'Newbieski', N'newbie@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Newbie', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-(N'8d2d867e-a31c-4bef-827a-75c9c1703a23', N'HRek', N'HRowski', N'hr@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'HR', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL);
+(N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', N'Admin', N'Adminski', N'admin@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Admin', 0, NULL, NULL),
+(N'04D68924-791D-4022-F2E3-08DD33FC8FD5', N'Mentor', N'Mentorski', N'mentor@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Mentor', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+(N'555843BB-B38F-4387-F2E2-08DD33FC8FD5', N'Newbie', N'Newbieski', N'newbie@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Newbie', 0, NULL, NULL),
+(N'8d2d867e-a31c-4bef-827a-75c9c1703a23', N'HRek', N'HRowski', N'hr@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'HR', 0, NULL, NULL);
 
 -- OTHER USERS
 INSERT INTO [Users] 
     ([Id], [Name], [Surname], [Email], [Password], [Type], [Position], [State], [Counters], [AvatarId])
 VALUES 
-    (N'30943099-da50-4271-931c-08dd3251ce0a', N'Adam', N'Małysz', N'adam@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Frontend', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'Zbigniew', N'Stonóg', N'zbigniew@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Menager', N'Backend', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'Krzysztof', N'Krawczyk', N'krawczyk@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Frontend', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'12a34bcd-56ef-7890-1234-56789abcdef0', N'Anna', N'Nowak', N'anna.nowak@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Design', 0, N'{"AssignNewbiesCount":2,"CheckedTasksCount":15,"CreatedTasksCount":5,"CreatedSchoolingsCount":1}', NULL),
-    (N'22334455-6677-8899-aabb-ccddeeff0011', N'Marek', N'Kowalski', N'marek.kowalski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'DevOps', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":10,"CreatedSchoolingsCount":2}', NULL),
-    (N'abcdef01-2345-6789-0123-456789abcdef', N'Piotr', N'Szymański', N'piotr.szymanski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Testing', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":1,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'34567890-1234-5678-90ab-cdef01234567', N'Joanna', N'Wiśniewska', N'joanna.wisniewska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Marketing', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'45678901-2345-6789-0abc-def123456789', N'Karolina', N'Wróbel', N'karolina.wrobel@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'HR', 0, N'{"AssignNewbiesCount":5,"CheckedTasksCount":20,"CreatedTasksCount":3,"CreatedSchoolingsCount":1}', NULL),
-    (N'56789012-3456-7890-abcd-ef0123456789', N'Łukasz', N'Dąbrowski', N'lukasz.dabrowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Data Science', 0, N'{"AssignNewbiesCount":1,"CheckedTasksCount":25,"CreatedTasksCount":7,"CreatedSchoolingsCount":3}', NULL),
-    (N'67890123-4567-8901-bcde-f0123456789a', N'Monika', N'Kaczmarek', N'monika.kaczmarek@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Sales', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL),
-    (N'78901234-5678-9012-cdef-0123456789ab', N'Artur', N'Kwiatkowski', N'artur.kwiatkowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Backend', 0, N'{"AssignNewbiesCount":4,"CheckedTasksCount":30,"CreatedTasksCount":10,"CreatedSchoolingsCount":5}', NULL),
-    (N'89012345-6789-0123-def0-123456789abc', N'Tomasz', N'Jankowski', N'tomasz.jankowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Frontend', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":1,"CreatedSchoolingsCount":0}', NULL),
-    (N'90123456-7890-1234-ef01-23456789abcd', N'Magdalena', N'Lewandowska', N'magdalena.lewandowska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'UI/UX', 0, N'{"AssignNewbiesCount":3,"CheckedTasksCount":10,"CreatedTasksCount":4,"CreatedSchoolingsCount":2}', NULL),
-    (N'01234567-8901-2345-f012-3456789abcde', N'Paweł', N'Kamiński', N'pawel.kaminski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Manager', N'Product Management', 0, N'{"AssignNewbiesCount":2,"CheckedTasksCount":5,"CreatedTasksCount":6,"CreatedSchoolingsCount":3}', NULL),
-    (N'12345678-9012-3456-0123-456789abcdef', N'Aleksandra', N'Zielińska', N'aleksandra.zielinska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'IT Support', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":15,"CreatedTasksCount":3,"CreatedSchoolingsCount":1}', NULL),
-    (N'23456789-0123-4567-1234-56789abcdef0', N'Rafał', N'Nowicki', N'rafal.nowicki@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Cybersecurity', 0, N'{"AssignNewbiesCount":6,"CheckedTasksCount":22,"CreatedTasksCount":9,"CreatedSchoolingsCount":4}', NULL),
-    (N'34567890-1234-5678-2345-6789abcdef01', N'Natalia', N'Wójcik', N'natalia.wojcik@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Content Writing', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":2,"CreatedSchoolingsCount":0}', NULL),
-    (N'45678901-2345-6789-3456-789abcdef012', N'Bartłomiej', N'Kulesza', N'bartlomiej.kulesza@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'Cloud Engineering', 0, N'{"AssignNewbiesCount":1,"CheckedTasksCount":18,"CreatedTasksCount":5,"CreatedSchoolingsCount":3}', NULL),
-    (N'56789012-3456-7890-4567-89abcdef0123', N'Małgorzata', N'Ostrowska', N'malgorzata.ostrowska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Machine Learning', 0, N'{"AssignNewbiesCount":2,"CheckedTasksCount":25,"CreatedTasksCount":8,"CreatedSchoolingsCount":2}', NULL),
-    (N'67890123-4567-8901-5678-9abcdef01234', N'Andrzej', N'Lis', N'andrzej.lis@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'Operations', 0, N'{"AssignNewbiesCount":1,"CheckedTasksCount":12,"CreatedTasksCount":7,"CreatedSchoolingsCount":4}', NULL),
-    (N'78901234-5678-9012-6789-abcdef012345', N'Joanna', N'Sikora', N'joanna.sikora@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'SEO', 0, N'{"AssignNewbiesCount":0,"CheckedTasksCount":0,"CreatedTasksCount":0,"CreatedSchoolingsCount":0}', NULL);
+    (N'30943099-da50-4271-931c-08dd3251ce0a', N'Adam', N'Małysz', N'adam@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Frontend', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', N'Zbigniew', N'Stonóg', N'zbigniew@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Backend', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', N'Krzysztof', N'Krawczyk', N'krawczyk@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Frontend', 0,NULL, NULL),
+    (N'12a34bcd-56ef-7890-1234-56789abcdef0', N'Anna', N'Nowak', N'anna.nowak@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Design', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'22334455-6677-8899-aabb-ccddeeff0011', N'Marek', N'Kowalski', N'marek.kowalski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'DevOps', 0, NULL, NULL),
+    (N'abcdef01-2345-6789-0123-456789abcdef', N'Piotr', N'Szymański', N'piotr.szymanski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Testing', 0, NULL, NULL),
+    (N'34567890-1234-5678-90ab-cdef01234567', N'Joanna', N'Wiśniewska', N'joanna.wisniewska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Marketing', 0, NULL, NULL),
+    (N'45678901-2345-6789-0abc-def123456789', N'Karolina', N'Wróbel', N'karolina.wrobel@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'HR', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'56789012-3456-7890-abcd-ef0123456789', N'Łukasz', N'Dąbrowski', N'lukasz.dabrowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Data Science', 0, NULL, NULL),
+    (N'67890123-4567-8901-bcde-f0123456789a', N'Monika', N'Kaczmarek', N'monika.kaczmarek@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Sales', 0, NULL, NULL),
+    (N'78901234-5678-9012-cdef-0123456789ab', N'Artur', N'Kwiatkowski', N'artur.kwiatkowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Backend', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'89012345-6789-0123-def0-123456789abc', N'Tomasz', N'Jankowski', N'tomasz.jankowski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Frontend', 0, NULL, NULL),
+    (N'90123456-7890-1234-ef01-23456789abcd', N'Magdalena', N'Lewandowska', N'magdalena.lewandowska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'UI/UX', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'01234567-8901-2345-f012-3456789abcde', N'Paweł', N'Kamiński', N'pawel.kaminski@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'Product Management', 0, NULL, NULL),
+    (N'12345678-9012-3456-0123-456789abcdef', N'Aleksandra', N'Zielińska', N'aleksandra.zielinska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Admin', N'IT Support', 0, NULL, NULL),
+    (N'23456789-0123-4567-1234-56789abcdef0', N'Rafał', N'Nowicki', N'rafal.nowicki@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Cybersecurity', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'34567890-1234-5678-2345-6789abcdef01', N'Natalia', N'Wójcik', N'natalia.wojcik@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'Content Writing', 0, NULL, NULL),
+    (N'45678901-2345-6789-3456-789abcdef012', N'Bartłomiej', N'Kulesza', N'bartlomiej.kulesza@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'Cloud Engineering', 0, NULL, NULL),
+    (N'56789012-3456-7890-4567-89abcdef0123', N'Małgorzata', N'Ostrowska', N'malgorzata.ostrowska@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Mentor', N'Machine Learning', 0, N'{"NewbiesCount":0,"AssignedTasksCount":0,"CreatedTasksCount":0}', NULL),
+    (N'67890123-4567-8901-5678-9abcdef01234', N'Andrzej', N'Lis', N'andrzej.lis@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'HR', N'Operations', 0, NULL, NULL),
+    (N'78901234-5678-9012-6789-abcdef012345', N'Joanna', N'Sikora', N'joanna.sikora@catchup.com', N'vdIpf5NVDwFFLL2DjCdvDdIvSYtGYTlPFSiriNbmPm8=', N'Newbie', N'SEO', 0, NULL, NULL);
 
 -- CATEGORIES
+DELETE FROM [Categories];
 SET IDENTITY_INSERT [Categories] ON;
 INSERT INTO [Categories] 
     ([Id], [Name], [State]) 
@@ -53,6 +55,7 @@ VALUES
 SET IDENTITY_INSERT [Categories] OFF;
 
 -- FAQS
+DELETE FROM [Faqs];
 SET IDENTITY_INSERT [Faqs] ON
 INSERT INTO [Faqs] 
     ([Id], [Question], [Answer], [CreatorId], [MaterialId], [State])
@@ -76,185 +79,53 @@ VALUES
     (17, N'Jakie szkolenia są dostępne dla użytkowników platformy i jak mogę z nich skorzystać?', N'Aby zapewnić naszym użytkownikom jak najlepsze doświadczenie w korzystaniu z platformy, oferujemy szeroki wachlarz szkoleń i materiałów edukacyjnych, które pomagają w pełni wykorzystać jej funkcjonalności. Nasze szkolenia obejmują zarówno podstawowe kursy wprowadzające, jak i zaawansowane sesje dotyczące specyficznych funkcji i narzędzi dostępnych na platformie. Szkolenia te są dostępne w różnych formatach: od kursów online, które można odbyć w dowolnym czasie, przez webinaria na żywo prowadzone przez ekspertów, po indywidualne sesje konsultacyjne dla większych firm. W ramach tych szkoleń omawiamy m.in. jak efektywnie zarządzać projektami i zadaniami, jak korzystać z zaawansowanych narzędzi do analizy danych, oraz jak integrować naszą platformę z innymi systemami. Wszystkie materiały szkoleniowe są dostosowane do poziomu zaawansowania użytkownika, dzięki czemu zarówno nowi użytkownicy, jak i ci bardziej doświadczeni, mogą znaleźć coś odpowiedniego dla siebie. Dodatkowo, dla firm oferujemy możliwość organizowania szkoleń zamkniętych, które mogą być dostosowane do specyficznych potrzeb i procesów zachodzących w danej organizacji. Użytkownicy mogą również skorzystać z bazy wiedzy dostępnej na naszej stronie internetowej, która zawiera artykuły, filmy instruktażowe oraz często zadawane pytania (FAQ), pomagające rozwiązać najczęstsze problemy.', N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', NULL, 0);
 SET IDENTITY_INSERT [Faqs] OFF
 
--- MATERIALS
-SET IDENTITY_INSERT [Materials] ON;
-INSERT INTO [Materials] 
-    ([Id], [Name], [State]) 
-VALUES 
-    (1, N'Wstęp do Programowania w Pythonie', 0),
-    (2, N'Zaawansowane Techniki Projektowania UX', 0),
-    (3, N'Podstawy Marketingu Internetowego', 0),
-    (4, N'Przewodnik po Algorytmach w Informatyce', 0),
-    (5, N'Wprowadzenie do Sztucznej Inteligencji', 0),
-    (6, N'Efektywne Zarządzanie Czasem w Pracy', 0),
-    (7, N'Nauka Języka Niemieckiego - Lekcja 1', 0),
-    (8, N'Praktyczny Kurs Grafiki Komputerowej', 0),
-    (9, N'Analiza Danych z użyciem Excela', 0),
-    (10, N'Budowanie Aplikacji Webowych z Reactem', 0),
-    (11, N'Podstawy HTML5 i CSS3', 0),
-    (12, N'Tworzenie Aplikacji Mobilnych w React Native', 0),
-    (13, N'Kurs SQL: Podstawy i Zaawansowane Techniki', 0),
-    (14, N'Bezpieczeństwo w Sieci: Ochrona przed Cyberzagrożeniami', 0),
-    (15, N'Podstawy Programowania w Javie', 0),
-    (16, N'Zarządzanie Chmurą: AWS vs Azure', 0),
-    (17, N'Wprowadzenie do Testowania Oprogramowania', 0);
-SET IDENTITY_INSERT [Materials] OFF;
-
 -- FILES
+DELETE FROM [Files];
 SET IDENTITY_INSERT [Files] ON
 INSERT INTO [Files] 
     ([Id], [Name], [Type], [Source], [State]) 
 VALUES
-    (1, N'1529301479.2217.jpg', N'image/jpeg', N'.\.\Files\96e38e64-cc6c-4950-b322-42b7604513ac_1529301479.2217.jpg', 0),
-    (2, N'Ryc.-1-1.png', N'image/png', N'.\.\Files\65999e19-8591-480d-87a3-b287919edb25_Ryc.-1-1.png', 0),
-    (3, N'Engineering_large.jpg', N'image/jpeg', N'.\.\Files\014dad7c-db21-4884-b65a-b02619d5f3be_Engineering_large.jpg', 0),
-    (4, N'Wprowadzenie do języka Python.pdf', N'application/pdf', N'.\.\Files\77a41432-98f3-40c9-b5f7-5addd6a13640_Wprowadzenie do języka Python.pdf', 0),
-    (5, N'Wprowadzenie do języka Python.pdf', N'application/pdf', N'.\.\Files\eb13b886-13ca-43a6-bf7a-5be2e189b369_Wprowadzenie do języka Python.pdf', 0),
-    (6, N'E-book-Dobre-praktyki-UX-UI.pdf', N'application/pdf', N'.\.\Files\182f94da-984f-40d4-b84e-f08b7c68dd29_E-book-Dobre-praktyki-UX-UI.pdf', 0),
-    (7, N'e-commerce_poradnik_marketing_online.pdf', N'application/pdf', N'.\.\Files\16843565-7a48-4d9b-998d-b8dcf6d85d4b_e-commerce_poradnik_marketing_online.pdf', 0),
-    (8, N'Algorytmy-i-struktury-danych.-Cwiczenia.pdf', N'application/pdf', N'.\.\Files\d99ccba1-be82-4abe-8307-ea1b4823eca7_Algorytmy-i-struktury-danych.-Cwiczenia.pdf', 0),
-    (9, N'podręcznik_algorytmy.pdf', N'application/pdf', N'.\.\Files\f2f2b372-2401-45ff-85ce-acfe8f727ccc_podręcznik_algorytmy.pdf', 0),
-    (10, N'WDI-WprowadzenieDoAlgorytmiki.pdf', N'application/pdf', N'.\.\Files\859cfaec-6cee-4982-9dd1-68fcf3d2bcab_WDI-WprowadzenieDoAlgorytmiki.pdf', 0),
-    (11, N'ai_tech_Wpro_SI_W4_podstawy_ml.pdf', N'application/pdf', N'.\.\Files\b1b4ea71-29b7-4744-b763-928cdd1836ac_ai_tech_Wpro_SI_W4_podstawy_ml.pdf', 0),
-    (12, N'AI_Wstep_14.pdf', N'application/pdf', N'.\.\Files\deb5a810-a304-4cd8-9855-a7123ce5d639_AI_Wstep_14.pdf', 0),
-    (13, N'1.4.-M.-Gorustowicz-Efektywne-zarzadzanie-czasem-pracownika-–-wybrane-zagadnienia.pdf', N'application/pdf', N'.\.\Files\02cc5e56-7f71-442c-9d44-edb117f74556_1.4.-M.-Gorustowicz-Efektywne-zarzadzanie-czasem-pracownika-–-wybrane-zagadnienia.pdf', 0),
-    (14, N'Olejniczak_EFEKTYWNE-ZARZADZANIE-CZASEM-WYBRANE-ZAGADNIENIA.pdf', N'application/pdf', N'.\.\Files\309e787c-d384-4e76-883c-55ac7ae7a14d_Olejniczak_EFEKTYWNE-ZARZADZANIE-CZASEM-WYBRANE-ZAGADNIENIA.pdf', 0),
-    (15, N'gramatyka-niemiecka-A1-A2.pdf', N'application/pdf', N'.\.\Files\bba5771c-759f-4fdf-88fe-b1f281ac7771_gramatyka-niemiecka-A1-A2.pdf', 0),
-    (16, N'niemiecki_slownictwo1_sample.pdf', N'application/pdf', N'.\.\Files\30a5ec5a-1033-4223-a0a1-9ca3da5b19a8_niemiecki_slownictwo1_sample.pdf', 0),
-    (17, N'grafika.pdf', N'application/pdf', N'.\.\Files\77351534-c231-4bb1-b75d-ffd6737f98c1_grafika.pdf', 0),
-    (18, N'Program_Analiza_danych_w_MS_Excel.pdf', N'application/pdf', N'.\.\Files\30337597-d06d-4e0b-a376-8c21ef38e713_Program_Analiza_danych_w_MS_Excel.pdf', 0),
-    (19, N'analiza-i-prezentacja-danych-w-microsoft-excel-vademecum-walkenbacha-michael-alexander-john-walkenbach.pdf', N'application/pdf', N'.\.\Files\8ed1d92e-f8de-40d5-b922-0e013c3f7e22_analiza-i-prezentacja-danych-w-microsoft-excel-vademecum-walkenbacha-michael-alexander-john-walkenbach.pdf', 0),
-    (20, N'react-w-dzialaniu-tworzenie-aplikacji-internetowych-stoyan-stefanov.pdf', N'application/pdf', N'.\.\Files\5f45a614-61f1-4649-a39a-ea0e4920813c_react-w-dzialaniu-tworzenie-aplikacji-internetowych-stoyan-stefanov.pdf', 0),
-    (21, N'responsive-web-design-projektowanie-elastycznych-witryn-w-html5-i-css3-ben-frain.pdf', N'application/pdf', N'.\.\Files\0bdb6997-b19f-4f6f-b4fb-7a52a8c812a8_responsive-web-design-projektowanie-elastycznych-witryn-w-html5-i-css3-ben-frain.pdf', 0),
-    (22, N'react-native-tworzenie-aplikacji-mobilnych-w-jezyku-javascript-wydanie-ii-bonnie-eisenman.pdf', N'application/pdf', N'.\.\Files\17059b32-10c4-45da-bd34-635e3c69666e_react-native-tworzenie-aplikacji-mobilnych-w-jezyku-javascript-wydanie-ii-bonnie-eisenman.pdf', 0),
-    (23, N'sql.pdf', N'application/pdf', N'.\.\Files\4d4fa8f5-742e-4a29-9163-876950b6e749_sql.pdf', 0),
-    (24, N'pobrane (1).jpg', N'image/jpeg', N'.\.\Files\ca5202ae-e441-470d-8ee2-e68a091a06be_pobrane (1).jpg', 0),
-    (25, N'pobrane (2).jpg', N'image/jpeg', N'.\.\Files\ebe2b0c7-7657-4a3f-bec5-517815cc6cfa_pobrane (2).jpg', 0),
-    (26, N'pobrane.png', N'image/png', N'.\.\Files\40c6a255-f1bd-4920-81e3-999e2da47a03_pobrane.png', 0),
-    (27, N'8ohffle7awy01.webp', N'image/webp', N'.\.\Files\7bdf8c17-c402-4eca-8bde-38e2ac288c2b_8ohffle7awy01.webp', 0),
-    (28, N'pobrane.jpg', N'image/jpeg', N'.\.\Files\0ff47cd1-0a91-4c67-94d2-c1001d72fafa_pobrane.jpg', 0),
-    (29, N'Trzecia Konferencja Kół Naukowych w ramach Politechnicznej Sieci Via Carpatia im. Prezydenta RP Lecha Kaczyńskiego.pdf', N'application/pdf', N'.\.\Files\9aa3d91d-67fc-4a41-bc8a-5250f4774c59_Trzecia Konferencja Kół Naukowych w ramach Politechnicznej Sieci Via Carpatia im. Prezydenta RP Lecha Kaczyńskiego.pdf', 0);
+  (2115,'aspiring-removebg-preview.png','image/png','.\.\Files\Badges\aspiring-removebg-preview.png',0),
+  (2116,'best_mentor-removebg-preview.png','image/png','.\.\Files\Badges\best_mentor-removebg-preview.png',0),
+  (2117,'fire-removebg-preview.png','image/png','.\.\Files\Badges\fire-removebg-preview.png',0),
+  (2118,'good_mentor-removebg-preview.png','image/png','.\.\Files\Badges\good_mentor-removebg-preview.png',0),
+  (2119,'superhero-removebg-preview.png','image/png','.\.\Files\Badges\superhero-removebg-preview.png',0),
+  (2120,'untangler-removebg-preview.png','image/png','.\.\Files\Badges\untangler-removebg-preview.png',0);
 SET IDENTITY_INSERT [Files] OFF;
 
--- FILE IN MATERIALS
-INSERT INTO [FileInMaterials] 
-    ([MaterialId], [FileId], [State]) 
-VALUES 
-    (14, 1, 0),
-    (14, 2, 0),
-    (14, 3, 0),
-    (1, 4, 0),
-    (2, 5, 0),
-    (2, 6, 0),
-    (3, 7, 0),
-    (4, 8, 0),
-    (4, 9, 0),
-    (4, 10, 0),
-    (5, 11, 0),
-    (5, 12, 0),
-    (6, 13, 0),
-    (6, 14, 0),
-    (7, 15, 0),
-    (7, 16, 0),
-    (8, 17, 0),
-    (9, 18, 0),
-    (9, 19, 0),
-    (10, 20, 0),
-    (11, 21, 0),
-    (12, 22, 0),
-    (13, 23, 0),
-    (15, 24, 0),
-    (15, 25, 0),
-    (15, 26, 0),
-    (15, 27, 0),
-    (15, 28, 0),
-    (17, 29, 0);
-
--- SCHOOLINGS
-SET IDENTITY_INSERT [Schoolings] ON;
-INSERT INTO [Schoolings] 
-    ([Id], [CreatorId], [CategoryId], [Title], [ShortDescription], [Priority], [State]) 
-VALUES 
-    (1, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Zaawansowane Techniki Programowania w Pythonie', N'Szkolenie dla doświadczonych programistów, które zagłębia się w zaawansowane techniki programowania w języku Python. Kurs obejmuje tematy takie jak optymalizacja kodu, wielowątkowość, programowanie asynchroniczne oraz wykorzystanie bibliotek do analizy danych.', 1, 0),
-    (2, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Podstawy Marketingu Cyfrowego', N'Szkolenie dla osób, które chcą zdobyć podstawową wiedzę na temat marketingu w internecie. Kurs obejmuje zagadnienia takie jak SEO, SEM, marketing w mediach społecznościowych i email marketing.', 2, 0),
-    (3, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Zarządzanie Projektami IT', N'Szkolenie przeznaczone dla osób chcących nauczyć się efektywnego zarządzania projektami IT. Kurs obejmuje metodologie Agile, Scrum oraz narzędzia do monitorowania postępu prac i zarządzania zespołami.', 3, 0),
-    (4, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 7, N'Bezpieczeństwo w Internecie dla Firm', N'Szkolenie skierowane do pracowników firm, które uczą się o zagrożeniach w sieci i sposobach ich unikania. Kurs obejmuje tematy związane z zabezpieczaniem danych, ochroną przed atakami i politykami bezpieczeństwa.', 1, 0),
-    (5, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 11, N'Zarządzanie Zasobami Ludzkimi w Przedsiębiorstwie', N'Szkolenie dla menedżerów HR, którzy chcą rozwijać swoje umiejętności w zakresie zarządzania pracownikami, rekrutacji, szkoleń oraz motywowania zespołów. Kurs omawia również aspekty prawne związane z zatrudnieniem.', 2, 0),
-    (6, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 6, N'Podstawy UX/UI Design', N'Szkolenie dla osób, które chcą zdobyć wiedzę na temat projektowania doświadczeń użytkownika (UX) oraz interfejsów użytkownika (UI). Kurs dostarcza fundamentów w zakresie tworzenia przyjaznych i intuicyjnych interfejsów, które zapewniają użytkownikom pozytywne wrażenia.', 3, 0),
-    (7, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 4, N'Zaawansowane Techniki Wyszukiwania i Analizy Danych', N'Szkolenie skierowane do analityków danych oraz specjalistów IT, którzy pragną poszerzyć swoje umiejętności w zakresie zaawansowanego przetwarzania danych. Program kursu obejmuje takie tematy jak analiza dużych zbiorów danych przy użyciu narzędzi takich jak Python i R, techniki wyszukiwania z wykorzystaniem baz danych SQL i NoSQL, a także tworzenie zaawansowanych algorytmów wyszukiwania i filtrowania informacji.', 2, 0),
-    (8, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Zarządzanie Ryzykiem w Firmie', N'Szkolenie przeznaczone dla menedżerów, którzy chcą zdobyć wiedzę na temat skutecznego zarządzania ryzykiem w organizacjach. Kurs obejmuje szeroki zakres tematów, takich jak identyfikacja i ocena ryzyka, metody minimalizacji ryzyk operacyjnych, finansowych i strategicznych, a także zarządzanie ryzykiem w projektach.', 3, 0),
-    (9, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Wprowadzenie do Programowania w JavaScript', N'Kurs skierowany do osób, które chcą nauczyć się podstaw programowania w jednym z najpopularniejszych języków na świecie – JavaScript. Szkolenie obejmuje podstawy składni języka, takie jak zmienne, pętle, funkcje, tablice oraz obiekty, a także bardziej zaawansowane tematy, takie jak manipulowanie DOM-em, asynchroniczność w JavaScript i używanie frameworków jak React.', 1, 0);
-SET IDENTITY_INSERT [Schoolings] OFF;
-
--- SCHOOLING PARTS
-SET IDENTITY_INSERT [SchoolingParts] ON
-INSERT INTO [SchoolingParts] 
-    ([Id], [SchoolingId], [Title], [Content], [State])
-VALUES 
-    (1, 1, N'Wprowadzenie do Programowania Obiektowego w Pythonie', N'W tej części kursu uczestnicy zapoznają się z podstawami programowania obiektowego w Pythonie. Omówimy klasy, obiekty, dziedziczenie oraz polimorfizm. Kurs pokaże, jak organizować kod w sposób modularny, tworzyć hierarchie klas i korzystać z właściwości obiektów. Uczestnicy nauczą się również jak za pomocą Python implementować i wykorzystywać wzorce projektowe, co umożliwia tworzenie bardziej zaawansowanych aplikacji.', 0),
-    (2, 1, N'Optymalizacja i Wydajność Pythona', N'W tej części kursu uczestnicy poznają techniki optymalizacji kodu w Pythonie, w tym zarządzanie pamięcią, profilowanie aplikacji i używanie bibliotek do przyspieszania obliczeń, takich jak NumPy. Omówimy również zasady dobrego kodowania, które pozwolą na pisanie bardziej wydajnych i skalowalnych aplikacji. Celem jest zrozumienie, jak uniknąć typowych pułapek w Pythonie, które mogą wpływać na wydajność aplikacji.', 0),
-    (3, 2, N'SEO i SEM – Wprowadzenie do Optymalizacji', N'W tej części kursu omówimy podstawy SEO (Search Engine Optimization) oraz SEM (Search Engine Marketing). Uczestnicy dowiedzą się, jak poprawnie zoptymalizować stronę internetową, aby zwiększyć jej widoczność w wyszukiwarkach internetowych. Omówimy także narzędzia i strategie reklamowe, takie jak Google Ads, które umożliwiają efektywne pozycjonowanie stron oraz generowanie ruchu na stronie. Celem jest zrozumienie podstawowych zasad marketingu w wyszukiwarkach oraz sposobów na optymalizację treści pod kątem algorytmów Google.', 0),
-    (4, 2, N'Media Społecznościowe i E-mail Marketing', N'Celem tej części kursu jest zapoznanie uczestników z podstawami marketingu na mediach społecznościowych oraz strategii e-mail marketingowej. Kurs obejmuje tematykę tworzenia skutecznych kampanii reklamowych na Facebooku, Instagramie, LinkedIn oraz Twitterze. Dodatkowo uczestnicy dowiedzą się, jak budować listy mailingowe, tworzyć wartościowe treści do wysyłki oraz jak analizować efektywność kampanii e-mailowych za pomocą narzędzi takich jak MailChimp.', 0),
-    (5, 3, N'Planowanie Projektu IT', N'W tej części kursu uczestnicy nauczą się, jak efektywnie planować projekty IT. Omówimy tworzenie harmonogramów, przypisywanie zasobów do zadań, analizę ryzyka oraz ustalanie budżetów. Uczestnicy dowiedzą się, jak przygotować kompleksowy plan projektu, który będzie stanowił fundament do skutecznej realizacji projektu IT. Kurs zawiera również omówienie metodologii takich jak Agile i Waterfall oraz ich zastosowanie w praktyce.', 0),
-    (6, 3, N'Monitorowanie i Raportowanie Postępu Projektu', N'Ta część kursu koncentruje się na technikach monitorowania i raportowania postępu projektu IT. Uczestnicy dowiedzą się, jak używać narzędzi do zarządzania projektami (np. Jira, Asana) do śledzenia postępu, zarządzania zadaniami i komunikowania się z zespołem. Kurs pokaże, jak przygotować raporty postępu, identyfikować potencjalne problemy oraz jak dokonywać korekt w planie projektowym, aby projekt przebiegał zgodnie z harmonogramem.', 0),
-    (7, 4, N'Ochrona Przed Cyberzagrożeniami', N'W tej części kursu uczestnicy zapoznają się z zagrożeniami związanymi z cyberprzestępczością i dowiedzą się, jak chronić firmowe systemy przed atakami. Omówimy rodzaje cyberataków, takie jak phishing, ransomware, ataki DDoS oraz zagrożenia związane z oprogramowaniem złośliwym. Kurs skupi się na metodach ochrony przed tymi zagrożeniami, takich jak używanie zapór sieciowych, oprogramowania antywirusowego oraz szyfrowanie danych.', 0),
-    (8, 4, N'Ochrona Danych i Zgodność z RODO', N'Celem tej części kursu jest zapoznanie uczestników z podstawowymi zasadami ochrony danych osobowych oraz wymogami wynikającymi z rozporządzenia RODO. Omówimy, jak wdrożyć polityki ochrony danych w firmie, jak zarządzać dostępem do informacji oraz jak przechowywać dane w sposób zgodny z przepisami prawa. Uczestnicy dowiedzą się, jak przeprowadzać audyty zgodności z RODO i jakie procedury należy wdrożyć, aby zapewnić bezpieczeństwo danych osobowych.', 0),
-    (9, 5, N'Rekrutacja i Selekcja Pracowników', N'W tej części kursu uczestnicy nauczą się skutecznych metod rekrutacji i selekcji pracowników. Omówimy proces tworzenia ogłoszeń rekrutacyjnych, przeprowadzania rozmów kwalifikacyjnych oraz oceniania kompetencji kandydatów. Kurs skupi się również na narzędziach i technikach, które pomagają w znalezieniu odpowiednich osób na określone stanowiska w firmie. Uczestnicy dowiedzą się, jak zwiększyć efektywność procesu rekrutacji, minimalizując ryzyko błędów w selekcji.', 0),
-    (10, 5, N'Motywowanie i Rozwój Pracowników', N'Ta część kursu koncentruje się na technikach motywowania pracowników oraz strategiach wspierania ich rozwoju zawodowego. Omówimy metody oceny efektywności pracy, jak tworzyć plany rozwoju kariery oraz jak wdrażać programy szkoleń i mentoringu. Kurs pokaże, jak skutecznie motywować zespół, aby osiągać lepsze wyniki i zwiększać zaangażowanie pracowników w życie firmy.', 0),
-    (11, 6, N'Badania UX i Testowanie Użyteczności', N'W tej części kursu uczestnicy nauczą się, jak przeprowadzać badania użytkowników, testowanie użyteczności oraz analizować wyniki. Omówimy metodyki takie jak testy A/B, wywiady z użytkownikami, mapowanie ścieżek użytkownika i analiza danych. Uczestnicy dowiedzą się, jak stosować te techniki w praktyce, aby poprawić doświadczenie użytkowników w aplikacjach mobilnych oraz stronach internetowych.', 0),
-    (12, 6, N'Projektowanie Interfejsów – Podstawy UI', N'Część ta koncentruje się na projektowaniu interfejsów użytkownika (UI), w tym na tworzeniu estetycznych i intuicyjnych układów graficznych. Kurs obejmuje zagadnienia związane z typografią, kolorystyką, rozmieszczeniem elementów oraz tworzeniem responsywnych interfejsów, które dobrze wyglądają na różnych urządzeniach. Uczestnicy poznają również narzędzia takie jak Adobe XD, Figma czy Sketch, które pomagają w projektowaniu interfejsów.', 0);
-SET IDENTITY_INSERT [SchoolingParts] OFF
-
--- MATERIALS SCHOOLING PARTS
-INSERT INTO [MaterialsSchoolingParts] 
-    ([MaterialsId], [SchoolingPartId], [State])
-VALUES 
-    (1, 1, 0),
-    (3, 3, 0),
-    (4, 2, 0),
-    (6, 5, 0),
-    (8, 11, 0),
-    (9, 6, 0),
-    (9, 9, 0),
-    (10, 12, 0),
-    (11, 11, 0),
-    (12, 12, 0),
-    (14, 7, 0),
-    (17, 11, 0);
-
-
--- SCHOOLING USERS
-INSERT INTO [SchoolingsUsers] 
-    ([NewbieId], [SchoolingId], [State])
-VALUES 
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 1, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 2, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 3, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 4, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 5, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 6, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 7, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 8, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 9, 0);
-
+-- BADGES
+DELETE FROM [Badges];
+SET IDENTITY_INSERT [Badges] ON
+INSERT INTO [Badges] 
+    ([Id], [Name], [Description], [State], [Count],[CountType], [IconId]) 
+VALUES
+  (3111,'Aspiring Mentor','For training your first Newbie.',0,1,10,2115),
+  (3112,'Best Mentor','For training many Newbies.',0,10,10,2116),
+  (3113,'Fireman','For assigning huge amout of tasks.',0,20,20,2117),
+  (3114,'Good Mentor','For training a few Newbies.',0,5,10,2118),
+  (3115,'Superhero','For creating so much tasks.',0,10,30,2119),
+  (3116,'Untangler','For assigning tasks.',0,10,20,2120);
+SET IDENTITY_INSERT [Badges] OFF;
 
 -- TASK CONTENTS
+DELETE FROM [TaskContents];
 SET IDENTITY_INSERT [TaskContents] ON
 INSERT INTO [TaskContents] 
     ([Id], [CreatorId], [CategoryId], [MaterialsId], [Title], [Description])
 VALUES 
-    (1, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, 1, N'Podstawy Pythona', N'Wprowadzenie do podstaw programowania w Pythonie.'),
-    (2, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 4, 9, N'Analiza danych w Excelu', N'Podstawy analizy danych z użyciem Excela.'),
-    (3, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 5, 17, N'Testowanie Oprogramowania', N'Wprowadzenie do testowania oprogramowania.'),
-    (4, '30943099-da50-4271-931c-08dd3251ce0a', 2, 2, N'Zasady UX', N'Zrozumienie kluczowych zasad projektowania UX.'),
-    (5, '30943099-da50-4271-931c-08dd3251ce0a', 2, 8, N'Grafika komputerowa', N'Podstawy grafiki komputerowej.'),
-    (6, '30943099-da50-4271-931c-08dd3251ce0a', 3, 3, N'Podstawy Marketingu', N'Podstawowe techniki marketingu internetowego.'),
-    (7, '30943099-da50-4271-931c-08dd3251ce0a', 3, 14, N'Bezpieczeństwo w Sieci', N'Ochrona przed cyberzagrożeniami.'),
-    (8, '30943099-da50-4271-931c-08dd3251ce0a', 5, 17, N'Testowanie Oprogramowania', N'Zaawansowane testowanie oprogramowania.'),
-    (9, '30943099-da50-4271-931c-08dd3251ce0a', 4, 9, N'Analiza Danych', N'Zaawansowana analiza danych w Excelu.');
+    (1, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, NULL, N'Podstawy Pythona', N'Wprowadzenie do podstaw programowania w Pythonie.'),
+    (2, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 4, NULL, N'Analiza danych w Excelu', N'Podstawy analizy danych z użyciem Excela.'),
+    (3, '437d2b01-ed58-4fcf-931a-08dd3251ce0a', 5, NULL, N'Testowanie Oprogramowania', N'Wprowadzenie do testowania oprogramowania.'),
+    (4, '30943099-da50-4271-931c-08dd3251ce0a', 2, NULL, N'Zasady UX', N'Zrozumienie kluczowych zasad projektowania UX.'),
+    (5, '30943099-da50-4271-931c-08dd3251ce0a', 2, NULL, N'Grafika komputerowa', N'Podstawy grafiki komputerowej.'),
+    (6, '30943099-da50-4271-931c-08dd3251ce0a', 3, NULL, N'Podstawy Marketingu', N'Podstawowe techniki marketingu internetowego.'),
+    (7, '30943099-da50-4271-931c-08dd3251ce0a', 3, NULL, N'Bezpieczeństwo w Sieci', N'Ochrona przed cyberzagrożeniami.'),
+    (8, '30943099-da50-4271-931c-08dd3251ce0a', 5, NULL, N'Testowanie Oprogramowania', N'Zaawansowane testowanie oprogramowania.'),
+    (9, '30943099-da50-4271-931c-08dd3251ce0a', 4, NULL, N'Analiza Danych', N'Zaawansowana analiza danych w Excelu.');
 SET IDENTITY_INSERT [TaskContents] OFF
 
 -- PRESETS
+DELETE FROM [Presets];
 SET IDENTITY_INSERT [Presets] ON
 INSERT INTO [Presets] 
     ([Id], [CreatorId], [Name])
@@ -264,6 +135,7 @@ VALUES
 SET IDENTITY_INSERT [Presets] OFF
 
 -- TASK PRESETS
+DELETE FROM [TaskPresets];
 INSERT INTO [TaskPresets] 
     ([PresetId], [TaskContentId])
 VALUES 
@@ -275,6 +147,7 @@ VALUES
     (2, 7);
 
 -- TASKS
+DELETE FROM [Tasks];
 SET IDENTITY_INSERT [Tasks] ON
 INSERT INTO [Tasks] 
     ([ID],[NewbieId], [AssigningId], [TaskContentId], [Status], [AssignmentDate],[FINALIZATIONDATE], [DEADLINE],[SPENDTIME], [Priority], [State],[ROADMAPPOINTID],[RATE]) 
@@ -324,29 +197,31 @@ VALUES
 SET IDENTITY_INSERT [Tasks] OFF
 
 -- NOTIFICATIONS
+DELETE FROM [Notifications];
 SET IDENTITY_INSERT [Notifications] ON
 INSERT INTO [Notifications] 
     (Id, SenderId, Title, Message, SendDate, Source, State) 
 VALUES 
-    (2, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Assignment!', 'Prepare report', '2025-01-15 09:23:45', '/Tasks/27', 0),
-    (3, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Alert', 'Review documents', '2025-01-20 14:15:22', '/Tasks/28', 0),
-    (4, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent Task', 'Call client', '2025-01-25 11:47:13', '/Tasks/29', 0),
-    (5, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Job', 'Update database', '2025-02-01 16:30:59', '/Tasks/30', 0),
-    (6, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Reminder', 'Send email', '2025-02-05 13:12:34', '/Tasks/31', 0),
-    (7, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Action Required', 'Check stats', '2025-02-10 10:25:47', '/Tasks/32', 0),
-    (8, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Task', 'Fix bug', '2025-02-15 15:55:11', '/Tasks/33', 0),
-    (9, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Quick Task', 'Upload file', '2025-02-20 09:41:28', '/Tasks/34', 0),
-    (10, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Update', 'Test feature', '2025-02-25 12:33:19', '/Tasks/35', 0),
-    (11, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Duty', 'Write code', '2025-03-01 14:22:56', '/Tasks/36', 0),
-    (12, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Notice', 'Meet team', '2025-03-05 17:18:43', '/Tasks/37', 0),
-    (13, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Work Alert', 'Plan sprint', '2025-03-10 08:59:32', '/Tasks/38', 0),
-    (14, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Added', 'Design UI', '2025-03-15 11:44:15', '/Tasks/39', 0),
-    (15, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Item', 'Check logs', '2025-03-20 13:27:58', '/Tasks/40', 0),
-    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-22 16:09:41', '/Tasks/41', 0),
-    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-23 01:06:24', '/Tasks/42', 0);
+    (2, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Assignment!', 'Prepare report', '2025-01-15 09:23:45', '/task/27', 0),
+    (3, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Alert', 'Review documents', '2025-01-20 14:15:22', '/task/28', 0),
+    (4, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent Task', 'Call client', '2025-01-25 11:47:13', '/task/29', 0),
+    (5, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Job', 'Update database', '2025-02-01 16:30:59', '/task/30', 0),
+    (6, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Reminder', 'Send email', '2025-02-05 13:12:34', '/task/31', 0),
+    (7, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Action Required', 'Check stats', '2025-02-10 10:25:47', '/task/32', 0),
+    (8, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Task', 'Fix bug', '2025-02-15 15:55:11', '/task/33', 0),
+    (9, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Quick Task', 'Upload file', '2025-02-20 09:41:28', '/task/34', 0),
+    (10, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Update', 'Test feature', '2025-02-25 12:33:19', '/task/35', 0),
+    (11, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Duty', 'Write code', '2025-03-01 14:22:56', '/task/36', 0),
+    (12, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Notice', 'Meet team', '2025-03-05 17:18:43', '/task/37', 0),
+    (13, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Work Alert', 'Plan sprint', '2025-03-10 08:59:32', '/task/38', 0),
+    (14, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Added', 'Design UI', '2025-03-15 11:44:15', '/task/39', 0),
+    (15, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'New Item', 'Check logs', '2025-03-20 13:27:58', '/task/40', 0),
+    (16, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Task Now', 'Deploy app', '2025-03-22 16:09:41', '/task/41', 0),
+    (17, '04D68924-791D-4022-F2E3-08DD33FC8FD5', 'Urgent!', 'Fix error', '2025-03-23 01:06:24', '/task/42', 0);
 SET IDENTITY_INSERT [Notifications] OFF
 
 -- USERS NOTIFICATIONS
+DELETE FROM [UsersNotifications];
 INSERT INTO [UsersNotifications] 
     (NotificationId, ReceiverId, State, IsRead) 
 VALUES 
@@ -368,6 +243,7 @@ VALUES
     (17, '555843BB-B38F-4387-F2E2-08DD33FC8FD5', 0, 0);
 
 -- FEEDBACKS
+DELETE FROM [Feedbacks];
 SET IDENTITY_INSERT [Feedbacks] ON
 INSERT INTO [Feedbacks] 
     ([Id], [SenderId], [ReceiverId], [Title], [Description], [ResourceType], [ResourceId], [IsResolved], [CreatedDate], [State])
@@ -391,6 +267,7 @@ VALUES
 SET IDENTITY_INSERT [Feedbacks] OFF
 
 -- NEWBIE MENTORS
+DELETE FROM [NewbiesMentors];
 INSERT INTO [catch-up-db].[dbo].[NewbiesMentors] 
     ([NewbieId], [MentorId], [State], [EndDate], [StartDate]) 
 VALUES
@@ -431,13 +308,14 @@ VALUES
     ('34567890-1234-5678-2345-6789abcdef01', '56789012-3456-7890-4567-89abcdef0123', 0, NULL, GETDATE());
 
 -- COMPANY SETTINGS
+DELETE FROM [CompanySettings];
 INSERT INTO [CompanySettings] ([Name],[Value])
 -- Enables logging of task time
 VALUES ('EnableTaskTimeLog','true');
 
 -- <<<<< HUGE ALL YOU NEED FOR ROAD MAPS --------------------------------------------------------
-delete from [RoadMapPoints];
-delete from [RoadMaps];
+DELETE FROM [RoadMapPoints];
+DELETE FROM [RoadMaps];
 SET IDENTITY_INSERT [RoadMaps] ON
 INSERT INTO [RoadMaps] (Id, NewbieId, State, FinishDate, Title, AssignDate, CreatorId, Description, Status, Progress)
 VALUES 
@@ -464,7 +342,7 @@ VALUES
 SET IDENTITY_INSERT [RoadMapPoints] OFF
 
 --Tasks for roadmap points
-delete from[Tasks] where id between 100 and 150;
+DELETE FROM [Tasks] where id between 100 and 150;
 SET IDENTITY_INSERT [Tasks] ON
 INSERT INTO [Tasks] 
     ([ID], [NewbieId], [AssigningId], [TaskContentId], [Status], [AssignmentDate], [FINALIZATIONDATE], [DEADLINE], [SPENDTIME], [Priority], [State], [ROADMAPPOINTID], [RATE]) 
@@ -531,7 +409,6 @@ VALUES
 
 SET IDENTITY_INSERT [Tasks] OFF
 
-
 -- Roadmaps 2 i 3
 SET IDENTITY_INSERT [RoadMaps] ON
 INSERT INTO [RoadMaps] (Id, NewbieId, State, FinishDate, Title, AssignDate, CreatorId, Description, Status, Progress)
@@ -588,3 +465,165 @@ VALUES
 SET IDENTITY_INSERT [Tasks] OFF
 
 -- >>>>> END OF HUGE ALL YOU NEED FOR ROAD MAPS --------------------------------------------------------
+
+-- Events
+DELETE FROM [Events];
+
+-- Insert events
+INSERT INTO [dbo].[Events] ([Title], [StartDate], [EndDate], [OwnerId], [TargetUserType], [Description], [State])
+VALUES
+('Welcome Meeting', '2025-10-21 10:00:00', '2025-10-23 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Introduction to the team and discussion of first tasks.', 0),
+('Company Policies Overview', '2025-10-23 14:00:00', '2025-10-23 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Overview of company policies and procedures.', 0),
+('IT Setup & Tools', '2025-10-25 09:00:00', '2025-10-25 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Instructions for laptop setup, accounts, and work tools.', 0),
+('HR Onboarding Session', '2025-10-28 13:00:00', '2025-10-28 14:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Meeting with HR – benefits, leave, and procedures.', 0),
+('Team Introduction', '2025-11-01 10:30:00', '2025-11-01 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Meet the team and assign mentors.', 0),
+('Project Kickoff', '2025-11-05 15:00:00', '2025-11-09 16:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Discussion of the first project for new employees.', 0),
+('Security Training', '2025-11-10 09:00:00', '2025-11-10 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Training on information and IT security.', 0),
+('Product Overview', '2025-11-15 14:00:00', '2025-11-18 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Presentation of company products and services.', 0),
+('Code of Conduct', '2025-11-20 11:00:00', '2025-11-20 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Discussion of workplace ethics and behavior.', 0),
+('Mentor 1:1', '2025-11-25 13:00:00', '2025-11-25 13:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Individual meeting with assigned mentor.', 0),
+('Department Overview', '2025-12-01 10:00:00', '2025-12-01 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Presentation of department structures and key processes.', 0),
+('Workplace Safety', '2025-12-05 09:30:00', '2025-12-05 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Health and safety training in the office.', 0),
+('Team Building Activity', '2025-12-10 14:00:00', '2025-12-10 16:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Team integration through games and group tasks.', 0),
+('Performance Expectations', '2025-12-15 10:00:00', '2025-12-15 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'Discussion of expectations and key KPIs for new employees.', 0),
+('Feedback Session', '2025-12-20 15:00:00', '2025-12-20 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Feedback meeting after the first few weeks.', 0),
+('Office Tour', '2025-12-25 09:00:00', '2025-12-25 10:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Office tour and workstation presentation.', 0),
+('Mentor Check-in', '2026-01-05 13:00:00', '2026-01-05 13:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Newbie', 'Short meeting with mentor – questions and support.', 0),
+('Training Module 1', '2026-01-10 10:30:00', '2026-01-10 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Mentor', 'First technical training module for new employees.', 0),
+('Training Module 2', '2026-01-15 09:00:00', '2026-01-19 10:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'HR', 'Second technical training module.', 0),
+('Onboarding Wrap-up', '2026-02-01 14:00:00', '2026-02-01 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', 'Admin', 'Summary of onboarding period and Q&A.', 0);
+
+-- Insert events with empty TargetUserType
+INSERT INTO [Events] ([Title], [StartDate], [EndDate], [OwnerId], [TargetUserType], [Description], [State])
+VALUES
+('Company Town Hall', '2025-10-30 10:00:00', '2025-10-30 11:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'All-hands meeting with the entire company.', 0),
+('All-Hands Meeting', '2025-11-12 14:00:00', '2025-11-12 15:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Regular meeting for all teams.', 0),
+('Holiday Celebration', '2025-12-24 16:00:00', '2025-12-24 18:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Company holiday party for everyone.', 0),
+('Year-End Review', '2025-12-31 10:00:00', '2025-12-31 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Review of the year’s results for all employees.', 0),
+('Quarterly Strategy Meeting', '2026-01-20 09:00:00', '2026-01-20 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Planning and strategy session with all departments.', 0),
+('Cross-Department Workshop', '2026-02-10 13:00:00', '2026-02-10 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Workshop involving multiple departments for collaboration.', 0),
+('Innovation Talk', '2026-02-25 10:00:00', '2026-02-25 11:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Presentation on new ideas and innovation initiatives.', 0),
+('Health & Wellness Seminar', '2026-03-05 14:00:00', '2026-03-05 15:30:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Seminar on employee health and wellness.', 0),
+('Community Volunteering', '2026-03-20 09:00:00', '2026-03-20 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Company volunteering event open to all.', 0),
+('Annual Planning Session', '2026-04-01 10:00:00', '2026-04-01 12:00:00', '8D2D867E-A31C-4BEF-827A-75C9C1703A23', '', 'Planning session for the upcoming fiscal year.', 0);
+
+
+------- EVERYTHING FOR SCHOOLINGS
+-- SCHOOLINGS
+DELETE FROM [Schoolings];
+SET IDENTITY_INSERT [Schoolings] ON;
+INSERT INTO [Schoolings] 
+    ([Id], [CreatorId], [CategoryId], [Title], [ShortDescription], [Priority], [State]) 
+VALUES 
+    (1, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Zaawansowane Techniki Programowania w Pythonie', N'Szkolenie dla doświadczonych programistów, które zagłębia się w zaawansowane techniki programowania w języku Python. Kurs obejmuje tematy takie jak optymalizacja kodu, wielowątkowość, programowanie asynchroniczne oraz wykorzystanie bibliotek do analizy danych.', 1, 0),
+    (2, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Podstawy Marketingu Cyfrowego', N'Szkolenie dla osób, które chcą zdobyć podstawową wiedzę na temat marketingu w internecie. Kurs obejmuje zagadnienia takie jak SEO, SEM, marketing w mediach społecznościowych i email marketing.', 2, 0),
+    (3, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Zarządzanie Projektami IT', N'Szkolenie przeznaczone dla osób chcących nauczyć się efektywnego zarządzania projektami IT. Kurs obejmuje metodologie Agile, Scrum oraz narzędzia do monitorowania postępu prac i zarządzania zespołami.', 3, 0),
+    (4, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 7, N'Bezpieczeństwo w Internecie dla Firm', N'Szkolenie skierowane do pracowników firm, które uczą się o zagrożeniach w sieci i sposobach ich unikania. Kurs obejmuje tematy związane z zabezpieczaniem danych, ochroną przed atakami i politykami bezpieczeństwa.', 1, 0),
+    (5, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 11, N'Zarządzanie Zasobami Ludzkimi w Przedsiębiorstwie', N'Szkolenie dla menedżerów HR, którzy chcą rozwijać swoje umiejętności w zakresie zarządzania pracownikami, rekrutacji, szkoleń oraz motywowania zespołów. Kurs omawia również aspekty prawne związane z zatrudnieniem.', 2, 0),
+    (6, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 6, N'Podstawy UX/UI Design', N'Szkolenie dla osób, które chcą zdobyć wiedzę na temat projektowania doświadczeń użytkownika (UX) oraz interfejsów użytkownika (UI). Kurs dostarcza fundamentów w zakresie tworzenia przyjaznych i intuicyjnych interfejsów, które zapewniają użytkownikom pozytywne wrażenia.', 3, 0),
+    (7, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 4, N'Zaawansowane Techniki Wyszukiwania i Analizy Danych', N'Szkolenie skierowane do analityków danych oraz specjalistów IT, którzy pragną poszerzyć swoje umiejętności w zakresie zaawansowanego przetwarzania danych. Program kursu obejmuje takie tematy jak analiza dużych zbiorów danych przy użyciu narzędzi takich jak Python i R, techniki wyszukiwania z wykorzystaniem baz danych SQL i NoSQL, a także tworzenie zaawansowanych algorytmów wyszukiwania i filtrowania informacji.', 2, 0),
+    (8, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 10, N'Zarządzanie Ryzykiem w Firmie', N'Szkolenie przeznaczone dla menedżerów, którzy chcą zdobyć wiedzę na temat skutecznego zarządzania ryzykiem w organizacjach. Kurs obejmuje szeroki zakres tematów, takich jak identyfikacja i ocena ryzyka, metody minimalizacji ryzyk operacyjnych, finansowych i strategicznych, a także zarządzanie ryzykiem w projektach.', 3, 0),
+    (9, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Wprowadzenie do Programowania w JavaScript', N'Kurs skierowany do osób, które chcą nauczyć się podstaw programowania w jednym z najpopularniejszych języków na świecie – JavaScript. Szkolenie obejmuje podstawy składni języka, takie jak zmienne, pętle, funkcje, tablice oraz obiekty, a także bardziej zaawansowane tematy, takie jak manipulowanie DOM-em, asynchroniczność w JavaScript i używanie frameworków jak React.', 1, 0);
+SET IDENTITY_INSERT [Schoolings] OFF;
+
+-- SCHOOLING PARTS
+DELETE FROM [SchoolingParts];
+SET IDENTITY_INSERT [SchoolingParts] ON
+INSERT INTO [SchoolingParts] 
+    ([Id], [SchoolingId], [Title], [Content], [State])
+VALUES 
+    (1, 1, N'Wprowadzenie do Programowania Obiektowego w Pythonie', N'W tej części kursu uczestnicy zapoznają się z podstawami programowania obiektowego w Pythonie. Omówimy klasy, obiekty, dziedziczenie oraz polimorfizm. Kurs pokaże, jak organizować kod w sposób modularny, tworzyć hierarchie klas i korzystać z właściwości obiektów. Uczestnicy nauczą się również jak za pomocą Python implementować i wykorzystywać wzorce projektowe, co umożliwia tworzenie bardziej zaawansowanych aplikacji.', 0),
+    (2, 1, N'Optymalizacja i Wydajność Pythona', N'W tej części kursu uczestnicy poznają techniki optymalizacji kodu w Pythonie, w tym zarządzanie pamięcią, profilowanie aplikacji i używanie bibliotek do przyspieszania obliczeń, takich jak NumPy. Omówimy również zasady dobrego kodowania, które pozwolą na pisanie bardziej wydajnych i skalowalnych aplikacji. Celem jest zrozumienie, jak uniknąć typowych pułapek w Pythonie, które mogą wpływać na wydajność aplikacji.', 0),
+    (3, 2, N'SEO i SEM – Wprowadzenie do Optymalizacji', N'W tej części kursu omówimy podstawy SEO (Search Engine Optimization) oraz SEM (Search Engine Marketing). Uczestnicy dowiedzą się, jak poprawnie zoptymalizować stronę internetową, aby zwiększyć jej widoczność w wyszukiwarkach internetowych. Omówimy także narzędzia i strategie reklamowe, takie jak Google Ads, które umożliwiają efektywne pozycjonowanie stron oraz generowanie ruchu na stronie. Celem jest zrozumienie podstawowych zasad marketingu w wyszukiwarkach oraz sposobów na optymalizację treści pod kątem algorytmów Google.', 0),
+    (4, 2, N'Media Społecznościowe i E-mail Marketing', N'Celem tej części kursu jest zapoznanie uczestników z podstawami marketingu na mediach społecznościowych oraz strategii e-mail marketingowej. Kurs obejmuje tematykę tworzenia skutecznych kampanii reklamowych na Facebooku, Instagramie, LinkedIn oraz Twitterze. Dodatkowo uczestnicy dowiedzą się, jak budować listy mailingowe, tworzyć wartościowe treści do wysyłki oraz jak analizować efektywność kampanii e-mailowych za pomocą narzędzi takich jak MailChimp.', 0),
+    (5, 3, N'Planowanie Projektu IT', N'W tej części kursu uczestnicy nauczą się, jak efektywnie planować projekty IT. Omówimy tworzenie harmonogramów, przypisywanie zasobów do zadań, analizę ryzyka oraz ustalanie budżetów. Uczestnicy dowiedzą się, jak przygotować kompleksowy plan projektu, który będzie stanowił fundament do skutecznej realizacji projektu IT. Kurs zawiera również omówienie metodologii takich jak Agile i Waterfall oraz ich zastosowanie w praktyce.', 0),
+    (6, 3, N'Monitorowanie i Raportowanie Postępu Projektu', N'Ta część kursu koncentruje się na technikach monitorowania i raportowania postępu projektu IT. Uczestnicy dowiedzą się, jak używać narzędzi do zarządzania projektami (np. Jira, Asana) do śledzenia postępu, zarządzania zadaniami i komunikowania się z zespołem. Kurs pokaże, jak przygotować raporty postępu, identyfikować potencjalne problemy oraz jak dokonywać korekt w planie projektowym, aby projekt przebiegał zgodnie z harmonogramem.', 0),
+    (7, 4, N'Ochrona Przed Cyberzagrożeniami', N'W tej części kursu uczestnicy zapoznają się z zagrożeniami związanymi z cyberprzestępczością i dowiedzą się, jak chronić firmowe systemy przed atakami. Omówimy rodzaje cyberataków, takie jak phishing, ransomware, ataki DDoS oraz zagrożenia związane z oprogramowaniem złośliwym. Kurs skupi się na metodach ochrony przed tymi zagrożeniami, takich jak używanie zapór sieciowych, oprogramowania antywirusowego oraz szyfrowanie danych.', 0),
+    (8, 4, N'Ochrona Danych i Zgodność z RODO', N'Celem tej części kursu jest zapoznanie uczestników z podstawowymi zasadami ochrony danych osobowych oraz wymogami wynikającymi z rozporządzenia RODO. Omówimy, jak wdrożyć polityki ochrony danych w firmie, jak zarządzać dostępem do informacji oraz jak przechowywać dane w sposób zgodny z przepisami prawa. Uczestnicy dowiedzą się, jak przeprowadzać audyty zgodności z RODO i jakie procedury należy wdrożyć, aby zapewnić bezpieczeństwo danych osobowych.', 0),
+    (9, 5, N'Rekrutacja i Selekcja Pracowników', N'W tej części kursu uczestnicy nauczą się skutecznych metod rekrutacji i selekcji pracowników. Omówimy proces tworzenia ogłoszeń rekrutacyjnych, przeprowadzania rozmów kwalifikacyjnych oraz oceniania kompetencji kandydatów. Kurs skupi się również na narzędziach i technikach, które pomagają w znalezieniu odpowiednich osób na określone stanowiska w firmie. Uczestnicy dowiedzą się, jak zwiększyć efektywność procesu rekrutacji, minimalizując ryzyko błędów w selekcji.', 0),
+    (10, 5, N'Motywowanie i Rozwój Pracowników', N'Ta część kursu koncentruje się na technikach motywowania pracowników oraz strategiach wspierania ich rozwoju zawodowego. Omówimy metody oceny efektywności pracy, jak tworzyć plany rozwoju kariery oraz jak wdrażać programy szkoleń i mentoringu. Kurs pokaże, jak skutecznie motywować zespół, aby osiągać lepsze wyniki i zwiększać zaangażowanie pracowników w życie firmy.', 0),
+    (11, 6, N'Badania UX i Testowanie Użyteczności', N'W tej części kursu uczestnicy nauczą się, jak przeprowadzać badania użytkowników, testowanie użyteczności oraz analizować wyniki. Omówimy metodyki takie jak testy A/B, wywiady z użytkownikami, mapowanie ścieżek użytkownika i analiza danych. Uczestnicy dowiedzą się, jak stosować te techniki w praktyce, aby poprawić doświadczenie użytkowników w aplikacjach mobilnych oraz stronach internetowych.', 0),
+    (12, 6, N'Projektowanie Interfejsów – Podstawy UI', N'Część ta koncentruje się na projektowaniu interfejsów użytkownika (UI), w tym na tworzeniu estetycznych i intuicyjnych układów graficznych. Kurs obejmuje zagadnienia związane z typografią, kolorystyką, rozmieszczeniem elementów oraz tworzeniem responsywnych interfejsów, które dobrze wyglądają na różnych urządzeniach. Uczestnicy poznają również narzędzia takie jak Adobe XD, Figma czy Sketch, które pomagają w projektowaniu interfejsów.', 0);
+SET IDENTITY_INSERT [SchoolingParts] OFF
+
+-- SCHOOLING USERS
+DELETE FROM [SchoolingsUsers];
+INSERT INTO [SchoolingsUsers] 
+    ([NewbieId], [SchoolingId], [State])
+VALUES 
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 1, 0),
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 2, 0),
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 3, 0),
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 4, 0),
+    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 5, 0),
+    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 6, 0),
+    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 7, 0),
+    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 8, 0),
+    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 9, 0);
+
+-- MATERIALS
+DELETE FROM [Materials];
+SET IDENTITY_INSERT [Materials] ON;
+INSERT INTO [Materials] 
+    ([Id], [Name], [State]) 
+VALUES 
+    (1, N'Wstęp do Programowania w Pythonie', 0),
+    (2, N'Zaawansowane Techniki Projektowania UX', 0),
+    (3, N'Podstawy Marketingu Internetowego', 0),
+    (4, N'Przewodnik po Algorytmach w Informatyce', 0),
+    (5, N'Wprowadzenie do Sztucznej Inteligencji', 0),
+    (6, N'Efektywne Zarządzanie Czasem w Pracy', 0),
+    (7, N'Nauka Języka Niemieckiego - Lekcja 1', 0),
+    (8, N'Praktyczny Kurs Grafiki Komputerowej', 0),
+    (9, N'Analiza Danych z użyciem Excela', 0),
+    (10, N'Budowanie Aplikacji Webowych z Reactem', 0),
+    (11, N'Podstawy HTML5 i CSS3', 0),
+    (12, N'Tworzenie Aplikacji Mobilnych w React Native', 0),
+    (13, N'Kurs SQL: Podstawy i Zaawansowane Techniki', 0),
+    (14, N'Bezpieczeństwo w Sieci: Ochrona przed Cyberzagrożeniami', 0),
+    (15, N'Podstawy Programowania w Javie', 0),
+    (16, N'Zarządzanie Chmurą: AWS vs Azure', 0),
+    (17, N'Wprowadzenie do Testowania Oprogramowania', 0);
+SET IDENTITY_INSERT [Materials] OFF;
+
+-- FILE IN MATERIALS
+DELETE FROM [FileInMaterials];
+INSERT INTO [FileInMaterials] 
+    ([MaterialId], [FileId], [State]) 
+VALUES 
+    (1, 2115, 0),
+    (3, 2115, 0),
+    (4, 2115, 0),
+    (4, 2116, 0),
+    (4, 2117, 0),
+    (6, 2115, 0),
+    (6, 2116, 0),
+    (8, 2115, 0),
+    (9, 2115, 0),
+    (9, 2119, 0),
+    (10, 2119, 0),
+    (11, 2115, 0),
+    (12, 2115, 0),
+    (14, 2115, 0),
+    (14, 2116, 0),
+    (14, 2117, 0),
+    (17, 2115, 0);
+
+    
+-- MATERIALS SCHOOLING PARTS
+DELETE FROM [MaterialsSchoolingParts];
+INSERT INTO [MaterialsSchoolingParts] 
+    ([MaterialsId], [SchoolingPartId], [State])
+VALUES 
+    (1, 1, 0),
+    (3, 3, 0),
+    (4, 2, 0),
+    (6, 5, 0),
+    (8, 11, 0),
+    (9, 6, 0),
+    (9, 9, 0),
+    (10, 12, 0),
+    (11, 11, 0),
+    (12, 12, 0),
+    (14, 7, 0),
+    (17, 11, 0);
