@@ -34,5 +34,8 @@ namespace catch_up_backend.Models
             createdDate = DateTime.Now;
             State = StateEnum.Active;
         }
+        public FeedbackModel()
+        {
+        }
     }
 }

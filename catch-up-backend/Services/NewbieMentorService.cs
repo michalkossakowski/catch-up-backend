@@ -66,6 +66,7 @@ public class NewbieMentorService : INewbieMentorService
         if (assignment == null)
         {
             _context.NewbiesMentors.Add(new NewbieMentorModel(newbieId, mentorId));
+            _context.SaveChanges();
         }
         else
         {
@@ -75,6 +76,7 @@ public class NewbieMentorService : INewbieMentorService
             }
             assignment.EndDate = null;
             assignment.State = StateEnum.Active;
+            _context.SaveChanges();
         }
 
         await _badgeService.HandleUserBadgesAsync(mentor.Id, BadgeTypeCountEnum.NewbiesCount);
