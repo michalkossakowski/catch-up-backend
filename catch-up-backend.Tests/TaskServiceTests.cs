@@ -4,6 +4,7 @@ using catch_up_backend.Dtos;
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
+using catch_up_backend.Repositories;
 using catch_up_backend.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -33,9 +34,6 @@ namespace catch_up_backend.Tests
             var newbieId = Guid.NewGuid();
             var mentorId = Guid.NewGuid();
 
-            var newbie = new UserModel("Newbie", "Test", "newbie@test.com", "password", "Newbie") { Id = newbieId, State = StateEnum.Active };
-            var mentor = new UserModel("Mentor", "Test", "mentor@test.com", "password", "Mentor") { Id = mentorId, State = StateEnum.Active };
-
             var newTask = new TaskDto
             {
                 NewbieId = newbieId,
@@ -60,15 +58,19 @@ namespace catch_up_backend.Tests
             {
                 var service = new TaskService(context, 
                     mockContentService.Object,
-                    mockUserService.Object,
+                    new UserService(new UserRepository(context)),
                     mockNotificationService.Object,
                     mockRoadMapPointService.Object,
                     mockBadgeService.Object);
 
-                context.TaskContents.Add(taskContent);
-                context.Users.AddRange(newbie, mentor);
+
+                context.Users.Add(new UserModel("Newbie", "Test", "newbie@test.com", "password", "Newbie","Junior") { Id = newbieId, AvatarId = 1 });
+                context.Users.Add(new UserModel("Mentor", "Test", "mentor@test.com", "password", "Mentor", "Senior") { Id = mentorId, AvatarId = 1 });
+                
+                context.TaskContents.Add(taskContent);              
                 context.SaveChanges();
 
+                var users = await context.Users.ToListAsync();
                 // Act
                 var result = await service.AddAsync(newTask);
 

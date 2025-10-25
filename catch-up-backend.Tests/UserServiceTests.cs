@@ -36,7 +36,7 @@ namespace catch_up_backend.Tests
             {
                 var service = new UserService(new UserRepository(context));
                 // Act
-                var result = service.Add(new UserDto {
+                var result = await service.Add(new UserDto {
                     Id = newbieId,
                     Name = "Newbie",
                     Surname = "Test",
@@ -50,7 +50,7 @@ namespace catch_up_backend.Tests
                 });
 
                 // Assert
-                var newUser = await context.Users.FindAsync(newbieId);
+                var newUser = await context.Users.FindAsync(result.Id);
                 Assert.NotNull(newUser);
 
             }
