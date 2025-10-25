@@ -3,11 +3,13 @@ using catch_up_backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using catch_up_backend.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class NewbieMentorController : ControllerBase
     {
         private readonly INewbieMentorService _newbieMentorService;
@@ -20,6 +22,7 @@ namespace catch_up_backend.Controllers
         // Assign a new employee to a mentor
         [HttpPost]
         [Route("Assign/{newbieId:guid}/{mentorId:guid}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Assign(Guid newbieId, Guid mentorId)
         {
             bool result = await _newbieMentorService.AssignNewbieToMentor(newbieId, mentorId);
@@ -33,6 +36,7 @@ namespace catch_up_backend.Controllers
         // Set assignment state (archive or delete)
         [HttpPatch]
         [Route("SetState/{newbieId:guid}/{mentorId:guid}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> SetState(Guid newbieId, Guid mentorId, [FromQuery] StateEnum state)
         {
             if (state != StateEnum.Archived && state != StateEnum.Deleted)
@@ -52,6 +56,7 @@ namespace catch_up_backend.Controllers
         // Get assignments for a mentor or a new employee
         [HttpGet]
         [Route("GetAssignments/{id:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAssignments(Guid id, [FromQuery] RoleEnum role)
         {
             var result = await _newbieMentorService.GetAssignments(id, role);
@@ -66,6 +71,7 @@ namespace catch_up_backend.Controllers
         // Get users (mentors or new employees, assigned or unassigned)
         [HttpGet]
         [Route("GetUsers")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetUsers([FromQuery] RoleEnum role, [FromQuery] bool? assigned, [FromQuery] Guid? relatedId)
         {
             var result = await _newbieMentorService.GetUsers(role, assigned, relatedId);
@@ -80,6 +86,7 @@ namespace catch_up_backend.Controllers
         // Get assignment history (archived or deleted)
         [HttpGet]
         [Route("GetAssignmentHistory")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> GetAssignmentHistory([FromQuery] StateEnum? state)
         {
             var history = await _newbieMentorService.GetAssignmentHistory(state);

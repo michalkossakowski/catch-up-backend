@@ -14,6 +14,7 @@ using System.Text.Json;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Newtonsoft.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 namespace catch_up_backend
 {
@@ -32,7 +33,44 @@ namespace catch_up_backend
                 });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Catch Up Backend API",
+                    Version = "v1",
+                    Description = "API for Catch Up application with JWT Bearer authentication"
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                                  "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+                                  "Example: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\r\n\r\n" +
+                                  "Note: You can get your token from the login endpoint or from the 'accessToken' cookie."
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             //Database
             var connectionString = builder.Configuration.GetConnectionString("catchUpConnectionString") ?? throw new InvalidOperationException("Connection string 'catchUpConnectionString' not found.");
@@ -62,6 +100,35 @@ namespace catch_up_backend
                         }
                     };
                 });
+
+            //Authorization with role-based policies
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Newbie", policy =>
+                    policy.RequireRole("Newbie"));
+
+                options.AddPolicy("Mentor", policy =>
+                    policy.RequireRole("Mentor"));
+
+                options.AddPolicy("HR", policy =>
+                    policy.RequireRole("HR"));
+
+                options.AddPolicy("Admin", policy =>
+                    policy.RequireRole("Admin"));
+
+                //Policy for Mentor or HR or Admin
+                options.AddPolicy("Staff", policy =>
+                    policy.RequireRole("Mentor", "HR", "Admin"));
+
+                // Policy for HR or Admin
+                options.AddPolicy("HROrAdmin", policy =>
+                    policy.RequireRole("HR", "Admin"));
+
+                // Policy for any authenticated user
+                options.AddPolicy("AnyRole", policy =>
+                    policy.RequireRole("Newbie", "Mentor", "HR", "Admin"));
+            });
+
             // Services
             builder.Services.AddScoped<IFaqService, FaqService>();
             builder.Services.AddScoped<IBadgeService, BadgeService>();

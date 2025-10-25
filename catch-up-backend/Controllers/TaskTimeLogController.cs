@@ -1,12 +1,14 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TaskTimeLogController : ControllerBase
     {
         private readonly ITaskTimeLogService _taskTimeLogService;
@@ -18,6 +20,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPost]
         [Route("AddTaskTimeLog")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> AddTaskTimeLog([FromBody] TaskTimeLogDto newTaskTimeLog)
         {
             if(!await _companySettingsService.GetTaskTimeLoggingSetting())
@@ -31,6 +34,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPut]
         [Route("EditTaskTimeLog/{taskTimeLogId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> EditTaskTaskTimeLog(int taskTimeLogId, TaskTimeLogDto newTaskTimeLog)
         {
             if (!await _companySettingsService.GetTaskTimeLoggingSetting()   )
@@ -44,6 +48,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpDelete]
         [Route("DeleteTaskTimeLog/{taskTimeLogId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> DeleteTaskTaskTimeLog(int taskTimeLogId)
         {
             if (!await _companySettingsService.GetTaskTimeLoggingSetting())
@@ -56,6 +61,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllTaskTimeLogs")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTaskTimeLogs()
         {
             if (!await _companySettingsService.GetTaskTimeLoggingSetting())
@@ -67,6 +73,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetTaskTimeLogById/{taskTimeLogId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskTimeLogById(int taskTimeLogId)
         {
             if (!await _companySettingsService.GetTaskTimeLoggingSetting())
@@ -81,6 +88,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetTaskTimeLogByTaskId/{taskId:int}/{page:int}/{pageSize:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskTimeLogByTaskId(int taskId, int page = 1, int pageSize = 5)
         {
             if (!await _companySettingsService.GetTaskTimeLoggingSetting())

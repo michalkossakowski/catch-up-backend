@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using catch_up_backend.Dtos;
 using catch_up_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TaskPresetController : ControllerBase
     {
         private readonly ITaskPresetService _taskPresetService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Add([FromBody] TaskPresetDto newTaskPreset)
         {
             var result = await _taskPresetService.Add(newTaskPreset);
@@ -27,6 +30,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{taskPresetId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Edit(int taskPresetId, [FromBody] TaskPresetDto newTaskPreset)
         {
             var result = await _taskPresetService.Edit(taskPresetId, newTaskPreset);
@@ -37,6 +41,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("DeleteByPreset/{presetId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> DeleteByPresetId(int presetId)
         {
             return await _taskPresetService.DeleteByPresetId(presetId)
@@ -46,6 +51,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("RemoveTaskFromPreset/{presetId:int}/{taskContentId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> RemoveTaskFromPreset(int presetId, int taskContentId)
         {
             return await _taskPresetService.RemoveTaskFromPreset(presetId, taskContentId)
@@ -55,6 +61,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("RemoveTaskFromAllPresets/{taskContentId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> RemoveTaskFromAllPresets(int taskContentId)
         {
             return await _taskPresetService.RemoveTaskFromAllPresets(taskContentId)
@@ -64,6 +71,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetAll()
         {
             var taskPresets = await _taskPresetService.GetAll();
@@ -74,6 +82,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{taskPresetId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetById(int taskPresetId)
         {
             try
@@ -91,6 +100,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByPreset/{presetId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetByPreset(int presetId)
         {
             try
@@ -108,6 +118,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByTaskContent/{taskContentId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetByTaskContent(int taskContentId)
         {
             try

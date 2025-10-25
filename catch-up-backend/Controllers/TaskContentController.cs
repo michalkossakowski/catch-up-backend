@@ -3,6 +3,7 @@ using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
 using catch_up_backend.Response;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace catch_up_backend.Controllers
@@ -19,6 +20,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Add([FromBody] TaskContentDto newTaskContent)
         {
             var result = await _taskContentService.Add(newTaskContent);
@@ -29,6 +31,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{taskContentId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Edit(int taskContentId, [FromBody] TaskContentDto newTaskContent)
         {
             var result = await _taskContentService.Edit(taskContentId, newTaskContent);
@@ -39,6 +42,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{taskContentId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Delete(int taskContentId)
         {
             return await _taskContentService.Delete(taskContentId)
@@ -48,6 +52,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll/{page}/{pageSize}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll(int page = 1, int pageSize = 5)
         {
             var taskContent = await _taskContentService.GetAll(page, pageSize);
@@ -58,6 +63,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("Get")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<ActionResult<PagedResponse<TaskContentDto>>> GetTaskContents([FromQuery] TaskContentQueryParameters parameters)
         {
             if (parameters.PageNumber < 1 || parameters.PageSize < 1)
@@ -71,6 +77,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{taskContentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int taskContentId)
         {
             try
@@ -88,6 +95,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByTitle/{title}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByTitle(string title)
         {
             try
@@ -105,6 +113,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByCreatorId/{creatorId:Guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByCreatorId(Guid creatorId)
         {
             var taskContent = await _taskContentService.GetByCreatorId(creatorId);
@@ -115,6 +124,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByCategoryId/{categoryId}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByCategoryId(int categoryId)
         {
             var taskContent = await _taskContentService.GetByCategoryId(categoryId);

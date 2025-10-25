@@ -4,6 +4,7 @@ using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Models;
 using catch_up_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FeedbackController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;
@@ -21,6 +23,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Add([FromBody] FeedbackDto newFeedback)
         {
             return await _feedbackService.AddAsync(newFeedback)
@@ -30,6 +33,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{feedbackId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Edit(int feedbackId, [FromBody] FeedbackDto newFeedback)
         {
             return await _feedbackService.EditAsync(feedbackId, newFeedback)
@@ -39,6 +43,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{feedbackId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Delete(int feedbackId)
         {
             return await _feedbackService.DeleteAsync(feedbackId)
@@ -48,6 +53,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{feedbackId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int feedbackId)
         {
             var feedback = await _feedbackService.GetByIdAsync(feedbackId);
@@ -58,6 +64,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByResource/{resourceType:int}/{resourceId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByResource(ResourceTypeEnum resourceType, int resourceId)
         {
             var feedbacks = await _feedbackService.GetFeedbacksByResourceAsync(resourceType, resourceId);
@@ -67,6 +74,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByTitle/{searchingTitle}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByTitle(string searchingTitle)
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -76,6 +84,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("ChangeDoneStatus/{feedbackId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> ChangeDoneStatus(int feedbackId)
         {
             return await _feedbackService.ChangeDoneStatusAsync(feedbackId)
@@ -85,6 +94,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll()
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);

@@ -1,11 +1,13 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FileController : ControllerBase
     {
         private readonly IFileService _fileService;
@@ -24,6 +26,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A response containing the file details (FileDto) and the associated material ID, if any.</returns>
         [HttpPost]
         [Route("Upload")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Upload(IFormFile file, int? materialId, Guid? ownerId, DateTime? uploadDate)
         {
             var fileDto = await _fileService.UploadFile(file, materialId, ownerId, uploadDate);
@@ -40,6 +43,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the file was deleted, or a not-found message if the file does not exist.</returns>
         [HttpDelete]
         [Route("Delete/{fileId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Delete(int fileId)
         {
             return await _fileService.DeleteFile(fileId)
@@ -55,6 +59,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the file was archived, or a not-found message if the file does not exist.</returns>
         [HttpPatch]
         [Route("Archive/{fileId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Archive(int fileId)
         {
             return await _fileService.ArchiveFile(fileId)
@@ -63,6 +68,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPut]
         [Route("ChangeFile")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> ChangeFile(FileDto fileDto)
         {
             return await _fileService.ChangeFile(fileDto)
@@ -76,6 +82,7 @@ namespace catch_up_backend.Controllers
         /// <returns>The details of the file (FileDto) if found and active, or a not-found message otherwise.</returns>
         [HttpGet]
         [Route("Get/{fileId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Get(int fileId)
         {
             var fileDto = await _fileService.GetById(fileId);
@@ -90,6 +97,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A list of FileDto objects representing all active files.</returns>
         [HttpGet]
         [Route("GetAllFiles")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFiles()
         {
             var filesDto = await _fileService.GetAllFiles();
@@ -97,6 +105,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllFiles/{page:int}/{pageSize:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFiles(int page, int pageSize)
         {
             var result = await _fileService.GetAllFiles(page, pageSize);
@@ -104,6 +113,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllUserFiles/{userdId:guid}/{page:int}/{pageSize:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllUserFiles(Guid userdId, int page, int pageSize)
         {
             var result = await _fileService.GetAllUserFiles(userdId, page, pageSize);
@@ -112,6 +122,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllUserFiles/{userdId:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllUserFiles(Guid userdId)
         {
             var filesDto = await _fileService.GetAllUserFiles(userdId);
@@ -119,7 +130,8 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}")]        
+        [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetBySearchTag(Guid userdId,string searchingQuestion)
         {
             var result = await _fileService.GetBySearchTag(userdId, searchingQuestion);
@@ -127,6 +139,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetBySearchTag/{userdId:guid}/{searchingQuestion}/{page:int}/{pageSize:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetBySearchTag(Guid userdId, string searchingQuestion, int page, int pageSize)
         {
             var result = await _fileService.GetBySearchTag(userdId, searchingQuestion, page, pageSize);
@@ -143,6 +156,7 @@ namespace catch_up_backend.Controllers
         /// </returns>
         [HttpGet]
         [Route("Download/{fileId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Download(int fileId)
         {
             var fileDto = await _fileService.GetById(fileId);

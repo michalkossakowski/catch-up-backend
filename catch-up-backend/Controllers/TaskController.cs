@@ -2,6 +2,7 @@
 using catch_up_backend.Enums;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -25,6 +26,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("AddTaskToUser")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> AddTaskToUser([FromBody] TaskDto newTask)
         {
             var result = await _taskService.AddAsync(newTask);
@@ -40,6 +42,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("EditTask/{taskId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Edit(int taskId, TaskDto newTask)
         {
 
@@ -49,6 +52,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPut]
         [Route("EditFullTask/{taskId:int}/{userId:guid}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> EditFullTask(int taskId, FullTask fullTask,Guid userId)
         {
             var (task, taskContent) = await _taskService.EditFullTaskAsync(taskId, fullTask, userId);
@@ -59,6 +63,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllTasks")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTasks()
         {
             var fullTasks = await _taskService.GetAllTasksAsync();
@@ -66,6 +71,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllTasksByAssigningId/{AssigningId:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTasksByAssigningId(Guid AssigningId)
         {
             var fullTasks = await _taskService.GetAllTasksByNewbieIdAsync(AssigningId);
@@ -76,6 +82,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllTasksByNewbieId/{newbieID:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTasksByNewbieId(Guid newbieID)
         {
             var fullTasks = await _taskService.GetAllTasksByNewbieIdAsync(newbieID);
@@ -86,6 +93,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllTaskByTaskContentId/{taskContentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTaskByTaskContentId(int taskContentId)
         {
             var fullTasks = await _taskService.GetAllTaskByTaskContentIdAsync(taskContentId);
@@ -96,6 +104,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetTaskById/{id:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskById(int id)
         {
             var fullTask = await _taskService.GetTaskByIdAsync(id);
@@ -106,6 +115,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllFullTasks")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTasks()
         {
             var fullTasks = await _taskService.GetAllFullTasksAsync();
@@ -114,6 +124,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllFullTasksByNewbieId/{newbieID:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTasksByNewbieId(Guid newbieID)
         {
             var fullTasks = await _taskService.GetAllFullTasksByNewbieIdAsync(newbieID);
@@ -124,6 +135,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllFullTasksByRoadMapPointId/{roadMapId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTasksByRoadMapPointId(int roadMapId)
         {
             var fullTasks = await _taskService.GetAllFullTasksByRoadMapPointIdAsync(roadMapId);
@@ -134,6 +146,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllFullTaskByTaskContentId/{taskContentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTaskByTaskContentId(int taskContentId)
         {
             var fullTasks = await _taskService.GetAllFullTaskByTaskContentIdAsync(taskContentId);
@@ -144,6 +157,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllFullTasksByAssigningId/{AssigningId:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTasksByAssigningId(Guid AssigningId)
         {
             var fullTasks = await _taskService.GetAllFullTasksByAssigningIdAsync(AssigningId);
@@ -154,6 +168,7 @@ namespace catch_up_backend.Controllers
         
         [HttpGet]
         [Route("GetFullTaskById/{taskId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetFullTaskById(int taskId)
         {
             var fullTask = await _taskService.GetFullTaskByIdAsync(taskId);
@@ -163,6 +178,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpDelete]
         [Route("Delete/{taskId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Delete(int taskId)
         {
             return await _taskService.DeleteAsync(taskId)
@@ -172,6 +188,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPatch]
         [Route("SetStatus/{taskId:int}/{status:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SetStatusAsync(int taskId, int status)
         {
             return await _taskService.SetStatusAsync(taskId, (StatusEnum)status)
@@ -180,6 +197,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("AddTime/{taskId:int}/{time:double}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> AddTimeAsync(int taskId, double time)
         {
             var task = await _taskService.AddTimeAsync(taskId, time);
@@ -189,6 +207,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("SetTime/{taskId:int}/{time:double}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SetTimeAsync(int taskId, double time)
         {
             if (time < 0)
@@ -200,6 +219,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("SetRate/{taskId:int}/{rate:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SetTimeAsync(int taskId, int rate)
         {
             if (rate < 0)
@@ -211,6 +231,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetFullTaskData/{taskId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetFullTaskData(int taskId)
         {
             var fullTaskResult = await _taskService.GetFullTaskByIdAsync(taskId);

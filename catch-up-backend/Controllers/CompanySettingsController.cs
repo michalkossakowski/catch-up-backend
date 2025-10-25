@@ -1,10 +1,12 @@
 ﻿using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CompanySettingsController : ControllerBase
     {
         private readonly ICompanySettingsService _companySettingsService;
@@ -16,6 +18,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("UpdateAll")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> UpdateSettings([FromBody] Dictionary<string, bool> updatedSettings)
         {
             if (updatedSettings == null || !updatedSettings.Any())
@@ -31,6 +34,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetWithoutMessage")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> GetCompanySettingsWithoutMessage()
         {
             var settings = await _companySettingsService.GetCompanySettings();
@@ -42,6 +46,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("Get")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetCompanySettings()
         {
             var settings = await _companySettingsService.GetCompanySettings();
@@ -53,6 +58,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("TurnOnLocalization")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> TurnOnLocalization()
         {
             bool result = await _companySettingsService.TurnOnLocalization();
@@ -67,6 +73,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("TurnOffLocalization")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> TurnOffLocalization()
         {
             bool result = await _companySettingsService.TurnOffLocalization();
@@ -81,6 +88,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPatch]
         [Route("SetTaskTimeLoggingSetting/{enable:bool}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> SetTaskTimeLogging(bool enable)
         {
             bool? result = await _companySettingsService.SetTaskTimeLogging(enable);
@@ -95,6 +103,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetTaskTimeLoggingSetting")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskTimeLoggingSetting()
         {
             bool result = await _companySettingsService.GetTaskTimeLoggingSetting();

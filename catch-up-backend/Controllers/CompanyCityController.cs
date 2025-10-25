@@ -1,11 +1,13 @@
 ﻿using catch_up_backend.Interfaces;
 using catch_up_backend.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace catch_up_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CompanyCityController : ControllerBase
     {
         private readonly ICompanyCityService _companyCityService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAllCities")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<ActionResult<IEnumerable<CompanyCityDto>>> GetAllCities()
         {
             var cities = await _companyCityService.GetAllCitiesAsync();
@@ -29,6 +32,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetCityByName/{cityName}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<ActionResult<CompanyCityDto>> GetCityByName(string cityName)
         {
             var city = await _companyCityService.GetCityByNameAsync(cityName);
@@ -41,6 +45,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("AddCity")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> AddCity([FromBody] CompanyCityDto cityDto)
         {
             if (cityDto == null)
@@ -59,6 +64,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("DeleteCity/{cityName}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> DeleteCity(string cityName)
         {
             var result = await _companyCityService.DeleteCityAsync(cityName);

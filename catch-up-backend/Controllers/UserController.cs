@@ -8,6 +8,7 @@ namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -19,6 +20,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Add([FromBody] UserDto newUser)
         {
             var addedUser = await _userService.Add(newUser);
@@ -27,6 +29,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPatch]
         [Route("Edit/{userId}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(Guid userId, [FromBody] UserDto updatedUser)
         {
             var user = await _userService.Edit(userId, updatedUser);
@@ -37,6 +40,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{userId}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(Guid userId)
         {
             await _userService.Delete(userId);
@@ -45,6 +49,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{userId}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(Guid userId)
         {
             var user = await _userService.GetById(userId);
@@ -55,6 +60,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAll();
@@ -63,6 +69,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetMyNewbies")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetMyNewbies()
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request); 
@@ -76,6 +83,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetRole/{userId}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetRole(Guid userId)
         {
             var role = await _userService.GetRole(userId);
@@ -84,6 +92,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetMentorAdmin")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetMentorAdmin()
         {
             var users = await _userService.GetMentorAdmin();
@@ -92,6 +101,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("Search/{searchPhrase}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SearchUsers(string searchPhrase)
         {
             var users = await _userService.SearchUsers(searchPhrase);
@@ -102,6 +112,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("SearchByRole/{role}/{searchPhrase?}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SearchUsersByRole(string role, string? searchPhrase = null)
         {
             var users = await _userService.SearchUsersByRole(role, searchPhrase);
