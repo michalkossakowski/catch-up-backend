@@ -123,7 +123,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFullTasksByNewbieId/{newbieID:guid}")]]
+        [Route("GetAllFullTasksByNewbieId/{newbieID:guid}")]
         [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllFullTasksByNewbieId(Guid newbieID)
         {
