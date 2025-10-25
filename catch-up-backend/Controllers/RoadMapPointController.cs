@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -7,6 +8,7 @@ namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RoadMapPoint : ControllerBase
     {
         private readonly IRoadMapPointService _roadMapPointService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> AddAsync([FromBody] RoadMapPointDto roadMapPoint)
         {
             var result = await _roadMapPointService.AddAsync(roadMapPoint);
@@ -27,6 +30,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{roadMapPointId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> EditAsync(int roadMapPointId, [FromBody] RoadMapPointDto roadMapPoint)
         {
             var result = await _roadMapPointService.EditAsync(roadMapPointId, roadMapPoint);
@@ -37,6 +41,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{roadMapPointId:int}/{deleteTasksInside:bool}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int roadMapPointId, bool deleteTasksInside = false)
         {
             return await _roadMapPointService.DeleteAsync(roadMapPointId, deleteTasksInside) 
@@ -47,6 +52,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByRoadMapId/{roadMapId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByRoadMapId(int roadMapId)
         {
             var roadMapPoints = await _roadMapPointService.GetByRoadMapIdAsync(roadMapId);

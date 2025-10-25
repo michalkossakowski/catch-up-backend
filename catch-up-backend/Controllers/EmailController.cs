@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using catch_up_backend.Services;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] 
+    [Route("api/[controller]")]
+    [Authorize]
     public class EmailController : ControllerBase
     {
         private readonly IEmailService _emailService = new EmailService();
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> SendEmail([FromQuery] string recipientEmail,[FromQuery] string subject,[FromQuery] string body,[FromQuery] List<string> attachments = null)
         {
             try

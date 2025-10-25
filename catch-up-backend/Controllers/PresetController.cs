@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using catch_up_backend.Dtos;
 using catch_up_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PresetController : ControllerBase
     {
         private readonly IPresetService _presetService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Add([FromBody] PresetDto newPreset)
         {
             try
@@ -39,6 +42,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{presetId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Edit(int presetId, [FromBody] PresetDto newPreset)
         {
             var result = await _presetService.Edit(presetId, newPreset);
@@ -49,6 +53,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{presetId:int}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int presetId)
         {
             return await _presetService.DeletePreset(presetId)
@@ -58,6 +63,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -75,6 +81,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{presetId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int presetId)
         {
             try
@@ -92,6 +99,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByCreatorId/{creatorId:Guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByCreatorId(Guid creatorId)
         {
             try
@@ -109,6 +117,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByName/{name}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByName(string name)
         {
             try
@@ -126,6 +135,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByTaskContent/{taskContentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByTaskContent(int taskContentId)
         {
             try
@@ -143,6 +153,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("SearchPresets/{searchingString}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SearchPresets(string searchingString)
         {
             try

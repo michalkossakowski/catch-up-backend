@@ -2,11 +2,13 @@
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Interfaces.RepositoryInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByUserToken")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByUserToken([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -30,6 +33,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("ReadNotifications")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> ReadNotifications()
         {
             try
@@ -47,6 +51,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("ReadNotification/{notificationId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> ReadNotification(int notificationId)
         {
             try
@@ -64,6 +69,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("HasUnreadNotifications")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> HasUnreadNotifications()
         {
             try

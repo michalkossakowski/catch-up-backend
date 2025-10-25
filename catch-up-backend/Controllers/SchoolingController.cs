@@ -2,12 +2,14 @@
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
 using catch_up_backend.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SchoolingController : ControllerBase
     {
         private readonly ISchoolingService _schoolingService;
@@ -20,6 +22,7 @@ namespace catch_up_backend.Controllers
         // Done
         [HttpGet]
         [Route("Get/{schoolingId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Get(int schoolingId)
         {
             var schooling = await _schoolingService.GetById(schoolingId);
@@ -30,6 +33,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetUserSchooling/{schoolingId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetUserSchooling(int schoolingId)
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -42,6 +46,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetSchoolingPart/{schoolingPartId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetSchoolingPart(int schoolingPartId)
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -53,6 +58,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPatch]
         [Route("ChangeUserSchoolingPartState/{schoolingUserId:int}/{schoolingPartId:int}/{state:bool}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> ChangeUserSchoolingPartState(int schoolingUserId, int schoolingPartId, bool state)
         {
             return await _schoolingPartService.ChangeUserSchoolingPartState(schoolingUserId, schoolingPartId, state)
@@ -61,6 +67,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPut]
         [Route("EditSchoolingPart")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartUpdateDto schoolingPartDto)
         {
             return await _schoolingPartService.EditSchoolingPart(schoolingPartDto)
@@ -70,6 +77,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("EditSchooling")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
         {
             return await _schoolingService.EditSchooling(schoolingDto)
@@ -78,6 +86,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("Get")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<ActionResult<PagedResponse<SchoolingDto>>> GetSchoolings([FromQuery] SchoolingQueryParameters parameters, [FromQuery] string mode = "all")
         {
             if (parameters.PageNumber < 1 || parameters.PageSize < 1)

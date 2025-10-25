@@ -6,12 +6,14 @@ using catch_up_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
 using catch_up_backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TaskCommentController : ControllerBase
     {
         private readonly ITaskCommentService _taskCommentService;
@@ -21,6 +23,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPost]
         [Route("AddTaskComment")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> AddTaskComment([FromBody] TaskCommentDto newTaskComment)
         {
             
@@ -39,8 +42,10 @@ namespace catch_up_backend.Controllers
             }
             
         }
+
         [HttpPut]
         [Route("EditTaskComment/{commentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> EditTaskComment(int commentId, TaskCommentDto newTaskComment)
         {
             newTaskComment = await _taskCommentService.EditAsync(commentId, newTaskComment);
@@ -48,8 +53,10 @@ namespace catch_up_backend.Controllers
                 ? Ok(new { message = $"Task comment edited", taskComment = newTaskComment })
                 : StatusCode(500, new { message = "Task comment editing error", commentId = commentId });
         }
+
         [HttpPatch]
         [Route("PatchTaskComment/{commentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> EditTaskCommentPatch(int commentId, [FromBody] JsonPatchDocument<TaskCommentModel> patchDoc)
         {
             var newTaskComment = await _taskCommentService.PatchAsnc(commentId, patchDoc);
@@ -60,6 +67,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("DeleteTaskComment/{commentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> DeleteTaskComment(int commentId)
         {
             return await _taskCommentService.DeleteAsync(commentId)
@@ -68,6 +76,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetAllTaskComments")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllTaskComments()
         {
             var taskComments = await _taskCommentService.GetAllAsync();
@@ -75,6 +84,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetTaskCommentById/{commentId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskCommentById(int commentId)
         {
             var taskComment = await _taskCommentService.GetByIdAsync(commentId);
@@ -84,6 +94,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpGet]
         [Route("GetTaskCommentsByTaskId/{taskId:int}/{page:int}/{pagesize:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetTaskCommentsByTaskId(int taskId, int page = 1, int pagesize = 5)
         {
             var result = await _taskCommentService.GetByTaskIdAsync(taskId, page, pagesize);

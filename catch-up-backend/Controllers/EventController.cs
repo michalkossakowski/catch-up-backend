@@ -1,10 +1,12 @@
 using catch_up_backend.Dtos;
 using catch_up_backend.Helpers;
 using catch_up_backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class EventController : ControllerBase
 {
     private readonly IEventService _eventService;
@@ -15,6 +17,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = "AnyRole")]
     public async Task<ActionResult<IEnumerable<EventDto>>> Get()
     {
         var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -25,6 +28,7 @@ public class EventController : ControllerBase
 
     [HttpDelete]
     [Route("Delete/{eventId:int}")]
+    [Authorize(Policy = "Admin")]
     public async Task<ActionResult<IEnumerable<EventModel>>> Delete(int eventId)
     {
         var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -34,6 +38,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = "Admin")]
     public async Task<ActionResult> Post(EventDto eventDto)
     {
         var result =  await _eventService.AddAsync(eventDto);

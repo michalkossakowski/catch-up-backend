@@ -1,12 +1,14 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class BadgeController : ControllerBase
     {
         private readonly IBadgeService _badgeService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Add([FromBody] BadgeDto newBadge)
         {
             return await _badgeService.Add(newBadge)
@@ -26,6 +29,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{badgeId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Edit(int badgeId, [FromBody] BadgeDto newBadge)
         {
             return await _badgeService.Edit(badgeId, newBadge)
@@ -35,6 +39,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{badgeId:int}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int badgeId)
         {
             return await _badgeService.Delete(badgeId)
@@ -44,6 +49,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{badgeId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int badgeId)
         {
             var badge = await _badgeService.GetById(badgeId);
@@ -54,6 +60,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll()
         {
             var badge = await _badgeService.GetAll();
@@ -62,6 +69,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("AssignManualBadge")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> AssignManualBadge([FromQuery] Guid mentorId, [FromQuery] int badgeId)
         {
             try
@@ -77,6 +85,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByMentorId")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByMentorId()
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);

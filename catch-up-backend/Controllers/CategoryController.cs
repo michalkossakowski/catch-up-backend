@@ -1,11 +1,13 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Add([FromBody] CategoryDto newCategory)
         {
             var result = await _categoryService.AddCategory(newCategory);
@@ -27,6 +30,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{categoryId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Edit(int categoryId, [FromBody] CategoryDto newCategory)
         {
             var result = await _categoryService.EditCategory(categoryId, newCategory);
@@ -37,6 +41,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{categoryId:int}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int categoryId)
         {
             return await _categoryService.DeleteCategory(categoryId)
@@ -46,6 +51,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{categoryId}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int categoryId)
         {
             try
@@ -63,6 +69,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -78,6 +85,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("Search/{searchingString}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> SearchCategories(string searchingString)
         {
             try
@@ -93,6 +101,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("IsUnique/{categoryName}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> IsUnique(string categoryName)
         {
             var isUnique = await _categoryService.IsUnique(categoryName);
@@ -101,6 +110,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetCount")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetCount()
         {
             var count = await _categoryService.GetCount();

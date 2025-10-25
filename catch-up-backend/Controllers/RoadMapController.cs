@@ -1,12 +1,14 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RoadMap : ControllerBase
     {
         private readonly IRoadMapService _roadMapService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Add([FromBody] RoadMapDto newRoadMap)
         {
             var creatorId = TokenHelper.GetUserIdFromTokenInRequest(Request);
@@ -29,6 +32,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{roadMapId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Edit(int roadMapId, [FromBody] RoadMapDto newRoadMap)
         {
             var result = await _roadMapService.EditAsync(roadMapId, newRoadMap);
@@ -39,6 +43,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{roadMapId:int}/{deleteTasksInside:bool}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int roadMapId, bool deleteTasksInside = false)
         {
             return await _roadMapService.DeleteAsync(roadMapId, deleteTasksInside) 
@@ -48,6 +53,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetAll()
         {
             var roadMaps = await _roadMapService.GetAllAsync();
@@ -58,6 +64,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetByNewbieId/{newbieId:guid}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetByNewbieId(Guid newbieId)
         {
             var roadMaps = await _roadMapService.GetByNewbieIdAsync(newbieId);
@@ -68,6 +75,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetMyRoadMaps")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetMyRoadmaps()
         {
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);

@@ -1,5 +1,6 @@
 using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -7,6 +8,7 @@ namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
@@ -17,6 +19,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetUserProfile(Guid userId)
         {
             var profile = await _userProfileService.GetUserProfileAsync(userId);
@@ -42,6 +45,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileDto userProfileDto)
         {
             if (!userProfileDto.UserId.HasValue)
@@ -62,6 +66,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPut("{userId}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> UpdateUserProfile(Guid userId, [FromBody] UserProfileDto userProfileDto)
         {
             try

@@ -1,5 +1,6 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -7,6 +8,7 @@ namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MaterialController : ControllerBase
     {
         private readonly IMaterialService _materialService;
@@ -25,6 +27,7 @@ namespace catch_up_backend.Controllers
         /// </returns>
         [HttpPost]
         [Route("Create")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Create(MaterialDto materialDto)
         {
             var material = await _materialService.CreateMaterial(materialDto);
@@ -40,6 +43,7 @@ namespace catch_up_backend.Controllers
         /// <returns> A success message if the material is updated, or an error message if the material is not found. </returns>
         [HttpPut]
         [Route("Edit/{materialId:int}/{name}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Edit(int materialId, string name )
         {
             return  await _materialService.Edit(materialId, name)
@@ -53,6 +57,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the material is deleted, or an error message if the material is not found.</returns>
         [HttpDelete]
         [Route("Delete/{materialId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Delete(int materialId)
         {
             return await _materialService.Delete(materialId)
@@ -67,6 +72,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the material is archived, or an error message if the material is not found.</returns>>
         [HttpDelete]
         [Route("Archive/{materialId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> Archive(int materialId)
         {
             return await _materialService.Archive(materialId)
@@ -82,6 +88,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the file is added, or an error message if the file or material is not found.</returns>
         [HttpPost]
         [Route("AddFile/{materialId:int}/{fileId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> AddFile(int materialId, int fileId)
         {
             return await _materialService.AddFile(materialId, fileId)
@@ -105,6 +112,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A success message if the file is removed, or an error message if the file or material is not found.</returns>
         [HttpPost]
         [Route("RemoveFile/{materialId:int}/{fileId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> RemoveFile(int materialId, int fileId)
         {
             return await _materialService.RemoveFile(materialId, fileId)
@@ -113,6 +121,7 @@ namespace catch_up_backend.Controllers
         }
         [HttpPost]
         [Route("RemoveFiles/{materialId:int}")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> RemoveFiles(int materialId, [FromBody] List<int> fileIds)
         {
             return await _materialService.RemoveFilesFromMaterial(materialId, fileIds)
@@ -127,6 +136,7 @@ namespace catch_up_backend.Controllers
         /// <returns>The material details if found, or an error message if not found.</returns>
         [HttpGet]
         [Route("Get/{materialId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Get(int materialId)
         {
             var materialDto = await _materialService.GetMaterial(materialId);
@@ -144,6 +154,7 @@ namespace catch_up_backend.Controllers
         /// <returns>The material details with associated files, or an error message if not found.</returns>
         [HttpGet]
         [Route("GetWithFiles/{materialId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetWithFiles(int materialId)
         {
             var materialDto = await _materialService.GetFilesInMaterial(materialId);
@@ -160,6 +171,7 @@ namespace catch_up_backend.Controllers
         /// <returns>A list of all active materials.</returns>
         [HttpGet]
         [Route("GetAllMaterials")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAllMaterials()
         {
             var materials = await _materialService.GetMaterials();

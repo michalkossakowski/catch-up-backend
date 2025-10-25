@@ -1,11 +1,13 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FaqController : ControllerBase
     {
         private readonly IFaqService _faqService;
@@ -16,6 +18,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Add([FromBody] FaqDto newFaq)
         {
             var result = await _faqService.AddAsync(newFaq);
@@ -27,6 +30,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPut]
         [Route("Edit/{faqId:int}")]
+        [Authorize(Policy = "HROrAdmin")]
         public async Task<IActionResult> Edit(int faqId, [FromBody] FaqDto newFaq)
         {
             var result = await _faqService.EditAsync(faqId, newFaq);
@@ -37,6 +41,7 @@ namespace catch_up_backend.Controllers
 
         [HttpDelete]
         [Route("Delete/{faqId:int}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int faqId)
         {
             return await _faqService.DeleteAsync(faqId) 
@@ -46,6 +51,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetById/{faqId:int}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetById(int faqId)
         {
             var faq = await _faqService.GetByIdAsync(faqId);
@@ -56,6 +62,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("GetAll/{page}/{pageSize}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetAll(int page = 1,  int pageSize = 5)
         {
             var result = await _faqService.GetAllAsync(page, pageSize);
@@ -66,6 +73,7 @@ namespace catch_up_backend.Controllers
 
         [HttpGet]
         [Route("Search/{searchPhrase}")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> Search(string searchPhrase)
         {
             var faqs = await _faqService.Search(searchPhrase);
