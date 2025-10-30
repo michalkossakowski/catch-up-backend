@@ -1,6 +1,7 @@
 ﻿using catch_up_backend.Dtos;
 using catch_up_backend.Helpers;
 using catch_up_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace catch_up_backend.Controllers
@@ -20,6 +21,7 @@ namespace catch_up_backend.Controllers
 
         [HttpPost]
         [Route("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var response = await _authService.Login(request);
@@ -29,6 +31,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost("Refresh")]
+        [AllowAnonymous]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
             var response = await _authService.RefreshToken(refreshToken);
@@ -36,6 +39,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost("RegisterFirebaseToken")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> RegisterFirebaseToken([FromBody] RegisterFirebaseTokenRequest request)
         {
             try
@@ -52,6 +56,7 @@ namespace catch_up_backend.Controllers
         }
 
         [HttpPost("UnregisterFirebaseToken")]
+        [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> UnregisterFirebaseToken([FromBody] string firebaseToken)
         {
             try
