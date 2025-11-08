@@ -8,8 +8,8 @@ namespace catch_up_backend.Dtos
         public string Title { get; set; }
         public string Content { get; set; }
         public string ShortDescription { get; set; }
+        public int Order { get; set; }
         public FileDto IconFile { get; set; }
-        public List<int> Materials { get; set; }
-        public int schoolingUserId {get; set;}
+        public List<int> MaterialsId { get; set; }
     }
 }

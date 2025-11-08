@@ -12,7 +12,7 @@ namespace catch_up_backend.Dtos
         public int Priority { get; set; }
         public FileDto IconFile { get; set; }
         public string Content { get; set; }
-        public List<SchoolingPartProgressBarDto> SchoolingPartProgressBar{ get; set; }
+        public List<SchoolingPartDto> schoolingParts{ get; set; }
         public SchoolingDto() { }
         public SchoolingDto(SchoolingModel model)
         {

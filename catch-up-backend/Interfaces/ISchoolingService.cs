@@ -5,11 +5,10 @@ namespace catch_up_backend.Interfaces
 {
     public interface ISchoolingService
     {
+        Task<SchoolingDto> CreateSchoolingAsync(SchoolingDto schooling);
         public Task<SchoolingDto> GetById(int schoolingId);
-        public Task<SchoolingDto> GetById(int schoolingId, Guid userId);
         Task<PagedResponse<SchoolingDto>> GetSchoolingsAsync(SchoolingQueryParameters parameters);
-        Task<PagedResponse<SchoolingDto>> GetSubscribedSchoolingsAsync(SchoolingQueryParameters parameters, Guid userId);
-        Task<PagedResponse<SchoolingDto>> GetOwnedSchoolingsAsync(SchoolingQueryParameters parameters, Guid userId);
-        public Task<bool> EditSchooling(SchoolingDto schoolingDto);
+        Task<bool> DeleteSchoolingAsync(int schoolingId);
+        public Task<bool> EditSchoolingAsync(SchoolingDto schoolingDto);
     }
 }

@@ -31,44 +31,23 @@ namespace catch_up_backend.Controllers
                 : NotFound(new { message = "Schooling not found." });
         }
 
-        [HttpGet]
-        [Route("GetUserSchooling/{schoolingId:int}")]
-        [Authorize(Policy = "AnyRole")]
-        public async Task<IActionResult> GetUserSchooling(int schoolingId)
-        {
-            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
-            var schooling = await _schoolingService.GetById(schoolingId, userId);
-
-            return schooling != null
-                ? Ok(schooling)
-                : NotFound(new { message = "Schooling not found." });
-        }
+        
 
         [HttpGet]
         [Route("GetSchoolingPart/{schoolingPartId:int}")]
         [Authorize(Policy = "AnyRole")]
         public async Task<IActionResult> GetSchoolingPart(int schoolingPartId)
         {
-            var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
-            var schoolingsPart = await _schoolingPartService.GetSchoolingPart(schoolingPartId, userId);
+            var schoolingsPart = await _schoolingPartService.GetSchoolingPart(schoolingPartId);
             if (schoolingsPart == null)
                 return NotFound(new { message = "Schooling part not found." });
             return Ok(schoolingsPart);
         }
 
-        [HttpPatch]
-        [Route("ChangeUserSchoolingPartState/{schoolingUserId:int}/{schoolingPartId:int}/{state:bool}")]
-        [Authorize(Policy = "Staff")]
-        public async Task<IActionResult> ChangeUserSchoolingPartState(int schoolingUserId, int schoolingPartId, bool state)
-        {
-            return await _schoolingPartService.ChangeUserSchoolingPartState(schoolingUserId, schoolingPartId, state)
-                ? Ok(new { message = "Schooling part state changed successfully." })
-                : NotFound(new { message = "Schooling part not found." });
-        }
         [HttpPut]
         [Route("EditSchoolingPart")]
         [Authorize(Policy = "Staff")]
-        public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartUpdateDto schoolingPartDto)
+        public async Task<IActionResult> EditSchoolingPart([FromBody] SchoolingPartDto schoolingPartDto)
         {
             return await _schoolingPartService.EditSchoolingPart(schoolingPartDto)
                 ? Ok(new { message = "Schooling updated successfully." })
@@ -80,7 +59,7 @@ namespace catch_up_backend.Controllers
         [Authorize(Policy = "Staff")]
         public async Task<IActionResult> EditSchooling([FromBody] SchoolingDto schoolingDto)
         {
-            return await _schoolingService.EditSchooling(schoolingDto)
+            return await _schoolingService.EditSchoolingAsync(schoolingDto)
                 ? Ok(new { message = "Schooling updated successfully." })
                 : NotFound(new { message = "Schooling not found." });
         }
@@ -96,13 +75,28 @@ namespace catch_up_backend.Controllers
 
             var userId = TokenHelper.GetUserIdFromTokenInRequest(Request);
 
-            var result = mode switch
-            {
-                "owned" => await _schoolingService.GetOwnedSchoolingsAsync(parameters, userId),
-                "subscribed" => await _schoolingService.GetSubscribedSchoolingsAsync(parameters, userId),
-                _ => await _schoolingService.GetSchoolingsAsync(parameters),
-            };
+            var result = await _schoolingService.GetSchoolingsAsync(parameters);
+
             return Ok(result);
+        }
+        [HttpDelete]
+        [Route("Delete/{schoolingId:int}")]
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> DeleteSchooling(int schoolingId)
+        {
+            return await _schoolingService.DeleteSchoolingAsync(schoolingId)
+                ? Ok(new { message = "Schooling deleted successfully." })
+                : NotFound(new { message = "Schooling not found." });
+        }
+        [HttpPost]
+        [Route("CreateSchooling")]
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> CreateSchooling([FromBody] SchoolingDto schoolingDto)
+        {
+            var createdSchooling = await _schoolingService.CreateSchoolingAsync(schoolingDto);
+            return createdSchooling != null
+                ? Ok(createdSchooling)
+                : BadRequest(new { message = "Failed to create schooling." });
         }
     }
 }
