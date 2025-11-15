@@ -29,7 +29,6 @@ namespace catch_up_backend.Controllers
 
         [HttpPatch]
         [Route("Edit/{userId}")]
-        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(Guid userId, [FromBody] UserDto updatedUser)
         {
             var user = await _userService.Edit(userId, updatedUser);
