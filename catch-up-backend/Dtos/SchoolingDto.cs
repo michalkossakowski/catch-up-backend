@@ -10,7 +10,6 @@ namespace catch_up_backend.Dtos
         public string Title { get; set; }
         public string ShortDescription { get; set; }
         public int Priority { get; set; }
-        public FileDto IconFile { get; set; }
         public string Content { get; set; }
         public List<SchoolingPartDto> schoolingParts{ get; set; }
         public SchoolingDto() { }
@@ -33,7 +32,6 @@ namespace catch_up_backend.Dtos
             ShortDescription = model.ShortDescription;
             Priority = model.Priority;
             Content = model.Content;
-            IconFile = iconFileDto;
         }
     }
 

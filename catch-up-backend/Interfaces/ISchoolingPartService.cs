@@ -6,11 +6,7 @@ namespace catch_up_backend.Interfaces
     {
         public Task<SchoolingPartDto> GetSchoolingPart(int schoolingPartId);
         public Task<List<SchoolingPartDto>> GetSchoolingParts(int schoolingId);
-        public Task<List<MaterialDto>> GetMaterials(int schoolingId);
-        public Task<bool> AddMaterialToSchooling(int schoolingPartId, int materialId); 
         public Task<bool> DeleteSchoolingPart(int schoolingPartId);
-        public Task<bool> DeleteMaterialFromSchooling(int schoolingPartId, int materialId);
-        public Task<bool> EditManySchoolingPart(List<SchoolingPartDto> schoolingPart);
         public Task<bool> EditSchoolingPart(SchoolingPartDto schoolingPart);
     }
 }

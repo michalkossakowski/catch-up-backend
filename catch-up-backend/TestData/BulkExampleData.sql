@@ -526,40 +526,8 @@ VALUES
     (9, N'437d2b01-ed58-4fcf-931a-08dd3251ce0a', 1, N'Wprowadzenie do Programowania w JavaScript', N'Kurs skierowany do osób, które chcą nauczyć się podstaw programowania w jednym z najpopularniejszych języków na świecie – JavaScript. Szkolenie obejmuje podstawy składni języka, takie jak zmienne, pętle, funkcje, tablice oraz obiekty, a także bardziej zaawansowane tematy, takie jak manipulowanie DOM-em, asynchroniczność w JavaScript i używanie frameworków jak React.', 1, 0);
 SET IDENTITY_INSERT [Schoolings] OFF;
 
--- SCHOOLING PARTS
-DELETE FROM [SchoolingParts];
-SET IDENTITY_INSERT [SchoolingParts] ON
-INSERT INTO [SchoolingParts] 
-    ([Id], [SchoolingId], [Title], [Content], [State])
-VALUES 
-    (1, 1, N'Wprowadzenie do Programowania Obiektowego w Pythonie', N'W tej części kursu uczestnicy zapoznają się z podstawami programowania obiektowego w Pythonie. Omówimy klasy, obiekty, dziedziczenie oraz polimorfizm. Kurs pokaże, jak organizować kod w sposób modularny, tworzyć hierarchie klas i korzystać z właściwości obiektów. Uczestnicy nauczą się również jak za pomocą Python implementować i wykorzystywać wzorce projektowe, co umożliwia tworzenie bardziej zaawansowanych aplikacji.', 0),
-    (2, 1, N'Optymalizacja i Wydajność Pythona', N'W tej części kursu uczestnicy poznają techniki optymalizacji kodu w Pythonie, w tym zarządzanie pamięcią, profilowanie aplikacji i używanie bibliotek do przyspieszania obliczeń, takich jak NumPy. Omówimy również zasady dobrego kodowania, które pozwolą na pisanie bardziej wydajnych i skalowalnych aplikacji. Celem jest zrozumienie, jak uniknąć typowych pułapek w Pythonie, które mogą wpływać na wydajność aplikacji.', 0),
-    (3, 2, N'SEO i SEM – Wprowadzenie do Optymalizacji', N'W tej części kursu omówimy podstawy SEO (Search Engine Optimization) oraz SEM (Search Engine Marketing). Uczestnicy dowiedzą się, jak poprawnie zoptymalizować stronę internetową, aby zwiększyć jej widoczność w wyszukiwarkach internetowych. Omówimy także narzędzia i strategie reklamowe, takie jak Google Ads, które umożliwiają efektywne pozycjonowanie stron oraz generowanie ruchu na stronie. Celem jest zrozumienie podstawowych zasad marketingu w wyszukiwarkach oraz sposobów na optymalizację treści pod kątem algorytmów Google.', 0),
-    (4, 2, N'Media Społecznościowe i E-mail Marketing', N'Celem tej części kursu jest zapoznanie uczestników z podstawami marketingu na mediach społecznościowych oraz strategii e-mail marketingowej. Kurs obejmuje tematykę tworzenia skutecznych kampanii reklamowych na Facebooku, Instagramie, LinkedIn oraz Twitterze. Dodatkowo uczestnicy dowiedzą się, jak budować listy mailingowe, tworzyć wartościowe treści do wysyłki oraz jak analizować efektywność kampanii e-mailowych za pomocą narzędzi takich jak MailChimp.', 0),
-    (5, 3, N'Planowanie Projektu IT', N'W tej części kursu uczestnicy nauczą się, jak efektywnie planować projekty IT. Omówimy tworzenie harmonogramów, przypisywanie zasobów do zadań, analizę ryzyka oraz ustalanie budżetów. Uczestnicy dowiedzą się, jak przygotować kompleksowy plan projektu, który będzie stanowił fundament do skutecznej realizacji projektu IT. Kurs zawiera również omówienie metodologii takich jak Agile i Waterfall oraz ich zastosowanie w praktyce.', 0),
-    (6, 3, N'Monitorowanie i Raportowanie Postępu Projektu', N'Ta część kursu koncentruje się na technikach monitorowania i raportowania postępu projektu IT. Uczestnicy dowiedzą się, jak używać narzędzi do zarządzania projektami (np. Jira, Asana) do śledzenia postępu, zarządzania zadaniami i komunikowania się z zespołem. Kurs pokaże, jak przygotować raporty postępu, identyfikować potencjalne problemy oraz jak dokonywać korekt w planie projektowym, aby projekt przebiegał zgodnie z harmonogramem.', 0),
-    (7, 4, N'Ochrona Przed Cyberzagrożeniami', N'W tej części kursu uczestnicy zapoznają się z zagrożeniami związanymi z cyberprzestępczością i dowiedzą się, jak chronić firmowe systemy przed atakami. Omówimy rodzaje cyberataków, takie jak phishing, ransomware, ataki DDoS oraz zagrożenia związane z oprogramowaniem złośliwym. Kurs skupi się na metodach ochrony przed tymi zagrożeniami, takich jak używanie zapór sieciowych, oprogramowania antywirusowego oraz szyfrowanie danych.', 0),
-    (8, 4, N'Ochrona Danych i Zgodność z RODO', N'Celem tej części kursu jest zapoznanie uczestników z podstawowymi zasadami ochrony danych osobowych oraz wymogami wynikającymi z rozporządzenia RODO. Omówimy, jak wdrożyć polityki ochrony danych w firmie, jak zarządzać dostępem do informacji oraz jak przechowywać dane w sposób zgodny z przepisami prawa. Uczestnicy dowiedzą się, jak przeprowadzać audyty zgodności z RODO i jakie procedury należy wdrożyć, aby zapewnić bezpieczeństwo danych osobowych.', 0),
-    (9, 5, N'Rekrutacja i Selekcja Pracowników', N'W tej części kursu uczestnicy nauczą się skutecznych metod rekrutacji i selekcji pracowników. Omówimy proces tworzenia ogłoszeń rekrutacyjnych, przeprowadzania rozmów kwalifikacyjnych oraz oceniania kompetencji kandydatów. Kurs skupi się również na narzędziach i technikach, które pomagają w znalezieniu odpowiednich osób na określone stanowiska w firmie. Uczestnicy dowiedzą się, jak zwiększyć efektywność procesu rekrutacji, minimalizując ryzyko błędów w selekcji.', 0),
-    (10, 5, N'Motywowanie i Rozwój Pracowników', N'Ta część kursu koncentruje się na technikach motywowania pracowników oraz strategiach wspierania ich rozwoju zawodowego. Omówimy metody oceny efektywności pracy, jak tworzyć plany rozwoju kariery oraz jak wdrażać programy szkoleń i mentoringu. Kurs pokaże, jak skutecznie motywować zespół, aby osiągać lepsze wyniki i zwiększać zaangażowanie pracowników w życie firmy.', 0),
-    (11, 6, N'Badania UX i Testowanie Użyteczności', N'W tej części kursu uczestnicy nauczą się, jak przeprowadzać badania użytkowników, testowanie użyteczności oraz analizować wyniki. Omówimy metodyki takie jak testy A/B, wywiady z użytkownikami, mapowanie ścieżek użytkownika i analiza danych. Uczestnicy dowiedzą się, jak stosować te techniki w praktyce, aby poprawić doświadczenie użytkowników w aplikacjach mobilnych oraz stronach internetowych.', 0),
-    (12, 6, N'Projektowanie Interfejsów – Podstawy UI', N'Część ta koncentruje się na projektowaniu interfejsów użytkownika (UI), w tym na tworzeniu estetycznych i intuicyjnych układów graficznych. Kurs obejmuje zagadnienia związane z typografią, kolorystyką, rozmieszczeniem elementów oraz tworzeniem responsywnych interfejsów, które dobrze wyglądają na różnych urządzeniach. Uczestnicy poznają również narzędzia takie jak Adobe XD, Figma czy Sketch, które pomagają w projektowaniu interfejsów.', 0);
-SET IDENTITY_INSERT [SchoolingParts] OFF
 
--- SCHOOLING USERS
-DELETE FROM [SchoolingsUsers];
-INSERT INTO [SchoolingsUsers] 
-    ([NewbieId], [SchoolingId], [State])
-VALUES 
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 1, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 2, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 3, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 4, 0),
-    (N'7fd8c6b5-9199-49b5-931d-08dd3251ce0a', 5, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 6, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 7, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 8, 0),
-    (N'd5636dcb-3d4f-4e2d-931e-08dd3251ce0a', 9, 0);
+
 
 -- MATERIALS
 DELETE FROM [Materials];
@@ -609,21 +577,22 @@ VALUES
     (14, 2117, 0),
     (17, 2115, 0);
 
-    
--- MATERIALS SCHOOLING PARTS
-DELETE FROM [MaterialsSchoolingParts];
-INSERT INTO [MaterialsSchoolingParts] 
-    ([MaterialsId], [SchoolingPartId], [State])
+    -- SCHOOLING PARTS
+DELETE FROM [SchoolingParts];
+SET IDENTITY_INSERT [SchoolingParts] ON
+INSERT INTO [SchoolingParts] 
+    ([Id], [SchoolingId], [Title], [Content], [State], [MaterialsId])
 VALUES 
-    (1, 1, 0),
-    (3, 3, 0),
-    (4, 2, 0),
-    (6, 5, 0),
-    (8, 11, 0),
-    (9, 6, 0),
-    (9, 9, 0),
-    (10, 12, 0),
-    (11, 11, 0),
-    (12, 12, 0),
-    (14, 7, 0),
-    (17, 11, 0);
+    (1, 1, N'Wprowadzenie do Programowania Obiektowego w Pythonie', N'W tej części kursu uczestnicy zapoznają się z podstawami programowania obiektowego w Pythonie. Omówimy klasy, obiekty, dziedziczenie oraz polimorfizm. Kurs pokaże, jak organizować kod w sposób modularny, tworzyć hierarchie klas i korzystać z właściwości obiektów. Uczestnicy nauczą się również jak za pomocą Python implementować i wykorzystywać wzorce projektowe, co umożliwia tworzenie bardziej zaawansowanych aplikacji.', 0, 1),
+    (2, 1, N'Optymalizacja i Wydajność Pythona', N'W tej części kursu uczestnicy poznają techniki optymalizacji kodu w Pythonie, w tym zarządzanie pamięcią, profilowanie aplikacji i używanie bibliotek do przyspieszania obliczeń, takich jak NumPy. Omówimy również zasady dobrego kodowania, które pozwolą na pisanie bardziej wydajnych i skalowalnych aplikacji. Celem jest zrozumienie, jak uniknąć typowych pułapek w Pythonie, które mogą wpływać na wydajność aplikacji.', 0, 4),
+    (3, 2, N'SEO i SEM – Wprowadzenie do Optymalizacji', N'W tej części kursu omówimy podstawy SEO (Search Engine Optimization) oraz SEM (Search Engine Marketing). Uczestnicy dowiedzą się, jak poprawnie zoptymalizować stronę internetową, aby zwiększyć jej widoczność w wyszukiwarkach internetowych. Omówimy także narzędzia i strategie reklamowe, takie jak Google Ads, które umożliwiają efektywne pozycjonowanie stron oraz generowanie ruchu na stronie. Celem jest zrozumienie podstawowych zasad marketingu w wyszukiwarkach oraz sposobów na optymalizację treści pod kątem algorytmów Google.', 0,3),
+    (4, 2, N'Media Społecznościowe i E-mail Marketing', N'Celem tej części kursu jest zapoznanie uczestników z podstawami marketingu na mediach społecznościowych oraz strategii e-mail marketingowej. Kurs obejmuje tematykę tworzenia skutecznych kampanii reklamowych na Facebooku, Instagramie, LinkedIn oraz Twitterze. Dodatkowo uczestnicy dowiedzą się, jak budować listy mailingowe, tworzyć wartościowe treści do wysyłki oraz jak analizować efektywność kampanii e-mailowych za pomocą narzędzi takich jak MailChimp.', 0, NULL),
+    (5, 3, N'Planowanie Projektu IT', N'W tej części kursu uczestnicy nauczą się, jak efektywnie planować projekty IT. Omówimy tworzenie harmonogramów, przypisywanie zasobów do zadań, analizę ryzyka oraz ustalanie budżetów. Uczestnicy dowiedzą się, jak przygotować kompleksowy plan projektu, który będzie stanowił fundament do skutecznej realizacji projektu IT. Kurs zawiera również omówienie metodologii takich jak Agile i Waterfall oraz ich zastosowanie w praktyce.', 0,6),
+    (6, 3, N'Monitorowanie i Raportowanie Postępu Projektu', N'Ta część kursu koncentruje się na technikach monitorowania i raportowania postępu projektu IT. Uczestnicy dowiedzą się, jak używać narzędzi do zarządzania projektami (np. Jira, Asana) do śledzenia postępu, zarządzania zadaniami i komunikowania się z zespołem. Kurs pokaże, jak przygotować raporty postępu, identyfikować potencjalne problemy oraz jak dokonywać korekt w planie projektowym, aby projekt przebiegał zgodnie z harmonogramem.', 0, 9),
+    (7, 4, N'Ochrona Przed Cyberzagrożeniami', N'W tej części kursu uczestnicy zapoznają się z zagrożeniami związanymi z cyberprzestępczością i dowiedzą się, jak chronić firmowe systemy przed atakami. Omówimy rodzaje cyberataków, takie jak phishing, ransomware, ataki DDoS oraz zagrożenia związane z oprogramowaniem złośliwym. Kurs skupi się na metodach ochrony przed tymi zagrożeniami, takich jak używanie zapór sieciowych, oprogramowania antywirusowego oraz szyfrowanie danych.', 0, 14),
+    (8, 4, N'Ochrona Danych i Zgodność z RODO', N'Celem tej części kursu jest zapoznanie uczestników z podstawowymi zasadami ochrony danych osobowych oraz wymogami wynikającymi z rozporządzenia RODO. Omówimy, jak wdrożyć polityki ochrony danych w firmie, jak zarządzać dostępem do informacji oraz jak przechowywać dane w sposób zgodny z przepisami prawa. Uczestnicy dowiedzą się, jak przeprowadzać audyty zgodności z RODO i jakie procedury należy wdrożyć, aby zapewnić bezpieczeństwo danych osobowych.', 0, NULL),
+    (9, 5, N'Rekrutacja i Selekcja Pracowników', N'W tej części kursu uczestnicy nauczą się skutecznych metod rekrutacji i selekcji pracowników. Omówimy proces tworzenia ogłoszeń rekrutacyjnych, przeprowadzania rozmów kwalifikacyjnych oraz oceniania kompetencji kandydatów. Kurs skupi się również na narzędziach i technikach, które pomagają w znalezieniu odpowiednich osób na określone stanowiska w firmie. Uczestnicy dowiedzą się, jak zwiększyć efektywność procesu rekrutacji, minimalizując ryzyko błędów w selekcji.', 0, 9),
+    (10, 5, N'Motywowanie i Rozwój Pracowników', N'Ta część kursu koncentruje się na technikach motywowania pracowników oraz strategiach wspierania ich rozwoju zawodowego. Omówimy metody oceny efektywności pracy, jak tworzyć plany rozwoju kariery oraz jak wdrażać programy szkoleń i mentoringu. Kurs pokaże, jak skutecznie motywować zespół, aby osiągać lepsze wyniki i zwiększać zaangażowanie pracowników w życie firmy.', 0, NULL),
+    (11, 6, N'Badania UX i Testowanie Użyteczności', N'W tej części kursu uczestnicy nauczą się, jak przeprowadzać badania użytkowników, testowanie użyteczności oraz analizować wyniki. Omówimy metodyki takie jak testy A/B, wywiady z użytkownikami, mapowanie ścieżek użytkownika i analiza danych. Uczestnicy dowiedzą się, jak stosować te techniki w praktyce, aby poprawić doświadczenie użytkowników w aplikacjach mobilnych oraz stronach internetowych.', 0, 8),
+    (12, 6, N'Projektowanie Interfejsów – Podstawy UI', N'Część ta koncentruje się na projektowaniu interfejsów użytkownika (UI), w tym na tworzeniu estetycznych i intuicyjnych układów graficznych. Kurs obejmuje zagadnienia związane z typografią, kolorystyką, rozmieszczeniem elementów oraz tworzeniem responsywnych interfejsów, które dobrze wyglądają na różnych urządzeniach. Uczestnicy poznają również narzędzia takie jak Adobe XD, Figma czy Sketch, które pomagają w projektowaniu interfejsów.', 0, 10);
+SET IDENTITY_INSERT [SchoolingParts] OFF

@@ -34,18 +34,17 @@ namespace catch_up_backend.Services
                     schooling.Title,
                     schooling.ShortDescription,
                     schooling.Content,
-                    schooling.Priority,
-                    schooling.IconFile?.Id
+                    schooling.Priority
                 );
                 _context.Schoolings.Add(schoolingModel);
-                foreach(var part in schooling.schoolingParts)
+                _context.SaveChanges();
+                foreach (var part in schooling.schoolingParts)
                 {
                     var schoolingPartModel = new SchoolingPartModel(
                         schoolingModel.Id,
                         part.Title,
                         part.ShortDescription,
-                        part.Content,
-                        part.IconFile?.Id
+                        part.Content
                     );
                     _context.SchoolingParts.Add(schoolingPartModel);
                 }
@@ -71,7 +70,6 @@ namespace catch_up_backend.Services
             existingSchooling.Priority = schoolingDto.Priority;
             existingSchooling.CategoryId = schoolingDto.CategoryId;
             existingSchooling.Content = schoolingDto.Content;
-            existingSchooling.IconFileId = schoolingDto.IconFile?.Id;
 
             await _context.SaveChangesAsync();
             return true;
@@ -87,8 +85,6 @@ namespace catch_up_backend.Services
             
             schooling.schoolingParts = await _schoolingPartService.GetSchoolingParts(schoolingId);
 
-            if (schoolingModel.IconFileId != null)
-                schooling.IconFile = await _fileService.GetById((int)schoolingModel.IconFileId);
 
             return schooling;
         }
@@ -124,6 +120,11 @@ namespace catch_up_backend.Services
             try
             {
                 schooling.State = StateEnum.Deleted;
+                var parts = _context.SchoolingParts.Where(p => p.SchoolingId == schooling.Id).ToList();
+                foreach(var part in parts)
+                {
+                    part.State = StateEnum.Deleted;
+                }
                 await _context.SaveChangesAsync();
             }catch (Exception)
             {

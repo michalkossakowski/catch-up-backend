@@ -18,7 +18,6 @@ namespace catch_up_backend.Database
         public DbSet<FeedbackModel> Feedbacks { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<FileInMaterial> FileInMaterials { get; set; }
-        public DbSet<MaterialsSchoolingPartModel> MaterialsSchoolingParts { get; set; }
         public DbSet<MaterialsModel> Materials { get; set; }
         public DbSet<MentorBadgeModel> MentorsBadges { get; set; }
         public DbSet<NewbieMentorModel> NewbiesMentors { get; set; }
@@ -28,8 +27,6 @@ namespace catch_up_backend.Database
         public DbSet<RoadMapPointModel> RoadMapPoints { get; set; }
         public DbSet<SchoolingModel> Schoolings { get; set; }
         public DbSet<SchoolingPartModel> SchoolingParts { get; set; }
-        public DbSet<SchoolingUserModel> SchoolingsUsers { get; set; }
-        public DbSet<SchoolingUserPartModel> SchoolingUserParts { get; set; }
         public DbSet<TaskContentModel> TaskContents { get; set; }
         public DbSet<TaskPresetModel> TaskPresets { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
@@ -84,17 +81,6 @@ namespace catch_up_backend.Database
                 .HasForeignKey(x => x.MaterialId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //MaterialsSchoolingPartModel Many To Many
-            modelBuilder.Entity<MaterialsSchoolingPartModel>()
-                .HasKey(x => new { x.MaterialsId, x.SchoolingPartId });
-            modelBuilder.Entity<MaterialsSchoolingPartModel>()
-                .HasOne<MaterialsModel>()
-                .WithMany()
-                .HasForeignKey(x => x.MaterialsId);
-            modelBuilder.Entity<MaterialsSchoolingPartModel>()
-                .HasOne<SchoolingPartModel>()
-                .WithMany()
-                .HasForeignKey(x => x.SchoolingPartId);
 
             //MentorBadgeModel Many To Many
             modelBuilder.Entity<MentorBadgeModel>()
@@ -168,12 +154,6 @@ namespace catch_up_backend.Database
 
             //SchoolingModel One To Many
             modelBuilder.Entity<SchoolingModel>()
-                .HasOne<FileModel>()
-                .WithMany()
-                .HasForeignKey(x => x.IconFileId);
-
-            //SchoolingModel One To Many
-            modelBuilder.Entity<SchoolingModel>()
                 .HasOne<CategoryModel>()
                 .WithMany()
                 .HasForeignKey(x => x.CategoryId);
@@ -183,40 +163,6 @@ namespace catch_up_backend.Database
                 .HasOne<SchoolingModel>()
                 .WithMany()
                 .HasForeignKey(x => x.SchoolingId);
-
-            //SchoolingModel One To One
-            modelBuilder.Entity<SchoolingPartModel>()
-                .HasOne<FileModel>()
-                .WithMany()
-                .HasForeignKey(x => x.IconFileId);
-
-            //SchoolingUserModel Many To Many
-            modelBuilder.Entity<SchoolingUserModel>()
-                .HasOne<UserModel>()
-                .WithMany()
-                .HasForeignKey(x => x.NewbieId)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<SchoolingUserModel>()
-                .HasOne<SchoolingModel>()
-                .WithMany()
-                .HasForeignKey(x => x.SchoolingId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            //SchoolingUserPartModel Many To Many
-            modelBuilder.Entity<SchoolingUserPartModel>()
-                .HasKey(sup => new {sup.SchoolingUserId, sup.SchoolingPartId});
-
-            //SchoolingUserPartModel One To Many
-            modelBuilder.Entity<SchoolingUserPartModel>()
-                .HasOne<SchoolingUserModel>()
-                .WithMany()
-                .HasForeignKey(sup => sup.SchoolingUserId);
-
-            //SchoolingUserPartModel One To Many
-            modelBuilder.Entity<SchoolingUserPartModel>()
-                .HasOne<SchoolingPartModel>()
-                .WithMany()
-                .HasForeignKey(sup => sup.SchoolingPartId);
 
             //TaskContentModel One To Many
             modelBuilder.Entity<TaskContentModel>()

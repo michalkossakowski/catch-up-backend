@@ -9,7 +9,6 @@ namespace catch_up_backend.Dtos
         public string Content { get; set; }
         public string ShortDescription { get; set; }
         public int Order { get; set; }
-        public FileDto IconFile { get; set; }
-        public List<int> MaterialsId { get; set; }
+        public int? MaterialsId { get; set; }
     }
 }
